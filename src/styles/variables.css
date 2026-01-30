@@ -1,0 +1,38 @@
+:root {
+  /* Colors - Dark Mode Default */
+  --color-bg: #0b0c10;
+  --color-surface: #1f2833;
+  --color-text: #c5c6c7;
+  --color-heading: #ffffff;
+  
+  /* Brand/Accent Colors (Cyan & Neon Blue for futuristic/gaming vibe) */
+  --color-primary: #66fcf1;
+  --color-primary-dark: #45a29e;
+  --color-accent: #facc15; /* Yellow/Gold for contrast */
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #66fcf1 0%, #45a29e 100%);
+  --gradient-metal: linear-gradient(145deg, #e2e8f0 0%, #94a3b8 100%);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(31, 40, 51, 0.6);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --backdrop-blur: blur(12px);
+
+  /* Typography */
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', sans-serif; /* For headers */
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+  --spacing-xl: 8rem;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
