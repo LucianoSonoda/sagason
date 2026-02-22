@@ -30,6 +30,16 @@
     gap: var(--spacing-sm);
 }
 
+.footer-link {
+    color: var(--color-text);
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.footer-link:hover {
+    color: var(--color-primary);
+}
+
 .social-link {
     display: flex;
     align-items: center;

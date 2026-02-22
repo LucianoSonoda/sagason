@@ -11,6 +11,7 @@ export function Footer() {
                     <p>Placas de metal personalizadas con ingeniería de precisión.</p>
                 </div>
                 <div className="footer-links">
+                    <a href="#warranty" className="footer-link">Garantía y Políticas</a>
                     <a href="#" className="social-link"><Instagram size={20} /> @sagason.cl</a>
                     <a href="mailto:contacto@sagason.cl" className="social-link"><Mail size={20} /> contacto@sagason.cl</a>
                 </div>
