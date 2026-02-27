@@ -12,8 +12,8 @@ export function Footer() {
                 </div>
                 <div className="footer-links">
                     <a href="#warranty" className="footer-link">Garantía y Políticas</a>
-                    <a href="#" className="social-link"><Instagram size={20} /> @sagason.cl</a>
-                    <a href="mailto:contacto@sagason.cl" className="social-link"><Mail size={20} /> contacto@sagason.cl</a>
+                    <a href="https://instagram.com/sagason.cl" target="_blank" rel="noopener noreferrer" className="social-link"><Instagram size={20} /> @sagason.cl</a>
+                    <a href="mailto:ventas@sagason.cl" className="social-link"><Mail size={20} /> ventas@sagason.cl</a>
                 </div>
             </div>
             <div className="footer-bottom">
