@@ -4,6 +4,7 @@ import '../styles/CustomForm.css';
 
 export function CustomForm() {
     const [category, setCategory] = useState('Juegos');
+    const [fileName, setFileName] = useState('');
 
     return (
         <section id="custom" className="custom-section container">
@@ -68,6 +69,7 @@ export function CustomForm() {
                                 type="file"
                                 name="attachment"
                                 accept="image/png, image/jpeg"
+                                onChange={(e) => setFileName(e.target.files[0] ? e.target.files[0].name : '')}
                                 style={{
                                     position: 'absolute',
                                     width: '100%',
@@ -78,8 +80,12 @@ export function CustomForm() {
                                     cursor: 'pointer'
                                 }}
                             />
-                            <Upload size={32} style={{ marginBottom: '0.5rem', opacity: 0.7 }} />
-                            <p>Haz clic o arrastra tu foto/logo aquí</p>
+                            <Upload size={32} style={{ marginBottom: '0.5rem', opacity: fileName ? 1 : 0.7, color: fileName ? 'var(--color-primary)' : 'inherit' }} />
+                            {fileName ? (
+                                <p style={{ color: 'var(--color-primary)', fontWeight: 'bold', margin: '0.5rem 0' }}>{fileName}</p>
+                            ) : (
+                                <p>Haz clic o arrastra tu foto/logo aquí</p>
+                            )}
                             <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>Formatos: JPG, PNG (Max 10MB)</span>
                         </div>
                     </div>
