@@ -14,12 +14,12 @@ export function CustomForm() {
             </div>
 
             <div className="form-container">
-                {/* Formspree / Form endpoint: Reemplazar el action con tu link de Formspree */}
-                <form action="https://formspree.io/f/xreadwbo" method="POST" encType="multipart/form-data">
+                {/* Form endpoint: Usando FormSubmit.co, una alternativa gratuita que permite adjuntos */}
+                <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" encType="multipart/form-data">
 
                     <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                     <input type="hidden" name="_next" value="https://sagason.cl" />
-                    <input type="hidden" name="_language" value="es" />
+                    <input type="hidden" name="_captcha" value="false" />
 
                     {/* Contact Info */}
                     <div className="form-group">
