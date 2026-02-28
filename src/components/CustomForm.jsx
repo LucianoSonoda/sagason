@@ -3,7 +3,6 @@ import { Upload, Send } from 'lucide-react';
 import '../styles/CustomForm.css';
 
 export function CustomForm() {
-    const [requestType, setRequestType] = useState('custom'); // 'original' or 'custom'
     const [category, setCategory] = useState('Juegos');
 
     return (
@@ -41,86 +40,58 @@ export function CustomForm() {
                         <input type="email" id="email" name="email" className="form-input" required placeholder="tu@email.com" />
                     </div>
 
-                    {/* Request Type Selection */}
+                    {/* Selection and Inputs */}
                     <div className="form-group">
-                        <label className="form-label">Tipo de Solicitud</label>
-                        <div className="radio-group">
-                            <label className="radio-label">
-                                <input
-                                    type="radio"
-                                    name="request_type"
-                                    value="Diseño Temático"
-                                    className="radio-input"
-                                    checked={requestType === 'custom'}
-                                    onChange={() => setRequestType('custom')}
-                                />
-                                Diseño Temático
-                            </label>
-                            <label className="radio-label">
-                                <input
-                                    type="radio"
-                                    name="request_type"
-                                    value="Foto Original"
-                                    className="radio-input"
-                                    checked={requestType === 'original'}
-                                    onChange={() => setRequestType('original')}
-                                />
-                                Foto Original
-                            </label>
-                        </div>
+                        <label className="form-label" htmlFor="category">Categoría o Tipo</label>
+                        <select
+                            id="category"
+                            name="category"
+                            className="form-select"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                        >
+                            <option value="Juegos">Videojuegos (Gaming)</option>
+                            <option value="Películas">Películas / Series</option>
+                            <option value="Deportes">Deportes</option>
+                            <option value="Empresas">Empresas</option>
+                            <option value="Foto Original">Foto Original</option>
+                            <option value="Otro">Otro</option>
+                        </select>
                     </div>
 
-                    {/* Conditional Fields */}
-                    {requestType === 'custom' ? (
-                        <div className="form-group">
-                            <label className="form-label" htmlFor="category">Categoría</label>
-                            <select
-                                id="category"
-                                name="category"
-                                className="form-select"
-                                value={category}
-                                onChange={(e) => setCategory(e.target.value)}
-                            >
-                                <option value="Juegos">Videojuegos (Gaming)</option>
-                                <option value="Películas">Películas / Series</option>
-                                <option value="Deportes">Deportes</option>
-                                <option value="Empresas">Empresas</option>
-                                <option value="Otro">Otro</option>
-                            </select>
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="desc">Detalles del Diseño / Instrucciones</label>
+                        <textarea
+                            id="desc"
+                            name="message"
+                            className="form-textarea"
+                            rows="4"
+                            placeholder="Describe cómo quieres tu placa (ej. escena a sublimar, colores o detalles de tu foto)..."
+                        ></textarea>
+                    </div>
 
-                            <label className="form-label" htmlFor="desc" style={{ marginTop: '1rem' }}>Detalles del Diseño</label>
-                            <textarea
-                                id="desc"
-                                name="message"
-                                className="form-textarea"
-                                rows="4"
-                                placeholder="Describe el personaje, escena o equipo que quieres en tu placa..."
-                            ></textarea>
+                    <div className="form-group">
+                        <label className="form-label">Sube tu Imagen (Opcional si es un Diseño Temático general)</label>
+                        <div className="file-upload" style={{ position: 'relative' }}>
+                            <input
+                                type="file"
+                                name="attachment"
+                                accept="image/png, image/jpeg"
+                                style={{
+                                    position: 'absolute',
+                                    width: '100%',
+                                    height: '100%',
+                                    top: 0,
+                                    left: 0,
+                                    opacity: 0,
+                                    cursor: 'pointer'
+                                }}
+                            />
+                            <Upload size={32} style={{ marginBottom: '0.5rem', opacity: 0.7 }} />
+                            <p>Haz clic o arrastra tu foto/logo aquí</p>
+                            <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>Formatos: JPG, PNG (Max 10MB)</span>
                         </div>
-                    ) : (
-                        <div className="form-group">
-                            <label className="form-label">Sube tu Imagen</label>
-                            <div className="file-upload" style={{ position: 'relative' }}>
-                                <input
-                                    type="file"
-                                    name="attachment"
-                                    accept="image/png, image/jpeg"
-                                    style={{
-                                        position: 'absolute',
-                                        width: '100%',
-                                        height: '100%',
-                                        top: 0,
-                                        left: 0,
-                                        opacity: 0,
-                                        cursor: 'pointer'
-                                    }}
-                                />
-                                <Upload size={32} style={{ marginBottom: '0.5rem', opacity: 0.7 }} />
-                                <p>Haz clic o arrastra tu foto aquí</p>
-                                <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>Formatos: JPG, PNG (Max 10MB)</span>
-                            </div>
-                        </div>
-                    )}
+                    </div>
 
                     <button type="submit" className="submit-btn" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
                         Enviar Solicitud <Send size={18} />
