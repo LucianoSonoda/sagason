@@ -7,7 +7,7 @@ export function Footer() {
         <footer id="contact" className="footer">
             <div className="container footer-content">
                 <div className="footer-brand">
-                    <h3>Sagason SpA</h3>
+                    <img src="/logo-completo.png" alt="Sagason SpA" className="footer-logo-img" />
                     <p>Placas de metal personalizadas con ingeniería de precisión.</p>
                 </div>
                 <div className="footer-links">
