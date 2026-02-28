@@ -14,7 +14,7 @@ export function CustomForm() {
 
             <div className="form-container">
                 {/* Formspree / Form endpoint: Reemplazar el action con tu link de Formspree */}
-                <form action="https://formspree.io/ventas@sagason.cl" method="POST" encType="multipart/form-data">
+                <form action="https://formspree.io/f/xreadwbo" method="POST" encType="multipart/form-data">
 
                     <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                     <input type="hidden" name="_next" value="https://sagason.cl" />
