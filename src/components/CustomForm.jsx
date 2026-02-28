@@ -13,16 +13,7 @@ export function CustomForm() {
             </div>
 
             <div className="form-container">
-                {/* Formspree Configuration: action points to the email */}
-                <form action="https://formspree.io/f/xpwazqrl" method="POST" encType="multipart/form-data">
-                    {/* Fallback to generic action if ID not provided, but best to use dynamic or specific ID. 
-               Since I don't have the user's ID, I will use the direct email trick which alerts them to set it up 
-               OR ideally, I should instruct them to putting their real ID.
-               Actually, pointing to https://formspree.io/ventas@sagason.cl is the classic way. 
-               Let's use that.
-           */}
-                </form>
-                {/* Retrying with the full correct replacement content */}
+                {/* Formspree / Form endpoint: Reemplazar el action con tu link de Formspree */}
                 <form action="https://formspree.io/ventas@sagason.cl" method="POST" encType="multipart/form-data">
 
                     <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />

@@ -12,8 +12,10 @@
     margin-bottom: var(--spacing-md);
 }
 
-.footer-brand h3 {
-    color: var(--color-heading);
+.footer-logo-img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
     margin-bottom: var(--spacing-xs);
 }
 

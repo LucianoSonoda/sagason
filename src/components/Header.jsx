@@ -5,7 +5,9 @@ export function Header() {
     return (
         <header className="header glass-panel">
             <div className="header-content container">
-                <div className="logo">SAGASON</div>
+                <a href="#home" className="logo">
+                    <img src="/logo-chico.png" alt="SAGASON" className="header-logo-img" />
+                </a>
                 <nav className="nav">
                     <a href="#home">Inicio</a>
                     <a href="#gallery">Catálogo</a>
