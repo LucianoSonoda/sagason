@@ -1,13 +1,14 @@
 import React from 'react';
 import { Instagram, Mail } from 'lucide-react';
 import '../styles/Footer.css';
+import logoCompleto from '../assets/logo-completo.jpg';
 
 export function Footer() {
     return (
         <footer id="contact" className="footer">
             <div className="container footer-content">
                 <div className="footer-brand">
-                    <img src="/logo-completo.png" alt="Sagason SpA" className="footer-logo-img" />
+                    <img src={logoCompleto} alt="Sagason SpA" className="footer-logo-img" />
                     <p>Placas de metal personalizadas con ingeniería de precisión.</p>
                 </div>
                 <div className="footer-links">
