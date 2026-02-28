@@ -20,6 +20,7 @@ export function CustomForm() {
                     <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                     <input type="hidden" name="_next" value="https://sagason.cl" />
                     <input type="hidden" name="_captcha" value="false" />
+                    <input type="hidden" name="_cc" value="brluson@gmail.com,brclflo@gmail.com,gabrielssonoda@gmail.com" />
 
                     {/* Contact Info */}
                     <div className="form-group">
