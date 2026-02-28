@@ -5,11 +5,29 @@ import '../styles/CustomForm.css';
 export function CustomForm() {
     const [category, setCategory] = useState('Juegos');
     const [fileName, setFileName] = useState('');
+    const [fileError, setFileError] = useState('');
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setFileError('');
+        if (file) {
+            // 10MB validation
+            if (file.size > 10 * 1024 * 1024) {
+                setFileError('El archivo es demasiado grande (> 10MB). Por favor, envía las imágenes de mayor tamaño a nuestro correo.');
+                setFileName('');
+                e.target.value = ''; // Reset input
+            } else {
+                setFileName(file.name);
+            }
+        } else {
+            setFileName('');
+        }
+    };
 
     return (
         <section id="custom" className="custom-section container">
             <div className="section-header">
-                <h2 className="section-title">Personaliza tu Placa</h2>
+                <h2 className="section-title">Personaliza tus momentos inolvidables</h2>
                 <p>¿Foto original o diseño exclusivo? Tú eliges.</p>
             </div>
 
@@ -35,7 +53,7 @@ export function CustomForm() {
 
                     {/* Selection and Inputs */}
                     <div className="form-group">
-                        <label className="form-label" htmlFor="category">Categoría o Tipo</label>
+                        <label className="form-label" htmlFor="category">Personalización y Ambientación</label>
                         <select
                             id="category"
                             name="category"
@@ -70,7 +88,7 @@ export function CustomForm() {
                                 type="file"
                                 name="attachment"
                                 accept="image/png, image/jpeg"
-                                onChange={(e) => setFileName(e.target.files[0] ? e.target.files[0].name : '')}
+                                onChange={handleFileChange}
                                 style={{
                                     position: 'absolute',
                                     width: '100%',
@@ -88,6 +106,7 @@ export function CustomForm() {
                                 <p>Haz clic o arrastra tu foto/logo aquí</p>
                             )}
                             <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>Formatos: JPG, PNG (Max 10MB)</span>
+                            {fileError && <span style={{ color: '#ff4d4f', fontSize: '0.8rem', display: 'block', marginTop: '8px', fontWeight: 'bold' }}>{fileError}</span>}
                         </div>
                     </div>
 
