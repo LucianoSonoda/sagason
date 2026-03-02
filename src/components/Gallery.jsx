@@ -5,25 +5,43 @@ import '../styles/Gallery.css';
 
 import logoCompleto from '../assets/logo-completo.jpg';
 import imgStrangerThings from '../assets/stranger-things.png';
+import imgCastillo from '../assets/Castilloconbrillo.jpeg';
+import imgAluminio1 from '../assets/Cuador Aluminio1.jpeg';
+import imgAluminio5 from '../assets/Cuador Aluminio5.jpeg';
+import imgAluminio6 from '../assets/Cuador Aluminio6.jpeg';
+import imgCuadroMujeres from '../assets/Cuadro dia de las mujeres.png';
+import imgMousepad from '../assets/MousePad_StarryNight.png';
+import imgPlacaBailey from '../assets/Placa identificación Bailey_upscayl_3x_upscayl-standard-4x.png';
+import imgUstedDonde from '../assets/Usted donde quiera.png';
+import imgEstrela from '../assets/estrela.png';
+import imgMujeres from '../assets/mujeres.jpeg';
+import imgPerro from '../assets/perro.jpg';
+import imgTazonMujeres from '../assets/tazon DIa de las mujeres.png';
 
 // Las categorías principales (las portadas)
 const CATEGORIES = [
-    { id: 'empresas', title: 'Empresas', color: '#45a29e', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
-    { id: 'peliculas-anime', title: 'Películas & Anime', color: '#3b82f6' },
-    { id: 'juegos', title: 'Juegos', color: '#facc15' },
-    { id: 'deportes', title: 'Deportes', color: '#10b981' },
+    { id: 'mascotas', title: 'Mascotas', color: '#45a29e', image: imgPlacaBailey },
+    { id: 'decoracion', title: 'Decoración', color: '#3b82f6', image: imgMousepad },
+    { id: 'fechas-especiales', title: 'Fechas Especiales', color: '#ef4444', image: imgCuadroMujeres },
+    { id: 'empresas', title: 'Empresas', color: '#facc15', image: imgAluminio1 },
 ];
 
 // Los ítems o fotos dentro de cada categoría
 const ITEMS = [
-    { id: 1, title: 'Logo Corporativo', category: 'Empresas', color: '#45a29e', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
-    { id: 2, title: 'Letrero Metálico', category: 'Empresas', color: '#2c3e50' },
-    { id: 4, title: 'Stranger Things', category: 'Películas & Anime', color: '#ef4444', image: imgStrangerThings },
-    { id: 5, title: 'Póster Clásico', category: 'Películas & Anime', color: '#e2e8f0' },
-    { id: 6, title: 'Cyberpunk Ed.', category: 'Juegos', color: '#facc15' },
-    { id: 7, title: 'Escudo Clan', category: 'Juegos', color: '#8b5cf6' },
-    { id: 8, title: 'Camiseta 10', category: 'Deportes', color: '#10b981' },
-    { id: 9, title: 'Estadio Nacional', category: 'Deportes', color: '#f97316' },
+    { id: 1, title: 'Placa Bailey', category: 'Mascotas', color: '#45a29e', image: imgPlacaBailey },
+    { id: 2, title: 'Retrato Perro', category: 'Mascotas', color: '#45a29e', image: imgPerro },
+    { id: 3, title: 'Castillo con Brillo', category: 'Decoración', color: '#3b82f6', image: imgCastillo },
+    { id: 4, title: 'MousePad Starry Night', category: 'Decoración', color: '#3b82f6', image: imgMousepad },
+    { id: 5, title: 'Usted Donde Quiera', category: 'Decoración', color: '#3b82f6', image: imgUstedDonde },
+    { id: 6, title: 'Estrella', category: 'Decoración', color: '#3b82f6', image: imgEstrela },
+    { id: 7, title: 'Stranger Things', category: 'Decoración', color: '#ef4444', image: imgStrangerThings },
+    { id: 8, title: 'Cuadro Día de la Mujer', category: 'Fechas Especiales', color: '#ef4444', image: imgCuadroMujeres },
+    { id: 9, title: 'Tazón Día de la Mujer', category: 'Fechas Especiales', color: '#ef4444', image: imgTazonMujeres },
+    { id: 10, title: 'Día de la Mujer', category: 'Fechas Especiales', color: '#ef4444', image: imgMujeres },
+    { id: 11, title: 'Cuadro Aluminio 1', category: 'Empresas', color: '#facc15', image: imgAluminio1 },
+    { id: 12, title: 'Cuadro Aluminio 5', category: 'Empresas', color: '#facc15', image: imgAluminio5 },
+    { id: 13, title: 'Cuadro Aluminio 6', category: 'Empresas', color: '#facc15', image: imgAluminio6 },
+    { id: 14, title: 'Logo Corporativo', category: 'Empresas', color: '#45a29e', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
 ];
 
 export function Gallery() {
