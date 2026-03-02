@@ -4,7 +4,6 @@ import { ArrowLeft } from 'lucide-react';
 import '../styles/Gallery.css';
 
 import logoCompleto from '../assets/logo-completo.jpg';
-import imgStrangerThings from '../assets/stranger-things.png';
 import imgCastillo from '../assets/Castilloconbrillo.jpeg';
 import imgAluminio1 from '../assets/Cuador Aluminio1.jpeg';
 import imgAluminio5 from '../assets/Cuador Aluminio5.jpeg';
@@ -20,28 +19,31 @@ import imgTazonMujeres from '../assets/tazon DIa de las mujeres.png';
 
 // Las categorías principales (las portadas)
 const CATEGORIES = [
-    { id: 'mascotas', title: 'Mascotas', color: '#45a29e', image: imgPlacaBailey },
-    { id: 'decoracion', title: 'Decoración', color: '#3b82f6', image: imgMousepad },
-    { id: 'fechas-especiales', title: 'Fechas Especiales', color: '#ef4444', image: imgCuadroMujeres },
-    { id: 'empresas', title: 'Empresas', color: '#facc15', image: imgAluminio1 },
+    { id: 'posters', title: 'Posters', color: '#ef4444', image: imgCastillo },
+    { id: 'mousepad', title: 'Mousepad', color: '#3b82f6', image: imgMousepad },
+    { id: 'otros', title: 'Otros', color: '#facc15', image: imgTazonMujeres },
 ];
 
 // Los ítems o fotos dentro de cada categoría
 const ITEMS = [
-    { id: 1, title: 'Placa Bailey', category: 'Mascotas', color: '#45a29e', image: imgPlacaBailey },
-    { id: 2, title: 'Retrato Perro', category: 'Mascotas', color: '#45a29e', image: imgPerro },
-    { id: 3, title: 'Castillo con Brillo', category: 'Decoración', color: '#3b82f6', image: imgCastillo },
-    { id: 4, title: 'MousePad Starry Night', category: 'Decoración', color: '#3b82f6', image: imgMousepad },
-    { id: 5, title: 'Usted Donde Quiera', category: 'Decoración', color: '#3b82f6', image: imgUstedDonde },
-    { id: 6, title: 'Estrella', category: 'Decoración', color: '#3b82f6', image: imgEstrela },
-    { id: 7, title: 'Stranger Things', category: 'Decoración', color: '#ef4444', image: imgStrangerThings },
-    { id: 8, title: 'Cuadro Día de la Mujer', category: 'Fechas Especiales', color: '#ef4444', image: imgCuadroMujeres },
-    { id: 9, title: 'Tazón Día de la Mujer', category: 'Fechas Especiales', color: '#ef4444', image: imgTazonMujeres },
-    { id: 10, title: 'Día de la Mujer', category: 'Fechas Especiales', color: '#ef4444', image: imgMujeres },
-    { id: 11, title: 'Cuadro Aluminio 1', category: 'Empresas', color: '#facc15', image: imgAluminio1 },
-    { id: 12, title: 'Cuadro Aluminio 5', category: 'Empresas', color: '#facc15', image: imgAluminio5 },
-    { id: 13, title: 'Cuadro Aluminio 6', category: 'Empresas', color: '#facc15', image: imgAluminio6 },
-    { id: 14, title: 'Logo Corporativo', category: 'Empresas', color: '#45a29e', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
+    // Posters
+    { id: 1, title: 'Castillo con Brillo', category: 'Posters', color: '#ef4444', image: imgCastillo },
+    { id: 2, title: 'Cuadro Aluminio 1', category: 'Posters', color: '#ef4444', image: imgAluminio1 },
+    { id: 3, title: 'Cuadro Aluminio 5', category: 'Posters', color: '#ef4444', image: imgAluminio5 },
+    { id: 4, title: 'Cuadro Aluminio 6', category: 'Posters', color: '#ef4444', image: imgAluminio6 },
+    { id: 5, title: 'Cuadro Día de la Mujer', category: 'Posters', color: '#ef4444', image: imgCuadroMujeres },
+    { id: 6, title: 'Mujeres', category: 'Posters', color: '#ef4444', image: imgMujeres },
+    { id: 7, title: 'Usted Donde Quiera', category: 'Posters', color: '#ef4444', image: imgUstedDonde },
+
+    // Mousepad
+    { id: 8, title: 'MousePad Starry Night', category: 'Mousepad', color: '#3b82f6', image: imgMousepad },
+
+    // Otros
+    { id: 9, title: 'Placa Bailey', category: 'Otros', color: '#facc15', image: imgPlacaBailey },
+    { id: 10, title: 'Retrato Perro', category: 'Otros', color: '#facc15', image: imgPerro },
+    { id: 11, title: 'Estrella', category: 'Otros', color: '#facc15', image: imgEstrela },
+    { id: 12, title: 'Tazón Día de la Mujer', category: 'Otros', color: '#facc15', image: imgTazonMujeres },
+    { id: 13, title: 'Logo Corporativo', category: 'Otros', color: '#facc15', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
 ];
 
 export function Gallery() {
