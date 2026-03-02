@@ -21,6 +21,7 @@ import imgTazonMujeres from '../assets/tazon DIa de las mujeres.png';
 const CATEGORIES = [
     { id: 'posters', title: 'Posters', color: '#ef4444', image: imgCastillo },
     { id: 'mousepad', title: 'Mousepad', color: '#3b82f6', image: imgMousepad },
+    { id: 'corporativo', title: 'Corporativo', color: '#45a29e', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
     { id: 'otros', title: 'Otros', color: '#facc15', image: imgTazonMujeres },
 ];
 
@@ -38,12 +39,14 @@ const ITEMS = [
     // Mousepad
     { id: 8, title: 'MousePad Starry Night', category: 'Mousepad', color: '#3b82f6', image: imgMousepad },
 
+    // Corporativo
+    { id: 9, title: 'Logo Corporativo', category: 'Corporativo', color: '#45a29e', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
+
     // Otros
-    { id: 9, title: 'Placa Bailey', category: 'Otros', color: '#facc15', image: imgPlacaBailey },
-    { id: 10, title: 'Retrato Perro', category: 'Otros', color: '#facc15', image: imgPerro },
-    { id: 11, title: 'Estrella', category: 'Otros', color: '#facc15', image: imgEstrela },
-    { id: 12, title: 'Tazón Día de la Mujer', category: 'Otros', color: '#facc15', image: imgTazonMujeres },
-    { id: 13, title: 'Logo Corporativo', category: 'Otros', color: '#facc15', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
+    { id: 10, title: 'Placa Bailey', category: 'Otros', color: '#facc15', image: imgPlacaBailey },
+    { id: 11, title: 'Retrato Perro', category: 'Otros', color: '#facc15', image: imgPerro },
+    { id: 12, title: 'Estrella', category: 'Otros', color: '#facc15', image: imgEstrela },
+    { id: 13, title: 'Tazón Día de la Mujer', category: 'Otros', color: '#facc15', image: imgTazonMujeres },
 ];
 
 export function Gallery() {
