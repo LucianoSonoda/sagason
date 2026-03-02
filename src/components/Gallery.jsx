@@ -4,13 +4,12 @@ import { ArrowLeft } from 'lucide-react';
 import '../styles/Gallery.css';
 
 import logoCompleto from '../assets/logo-completo.jpg';
-import imgCelestialWings from '../assets/celestial-wings.jpg';
 import imgStrangerThings from '../assets/stranger-things.png';
 
 // Las categorías principales (las portadas)
 const CATEGORIES = [
     { id: 'empresas', title: 'Empresas', color: '#45a29e', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
-    { id: 'peliculas-anime', title: 'Películas & Anime', color: '#3b82f6', image: imgCelestialWings },
+    { id: 'peliculas-anime', title: 'Películas & Anime', color: '#3b82f6' },
     { id: 'juegos', title: 'Juegos', color: '#facc15' },
     { id: 'deportes', title: 'Deportes', color: '#10b981' },
 ];
@@ -19,7 +18,6 @@ const CATEGORIES = [
 const ITEMS = [
     { id: 1, title: 'Logo Corporativo', category: 'Empresas', color: '#45a29e', image: logoCompleto, objectFit: 'contain', padding: '1rem' },
     { id: 2, title: 'Letrero Metálico', category: 'Empresas', color: '#2c3e50' },
-    { id: 3, title: 'Celestial Wings', category: 'Películas & Anime', color: '#3b82f6', image: imgCelestialWings },
     { id: 4, title: 'Stranger Things', category: 'Películas & Anime', color: '#ef4444', image: imgStrangerThings },
     { id: 5, title: 'Póster Clásico', category: 'Películas & Anime', color: '#e2e8f0' },
     { id: 6, title: 'Cyberpunk Ed.', category: 'Juegos', color: '#facc15' },
