@@ -101,7 +101,7 @@ export function CustomForm() {
                 </div>
 
                 <div className="form-content-panel glass-panel">
-                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" encType="multipart/form-data">
+                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" encType={fileName ? "multipart/form-data" : "application/x-www-form-urlencoded"}>
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                         <input type="hidden" name="_next" value="https://sagason.cl" />
                         <input type="hidden" name="_captcha" value="false" />
@@ -229,7 +229,7 @@ export function CustomForm() {
                                         <div className="file-upload" style={{ position: 'relative' }}>
                                             <input
                                                 type="file"
-                                                name="attachment"
+                                                name={fileName ? "attachment" : undefined}
                                                 accept="image/png, image/jpeg"
                                                 onChange={handleFileChange}
                                                 style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, opacity: 0, cursor: 'pointer' }}
