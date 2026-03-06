@@ -34,7 +34,7 @@ const SIZES = {
     'id-mascotas': ['Hueso', 'Círculo', 'Corazón', 'Otro'],
     'id-salud': ['Pulsera / Brazalete', 'Medallón / Tag', 'Tarjeta de Cartera', 'Formato Personalizado'],
     'rompecabezas': ['A4 (120 piezas)', 'A5 (30 o 36 piezas)', 'Otro'],
-    'tazones': ['11 oz', '15 oz', 'Mágico', 'Otro'],
+    'tazones': ['11oz Blanco', '11oz Mágico', 'Otro'],
     'tumblers': ['20 oz', '30 oz', 'Otro'],
     'otro': ['Consultar tamaño']
 };
