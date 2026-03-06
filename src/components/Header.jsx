@@ -15,6 +15,7 @@ export function Header() {
                     <a href="#custom">Personalizar</a>
                     <a href="#contact">Contacto</a>
                 </nav>
+                <a href="#custom" className="btn-header">Pedir Ahora</a>
             </div>
         </header>
     );

@@ -1,0 +1,26 @@
+On branch main
+Your branch is behind 'origin/main' by 9 commits, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	error.txt
+	full_status.txt
+	git_status.txt
+	git_status2.txt
+	git_status3.txt
+	src/assets/Castilloconbrillo.jpeg
+	src/assets/Cuador Aluminio1.jpeg
+	src/assets/Cuador Aluminio5.jpeg
+	src/assets/Cuador Aluminio6.jpeg
+	src/assets/Cuadro dia de las mujeres.png
+	src/assets/MousePad_StarryNight.png
+	"src/assets/Placa identificaci\303\263n Bailey_upscayl_3x_upscayl-standard-4x.png"
+	src/assets/Tabla vidrio.mp4
+	src/assets/Usted donde quiera.png
+	src/assets/estrela.png
+	src/assets/mujeres.jpeg
+	src/assets/perro.jpg
+	src/assets/tazon DIa de las mujeres.png
+
+nothing added to commit but untracked files present (use "git add" to track)

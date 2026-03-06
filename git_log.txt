@@ -1,0 +1,29 @@
+commit fb8a7d46fa68bca2733db15f9687e443c197104d
+Author: Luciano Sonoda <brluson@gmail.com>
+Date:   Sat Feb 28 20:18:51 2026 -0300
+
+    Update React components, form validations and assets imports
+
+commit ca5ba6f1b26c4ecc85674e74cc5ef29daae87ef9
+Author: Luciano Sonoda <brluson@gmail.com>
+Date:   Sat Feb 28 11:52:10 2026 -0300
+
+    Fix logo loading and update form action
+
+commit 80145331a692a15bfabaad92d454a18c090d560b
+Author: Luciano Sonoda <brluson@gmail.com>
+Date:   Sat Feb 28 11:06:56 2026 -0300
+
+    Add CC emails to formsubmit form
+
+commit 5f5271917f2d4af562e5f431a69cf713d9769092
+Author: Luciano Sonoda <brluson@gmail.com>
+Date:   Sat Feb 28 10:52:12 2026 -0300
+
+    Change form endpoint to free formsubmit.co alternative
+
+commit eafa81a2d029f0199da5eb3e16711c15dbb72733
+Author: Luciano Sonoda <brluson@gmail.com>
+Date:   Sat Feb 28 10:48:20 2026 -0300
+
+    Show filename on file upload selection

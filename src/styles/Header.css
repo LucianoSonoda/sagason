@@ -52,11 +52,29 @@
     width: 100%;
 }
 
+.btn-header {
+    background: var(--color-primary);
+    color: #0D0D0D;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-header:hover {
+    background: var(--color-primary-dark);
+    color: #0D0D0D;
+    transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
         height: auto;
         padding: var(--spacing-sm) 0;
+        gap: var(--spacing-sm);
     }
 
     .nav {
