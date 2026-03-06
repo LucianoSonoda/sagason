@@ -22,7 +22,7 @@ const CATEGORIES = [
     { title: 'POSAVASOS', color: '#c2410c' },
     { title: 'MOUSEPAD', color: '#1d4ed8', image: imgMousepad },
     { title: 'CUADRO HD', color: '#b91c1c', image: imgAluminio1 },
-    { title: 'LLAVEROS', color: '#047857', image: imgEstrela },
+    { title: 'LLAVEROS', color: '#047857' },
     { title: 'ID MASCOTAS', color: '#b45309', image: imgPlacaBailey },
     { title: 'ID SALUD', color: '#be185d' },
     { title: 'ROMPECABEZAS', color: '#4338ca' },
@@ -46,7 +46,7 @@ const ITEMS = [
     { id: 9, title: 'Placa Identificación Bailey', category: 'ID MASCOTAS', color: '#b45309', image: imgPlacaBailey },
     { id: 10, title: 'Retrato Mascotas', category: 'ID MASCOTAS', color: '#b45309', image: imgPerro },
 
-    { id: 11, title: 'Llavero Estrella', category: 'LLAVEROS', color: '#047857', image: imgEstrela },
+    { id: 11, title: 'Tazón Naturaleza', category: 'TAZONES', color: '#a21caf', image: imgEstrela },
 
     { id: 12, title: 'Tazón Especial DDM', category: 'TAZONES', color: '#a21caf', image: imgTazonMujeres },
 
