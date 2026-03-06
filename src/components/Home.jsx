@@ -82,7 +82,7 @@ export function Home() {
                     <ServiceCard
                         icon={<Shield size={40} />}
                         title="Metal Premium"
-                        desc="Aluminio de alta calidad resistente al agua y rayones."
+                        desc="Placas de aluminio de alta calidad, resistentes al agua y el paso del tiempo."
                         delay={0.3}
                     />
                     <ServiceCard
