@@ -4,7 +4,7 @@ import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzl
 import '../styles/CustomForm.css';
 
 const PRODUCTS = [
-    { id: 'posavasos', icon: Coffee, title: 'POSAVASOS', desc: 'Set de posavasos personalizados' },
+    { id: 'posavasos', icon: Coffee, title: 'POSAVASOS', desc: 'Set de posavasos personalizados ' },
     { id: 'mousepad', icon: Mouse, title: 'MOUSEPAD', desc: 'Mousepad sublimado de alta resolución' },
     { id: 'cuadro', icon: ImageIcon, title: 'CUADRO HD', desc: 'Cuadro en metal con impresión en alta definición' },
     { id: 'llaveros', icon: Key, title: 'LLAVEROS', desc: 'Llaveros sublimados personalizados' },
