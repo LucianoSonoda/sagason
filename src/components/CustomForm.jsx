@@ -28,7 +28,7 @@ const CATEGORIES = [
 
 const SIZES = {
     'posavasos': ['Set de 4', 'Set de 6', 'Otro'],
-    'mousepad': ['Estándar', 'XL / Extended', 'Otro'],
+    'mousepad': ['17x21 cm', '19,8x24 cm', 'Otro'],
     'cuadro': ['15x20 cm', '20x30 cm', '30x40 cm', 'Personalizado'],
     'llaveros': ['Redondo', 'Cuadrado', 'Rectangular', 'Corazón', 'Otro'],
     'id-mascotas': ['Hueso', 'Círculo', 'Corazón', 'Otro'],
