@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package } from 'lucide-react';
+import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle } from 'lucide-react';
 import '../styles/CustomForm.css';
 
 const PRODUCTS = [
@@ -49,6 +49,8 @@ export function CustomForm() {
 
     const [fileName, setFileName] = useState('');
     const [fileError, setFileError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
 
     const handleNext = () => setStep(prev => prev + 1);
     const handlePrev = () => setStep(prev => prev - 1);
@@ -80,6 +82,51 @@ export function CustomForm() {
         { id: 4, name: 'Detalles' }
     ];
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitStatus(null);
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch("https://formsubmit.co/ajax/ventas@sagason.cl", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                setSubmitStatus('success');
+            } else {
+                setSubmitStatus('error');
+            }
+        } catch (error) {
+            setSubmitStatus('error');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (submitStatus === 'success') {
+        return (
+            <section id="custom" className="custom-section container">
+                <div className="section-header">
+                    <h2 className="section-title">¡SOLICITUD <span style={{ color: 'var(--color-primary)' }}>ENVIADA!</span></h2>
+                    <p className="section-subtitle">Tu pedido ha ingresado exitosamente.</p>
+                </div>
+                <div className="form-wizard-container">
+                    <div className="form-content-panel glass-panel" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                        <div style={{ color: 'var(--color-primary)', marginBottom: '1rem' }}><CheckCircle size={64} /></div>
+                        <h3>¡Gracias por preferir Sagason!</h3>
+                        <p style={{ marginTop: '1rem', marginBottom: '2rem' }}>Hemos recibido tus detalles y archivos. Nos pondremos en contacto contigo prontamente al correo que nos indicaste.</p>
+                        <button className="btn btn-primary" onClick={() => window.location.reload()}>Hacer otro pedido</button>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section id="custom" className="custom-section container">
             <div className="section-header">
@@ -101,11 +148,11 @@ export function CustomForm() {
                 </div>
 
                 <div className="form-content-panel glass-panel">
-                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" encType={fileName ? "multipart/form-data" : "application/x-www-form-urlencoded"}>
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
-                        <input type="hidden" name="_next" value="https://sagason.cl" />
                         <input type="hidden" name="_captcha" value="false" />
                         <input type="hidden" name="_cc" value="brluson@gmail.com,brclflo@gmail.com,gabrielssonoda@gmail.com" />
+
 
                         {/* Hidden Inputs to capture steps 1-3 */}
                         <input type="hidden" name="Producto" value={selections.product} />
@@ -245,13 +292,24 @@ export function CustomForm() {
                                     </div>
 
                                     <div className="step-actions dual-actions">
-                                        <button type="button" className="btn-prev" onClick={handlePrev}>
+                                        <button type="button" className="btn-prev" onClick={handlePrev} disabled={isSubmitting}>
                                             &larr; Volver
                                         </button>
-                                        <button type="submit" className="submit-btn" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
-                                            <Send size={18} /> Enviar Solicitud
+                                        <button type="submit" className="submit-btn" disabled={isSubmitting} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
+                                            {isSubmitting ? (
+                                                <span>Enviando...</span>
+                                            ) : (
+                                                <><Send size={18} /> Enviar Solicitud</>
+                                            )}
                                         </button>
                                     </div>
+
+                                    {submitStatus === 'error' && (
+                                        <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: 'rgba(255, 77, 79, 0.1)', border: '1px solid #ff4d4f', borderRadius: '4px', textAlign: 'center' }}>
+                                            <p style={{ color: '#ff4d4f', margin: 0, fontWeight: 'bold' }}>Hubo un error al procesar tu archivo.</p>
+                                            <p style={{ color: 'white', margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>Nuestro servidor tuvo problemas con la foto adjunta. Por favor, <strong>envía tu formulario sin la foto</strong> y luego envíanos la imagen directamente a <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)' }}>ventas@sagason.cl</a>.</p>
+                                        </div>
+                                    )}
                                 </motion.div>
                             )}
                         </AnimatePresence>
