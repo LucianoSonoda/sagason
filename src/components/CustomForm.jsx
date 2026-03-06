@@ -144,17 +144,23 @@ export function CustomForm() {
                             {/* STEP 2 */}
                             {step === 2 && (
                                 <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
-                                    <h3 className="step-title">¿QUÉ TIPO DE DISEÑO BUSCAS?</h3>
+                                    <h3 className="step-title">
+                                        {selections.product === 'ID SALUD'
+                                            ? '¿QUÉ FORMATO DE FICHA NECESITAS?'
+                                            : '¿QUÉ TIPO DE DISEÑO BUSCAS?'}
+                                    </h3>
                                     <div className="options-grid categories-grid">
-                                        {CATEGORIES.map(c => (
-                                            <div
-                                                key={c}
-                                                className={`option-card simple-card ${selections.category === c ? 'selected' : ''}`}
-                                                onClick={() => handleSelect('category', c)}
-                                            >
-                                                <h4>{c}</h4>
-                                            </div>
-                                        ))}
+                                        {(selections.product === 'ID SALUD'
+                                            ? ['Salud Impresa', 'Ficha en Código QR', 'Ficha Editable en Línea']
+                                            : CATEGORIES).map(c => (
+                                                <div
+                                                    key={c}
+                                                    className={`option-card simple-card ${selections.category === c ? 'selected' : ''}`}
+                                                    onClick={() => handleSelect('category', c)}
+                                                >
+                                                    <h4>{c}</h4>
+                                                </div>
+                                            ))}
                                     </div>
                                     <div className="step-actions dual-actions">
                                         <button type="button" className="btn-prev" onClick={handlePrev}>
