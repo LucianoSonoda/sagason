@@ -27,8 +27,8 @@ export function CustomForm() {
     return (
         <section id="custom" className="custom-section container">
             <div className="section-header">
-                <h2 className="section-title">Personaliza tus momentos inolvidables</h2>
-                <p>¿Foto original o diseño exclusivo? Tú eliges.</p>
+                <p className="section-subtitle">PERSONALIZACIÓN</p>
+                <h2 className="section-title">CREA TU <span style={{ color: 'var(--color-primary)' }}>PRODUCTO IDEAL</span></h2>
             </div>
 
             <div className="form-container">

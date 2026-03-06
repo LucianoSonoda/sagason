@@ -55,10 +55,10 @@ export function Gallery() {
     return (
         <section id="gallery" className="gallery-section container">
             <div className="section-header">
+                <p className="section-subtitle">NUESTRO CATÁLOGO</p>
                 <h2 className="section-title">
-                    {activeCategory ? `Catálogo: ${activeCategory}` : 'Catálogo de Inspiración'}
+                    {activeCategory ? `Catálogo: ${activeCategory}` : <>DESCUBRE LO QUE <span style={{ color: 'var(--color-primary)' }}>PODEMOS CREAR</span></>}
                 </h2>
-                <p>Descubre lo que podemos crear para ti.</p>
             </div>
 
             <AnimatePresence mode="wait">

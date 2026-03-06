@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Image, PenTool, Truck } from 'lucide-react';
+import { ArrowRight, Image, PenTool, Truck, Shield } from 'lucide-react';
 import '../styles/Home.css';
 
 export function Home() {
@@ -34,12 +34,14 @@ export function Home() {
                     initial="hidden"
                     animate="visible"
                 >
+                    <motion.h2 className="hero-subtitle-top" variants={itemVariants}>
+                        SUBLIMACIÓN DE ALTA PRECISIÓN
+                    </motion.h2>
                     <motion.h1 className="hero-title" variants={itemVariants}>
-                        Inmortaliza tus Momentos en <span style={{ color: 'var(--color-primary)' }}>Metal</span>
+                        INMORTALIZA <span style={{ color: 'var(--color-primary)' }}>TUS MOMENTOS</span> EN METAL
                     </motion.h1>
                     <motion.p className="hero-subtitle" variants={itemVariants}>
-                        Sublimación de alta precisión para placas personalizadas.
-                        Desde fotos originales hasta diseños exclusivos de tus juegos, películas y deportes favoritos.
+                        Placas personalizadas de metal con fotos originales, diseños de videojuegos, películas, deportes y corporativos. Calidad que dura toda la vida.
                     </motion.p>
                     <motion.div className="cta-group" variants={itemVariants}>
                         <a href="#custom" className="btn btn-primary">
@@ -49,14 +51,19 @@ export function Home() {
                             Ver Catálogo
                         </a>
                     </motion.div>
+                    <motion.div className="trust-badges" variants={itemVariants}>
+                        <span className="badge">100% Metal Premium</span>
+                        <span className="badge">Envío A Todo Chile</span>
+                        <span className="badge">∞ Personalizable</span>
+                    </motion.div>
                 </motion.div>
             </section>
 
             {/* Services Overview */}
             <section className="services-section container">
                 <div className="section-header">
-                    <h2 className="section-title">Nuestra Calidad</h2>
-                    <p>La diferencia está en los detalles.</p>
+                    <p className="section-subtitle">POR QUÉ ELEGIRNOS</p>
+                    <h2 className="section-title">LA DIFERENCIA ESTÁ <span style={{ color: 'var(--color-primary)' }}>EN LOS DETALLES</span></h2>
                 </div>
 
                 <div className="services-grid">
@@ -69,8 +76,14 @@ export function Home() {
                     <ServiceCard
                         icon={<PenTool size={40} />}
                         title="Diseño Personalizado"
-                        desc="¿Tienes una idea? Nosotros la creamos. Adaptamos imágenes de tus pasatiempos favoritos al metal."
+                        desc="Nosotros hacemos realidad cualquier imagen en metal."
                         delay={0.2}
+                    />
+                    <ServiceCard
+                        icon={<Shield size={40} />}
+                        title="Metal Premium"
+                        desc="Aluminio de alta calidad resistente al agua y rayones."
+                        delay={0.3}
                     />
                     <ServiceCard
                         icon={<Truck size={40} />}

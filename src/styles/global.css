@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
 
 *,
 *::before,
@@ -26,8 +26,10 @@ h5,
 h6 {
     color: var(--color-heading);
     font-family: var(--font-display);
-    line-height: 1.2;
+    line-height: 1.1;
     margin-bottom: var(--spacing-sm);
+    letter-spacing: 0.05em;
+    font-weight: normal;
 }
 
 a {
