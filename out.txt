@@ -1,0 +1,7 @@
+From https://github.com/lucianosonoda/sagason
+   41f7d40..9c13fb6  main       -> origin/main
+ + 900d004...e9ba526 cloudflare/workers-autoconfig -> origin/cloudflare/workers-autoconfig  (forced update)
+   7d6c744..dafb2f0  gh-pages   -> origin/gh-pages
+Auto-merging src/components/CustomForm.jsx
+CONFLICT (content): Merge conflict in src/components/CustomForm.jsx
+Automatic merge failed; fix conflicts and then commit the result.
