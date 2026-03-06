@@ -4,13 +4,13 @@ import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzl
 import '../styles/CustomForm.css';
 
 const PRODUCTS = [
-    { id: 'posavasos', icon: Coffee, title: 'POSAVASOS', desc: 'Set de posavasos de MDF con corcho' },
+    { id: 'posavasos', icon: Coffee, title: 'POSAVASOS', desc: 'Set de posavasos metálicos personalizados' },
     { id: 'mousepad', icon: Mouse, title: 'MOUSEPAD', desc: 'Mousepad sublimado de alta resolución' },
     { id: 'cuadro', icon: ImageIcon, title: 'CUADRO HD', desc: 'Cuadro en metal con impresión en alta definición' },
-    { id: 'llaveros', icon: Key, title: 'LLAVEROS', desc: 'Llaveros personalizados (Metal, Acrílico, MDF)' },
-    { id: 'id-mascotas', icon: Dog, title: 'ID MASCOTAS', desc: 'Identificación para mascota (Metal, Acrílico, MDF)' },
+    { id: 'llaveros', icon: Key, title: 'LLAVEROS', desc: 'Llaveros metálicos sublimados personalizados' },
+    { id: 'id-mascotas', icon: Dog, title: 'ID MASCOTAS', desc: 'Identificación metálica personalizada para tu mascota' },
     { id: 'id-salud', icon: Heart, title: 'ID SALUD', desc: 'Identificación de enfermedades y alergias' },
-    { id: 'rompecabezas', icon: Puzzle, title: 'ROMPECABEZAS', desc: 'Rompecabezas personalizado con tu diseño o foto' },
+    { id: 'rompecabezas', icon: Puzzle, title: 'ROMPECABEZAS', desc: 'Rompecabezas metálico con tu foto o diseño' },
     { id: 'tazones', icon: Coffee, title: 'TAZONES', desc: 'Tazones sublimados personalizados' },
     { id: 'tumblers', icon: CupSoda, title: 'TUMBLERS', desc: 'Tumbler / vaso térmico personalizado' },
     { id: 'otro', icon: Package, title: 'OTRO', desc: 'Otro producto personalizado — consúltanos' },
