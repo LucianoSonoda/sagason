@@ -5,7 +5,7 @@ import '../styles/CustomForm.css';
 
 const PRODUCTS = [
     { id: 'posavasos', icon: Coffee, title: 'POSAVASOS', desc: 'Set de posavasos personalizados ' },
-    { id: 'mousepad', icon: Mouse, title: 'MOUSEPAD', desc: 'Mousepad sublimado de alta resolución' },
+    { id: 'mousepad', icon: Mouse, title: 'MOUSEPAD', desc: 'Mousepad sublimado de alta resolución ' },
     { id: 'cuadro', icon: ImageIcon, title: 'CUADRO HD', desc: 'Cuadro en metal con impresión en alta definición' },
     { id: 'llaveros', icon: Key, title: 'LLAVEROS', desc: 'Llaveros sublimados personalizados' },
     { id: 'id-mascotas', icon: Dog, title: 'ID MASCOTAS', desc: 'Identificación metálica personalizada para tu mascota' },
