@@ -11,7 +11,7 @@ import imgAluminio6 from '../assets/Cuador Aluminio6.jpeg';
 import imgCuadroMujeres from '../assets/Cuadro dia de las mujeres.png';
 import imgMousepad from '../assets/MousePad_StarryNight.png';
 import imgPlacaBailey from '../assets/Placa identificación Bailey_upscayl_3x_upscayl-standard-4x.png';
-import imgUstedDonde from '../assets/Usted donde quiera.png';
+import imgStrangerThings from '../assets/stranger_things.png';
 import imgEstrela from '../assets/estrela.png';
 import imgMujeres from '../assets/mujeres.jpeg';
 import imgPerro from '../assets/perro.jpg';
@@ -39,7 +39,7 @@ const ITEMS = [
     { id: 4, title: 'Castillo y Magia', category: 'CUADRO HD', color: '#b91c1c', image: imgCastillo },
     { id: 5, title: 'Cuadro Día de la Mujer', category: 'CUADRO HD', color: '#b91c1c', image: imgCuadroMujeres },
     { id: 6, title: 'Diseño Mujeres', category: 'CUADRO HD', color: '#b91c1c', image: imgMujeres },
-    { id: 7, title: 'Usted Donde Quiera', category: 'CUADRO HD', color: '#b91c1c', image: imgUstedDonde },
+    { id: 7, title: 'Stranger Things', category: 'CUADRO HD', color: '#b91c1c', image: imgStrangerThings },
 
     { id: 8, title: 'MousePad Starry Night', category: 'MOUSEPAD', color: '#1d4ed8', image: imgMousepad },
 
