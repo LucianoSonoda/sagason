@@ -39,7 +39,7 @@
 .progress-step.current .step-circle {
     background: var(--color-primary);
     color: #0D0D0D;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 15px rgba(29, 78, 216, 0.4);
 }
 
 .progress-step.current .step-name {
@@ -72,7 +72,7 @@
 }
 
 .progress-line.active {
-    background: rgba(212, 175, 55, 0.5);
+    background: rgba(29, 78, 216, 0.5);
 }
 
 @media (max-width: 768px) {
@@ -94,7 +94,7 @@
     padding: var(--spacing-lg);
     border-radius: var(--radius-md);
     background: rgba(13, 13, 13, 0.6);
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    border: 1px solid rgba(29, 78, 216, 0.2);
 }
 
 .step-title {
@@ -150,7 +150,7 @@
 
 .option-card.selected {
     border-color: var(--color-primary);
-    background: rgba(212, 175, 55, 0.05);
+    background: rgba(29, 78, 216, 0.05);
 }
 
 .option-icon {
@@ -317,5 +317,5 @@
 
 .file-upload:hover {
     border-color: var(--color-primary);
-    background: rgba(212, 175, 55, 0.05);
+    background: rgba(29, 78, 216, 0.05);
 }

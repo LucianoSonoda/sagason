@@ -13,8 +13,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+    background: radial-gradient(circle at 30% 30%, rgba(29, 78, 216, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(29, 78, 216, 0.05) 0%, transparent 50%);
     z-index: -1;
 }
 
@@ -56,8 +56,8 @@
 }
 
 .badge {
-    background: rgba(212, 175, 55, 0.1);
-    border: 1px solid rgba(212, 175, 55, 0.3);
+    background: rgba(29, 78, 216, 0.1);
+    border: 1px solid rgba(29, 78, 216, 0.3);
     color: var(--color-primary);
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -86,12 +86,12 @@
 .btn-primary {
     background: var(--color-primary);
     color: #0D0D0D;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 20px rgba(29, 78, 216, 0.3);
 }
 
 .btn-primary:hover {
     background: var(--color-primary-dark);
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+    box-shadow: 0 0 30px rgba(29, 78, 216, 0.5);
     transform: translateY(-2px);
 }
 
@@ -102,7 +102,7 @@
 }
 
 .btn-secondary:hover {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(29, 78, 216, 0.1);
     transform: translateY(-2px);
 }
 
