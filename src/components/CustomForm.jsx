@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle } from 'lucide-react';
 import '../styles/CustomForm.css';
@@ -82,31 +82,30 @@ export function CustomForm() {
         { id: 4, name: 'Detalles' }
     ];
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        setSubmitStatus(null);
-
-        const form = e.target;
-        const formData = new FormData(form);
-
-        try {
-            const response = await fetch("https://formsubmit.co/ajax/ventas@sagason.cl", {
-                method: "POST",
-                body: formData
-            });
-
-            if (response.ok) {
+    useEffect(() => {
+        const handleMessage = (event) => {
+            if (event.data === "formSubmitSuccess") {
                 setSubmitStatus('success');
-            } else {
-                setSubmitStatus('error');
+                setIsSubmitting(false);
             }
-        } catch (error) {
-            setSubmitStatus('error');
-        } finally {
-            setIsSubmitting(false);
+        };
+
+        window.addEventListener("message", handleMessage);
+
+        // Timeout to assume FormSubmit threw a 500 error if it doesn't return
+        let timeoutId;
+        if (isSubmitting && submitStatus !== 'success') {
+            timeoutId = setTimeout(() => {
+                setSubmitStatus('error');
+                setIsSubmitting(false);
+            }, 10000); // 10 seconds timeout
         }
-    };
+
+        return () => {
+            window.removeEventListener("message", handleMessage);
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [isSubmitting, submitStatus]);
 
     if (submitStatus === 'success') {
         return (
@@ -148,10 +147,13 @@ export function CustomForm() {
                 </div>
 
                 <div className="form-content-panel glass-panel">
-                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                    <iframe name="hidden_iframe" id="hidden_iframe" style={{ display: 'none' }}></iframe>
+                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe" encType={fileName ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={() => setIsSubmitting(true)}>
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
+                        <input type="hidden" name="_next" value={window.location.origin + "/success.html"} />
                         <input type="hidden" name="_captcha" value="false" />
                         <input type="hidden" name="_cc" value="brluson@gmail.com,brclflo@gmail.com,gabrielssonoda@gmail.com" />
+
 
 
                         {/* Hidden Inputs to capture steps 1-3 */}
