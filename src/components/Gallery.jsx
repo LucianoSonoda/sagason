@@ -28,7 +28,7 @@ const CATEGORIES = [
     { title: 'ROMPECABEZAS', color: '#4338ca' },
     { title: 'TAZONES', color: '#a21caf', image: imgTazonMujeres },
     { title: 'TUMBLERS', color: '#0f766e' },
-    { title: 'CORPORATIVO / OTRO', color: '#E7AC23', image: logoCompleto, objectFit: 'contain', padding: '1rem' }
+    { title: 'CORPORATIVO / OTRO', color: '#D4AF37', image: logoCompleto, objectFit: 'contain', padding: '1rem' }
 ];
 
 // Items y portafolio de fotos
@@ -50,7 +50,7 @@ const ITEMS = [
 
     { id: 12, title: 'Tazón Especial DDM', category: 'TAZONES', color: '#a21caf', image: imgTazonMujeres },
 
-    { id: 13, title: 'Logo Corporativo', category: 'CORPORATIVO / OTRO', color: '#E7AC23', image: logoCompleto, objectFit: 'contain', padding: '1rem' }
+    { id: 13, title: 'Logo Corporativo', category: 'CORPORATIVO / OTRO', color: '#D4AF37', image: logoCompleto, objectFit: 'contain', padding: '1rem' }
 ];
 
 export function Gallery() {
