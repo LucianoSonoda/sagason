@@ -6,13 +6,13 @@
   --color-heading: #ffffff;
 
   /* Brand/Accent Colors (Premium Gold vibe) */
-  --color-primary: #D4AF37;
-  --color-primary-dark: #AA8417;
-  --color-accent: #D4AF37;
+  --color-primary: #1D4ED8;
+  --color-primary-dark: #1E3A8A;
+  --color-accent: #1D4ED8;
   /* Yellow/Gold for contrast */
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #D4AF37 0%, #AA8417 100%);
+  --gradient-primary: linear-gradient(135deg, #1D4ED8 0%, #1E3A8A 100%);
   --gradient-metal: linear-gradient(145deg, #e2e8f0 0%, #94a3b8 100%);
 
   /* Glassmorphism */

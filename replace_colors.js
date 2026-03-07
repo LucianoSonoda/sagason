@@ -13,12 +13,12 @@ function replaceInDir(dirPath) {
             let content = fs.readFileSync(fullPath, 'utf8');
             let original = content;
 
-            // Replace hex codes
-            content = content.replace(/#E7AC23/gi, '#D4AF37');
-            content = content.replace(/#b58514/gi, '#AA8417');
+            // Replace hex codes (Gold -> Elegant Blue)
+            content = content.replace(/#D4AF37/gi, '#1D4ED8');
+            content = content.replace(/#AA8417/gi, '#1E3A8A');
 
             // Replace rgb values used in rgba(...)
-            content = content.replace(/231,\s*172,\s*35/g, '212, 175, 55');
+            content = content.replace(/212,\s*175,\s*55/g, '29, 78, 216');
 
             if (content !== original) {
                 fs.writeFileSync(fullPath, content, 'utf8');
