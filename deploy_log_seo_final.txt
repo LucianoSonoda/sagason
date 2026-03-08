@@ -1,0 +1,36 @@
+
+> temp_app@0.0.0 predeploy
+> npm run build
+
+
+> temp_app@0.0.0 build
+> vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 2129 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                                                                      [39m[1m[2m    2.89 kB[22m[1m[22m[2m Γöé gzip:   1.12 kB[22m
+[2mdist/[22m[32massets/logo-chico-B5IOUX3d.png                                                  [39m[1m[2m   81.78 kB[22m[1m[22m
+[2mdist/[22m[32massets/perro-DlZnwmfx.jpg                                                       [39m[1m[2m  113.23 kB[22m[1m[22m
+[2mdist/[22m[32massets/Castilloconbrillo-BAHOAYKz.jpeg                                          [39m[1m[2m  138.07 kB[22m[1m[22m
+[2mdist/[22m[32massets/mujeres-B7PBjvPh.jpeg                                                    [39m[1m[2m  195.48 kB[22m[1m[22m
+[2mdist/[22m[32massets/Cuador Aluminio5-7dcwRDCa.jpeg                                           [39m[1m[2m  220.36 kB[22m[1m[22m
+[2mdist/[22m[32massets/Cuador Aluminio6-CF1-EC5b.jpeg                                           [39m[1m[2m  233.48 kB[22m[1m[22m
+[2mdist/[22m[32massets/Cuador Aluminio1-CWlVqcD4.jpeg                                           [39m[1m[2m  525.91 kB[22m[1m[22m
+[2mdist/[22m[32massets/stranger_things-HgJTTPbW.png                                             [39m[1m[2m  559.89 kB[22m[1m[22m
+[2mdist/[22m[32massets/logo-completo-5NrsBpRS.jpg                                               [39m[1m[2m  658.75 kB[22m[1m[22m
+[2mdist/[22m[32massets/Cuadro dia de las mujeres-Cf1OFDZT.png                                   [39m[1m[2m1,249.98 kB[22m[1m[22m
+[2mdist/[22m[32massets/MousePad_StarryNight-D2h6A2TE.png                                        [39m[1m[2m2,340.95 kB[22m[1m[22m
+[2mdist/[22m[32massets/Placa identificaci├│n Bailey_upscayl_3x_upscayl-standard-4x-C1eEnE9X.png  [39m[1m[2m4,037.56 kB[22m[1m[22m
+[2mdist/[22m[32massets/estrela-BhjKSVqk.png                                                     [39m[1m[2m5,645.60 kB[22m[1m[22m
+[2mdist/[22m[32massets/tazon DIa de las mujeres-DwRfL3vz.png                                    [39m[1m[2m7,636.66 kB[22m[1m[22m
+[2mdist/[22m[35massets/index-D7ZRV1e0.css                                                       [39m[1m[2m   17.33 kB[22m[1m[22m[2m Γöé gzip:   3.91 kB[22m
+[2mdist/[22m[36massets/index-ByiC_FR2.js                                                        [39m[1m[2m  350.21 kB[22m[1m[22m[2m Γöé gzip: 112.77 kB[22m
+[32mΓ£ô built in 4.73s[39m
+
+> temp_app@0.0.0 deploy
+> gh-pages -d dist
+
+Published
