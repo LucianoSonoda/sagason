@@ -80,7 +80,7 @@ export function CustomForm() {
     const stepsInfo = [
         { id: 1, name: 'Producto' },
         { id: 2, name: 'Categoría' },
-        { id: 3, name: 'Tamaño' },
+        { id: 3, name: 'Características' },
         { id: 4, name: 'Detalles' }
     ];
 
@@ -161,7 +161,7 @@ export function CustomForm() {
                         {/* Hidden Inputs to capture steps 1-3 */}
                         <input type="hidden" name="Producto" value={selections.product} />
                         <input type="hidden" name="Categoria" value={selections.category} />
-                        <input type="hidden" name="Tamaño" value={selections.size} />
+                        <input type="hidden" name="Características" value={selections.size} />
 
                         <AnimatePresence mode="wait">
                             {/* STEP 1 */}
