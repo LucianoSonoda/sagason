@@ -28,7 +28,7 @@ const CATEGORIES = [
 ];
 
 const SIZES = {
-    'posavasos': ['Set de 4', 'Set de 6', 'Otro'],
+    'posavasos': ['Set de 4 (Cuadrados)', 'Set de 4 (Circulares)', 'Set de 6 (Cuadrados)', 'Set de 6 (Circulares)', 'Otro'],
     'mousepad': ['17x21 cm', '19,8x24 cm', 'Otro'],
     'cuadro': ['10x15 cm', '20x28 cm', 'Personalizado'],
     'llaveros': ['Redondo', 'Cuadrado', 'Rectangular', 'Corazón', 'Otro'],
