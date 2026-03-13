@@ -64,7 +64,9 @@ export function CustomForm() {
         if (['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) {
             try {
                 const uniqueId = `SAG-${Date.now().toString(36).toUpperCase()}`;
-                const urlFinal = "https://sagason.cl/sos.html?id=" + uniqueId;
+                const emailInput = form.querySelector('input[name="email"]');
+                const userEmail = emailInput ? emailInput.value : '';
+                const urlFinal = `https://sagason.cl/sos.html?id=${uniqueId}&mail=${encodeURIComponent(userEmail)}`;
                 
                 // Agregamos un input dinámico para que el texto "ID_QR_Asignado" se envíe por Mail también.
                 let idInput = form.querySelector('input[name="ID_QR_Asignado"]');
