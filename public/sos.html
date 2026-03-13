@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergencia Sagason</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; color: #333; }
+        .btn-sos { background: #e63946; color: white; border: none; padding: 20px; border-radius: 10px; font-size: 1.2rem; cursor: pointer; width: 100%; max-width: 300px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h2>Ayuda de Emergencia</h2>
+    <p>Has encontrado a una persona que requiere asistencia.</p>
+    <p>Al presionar el botón, se enviará tu ubicación actual a sus contactos de emergencia de forma <strong>anónima</strong>.</p>
+    
+    <button id="sendBtn" class="btn-sos">ENVIAR MI UBICACIÓN</button>
+    <p id="status"></p>
+
+    <script>
+        const sendBtn = document.getElementById('sendBtn');
+        const status = document.getElementById('status');
+
+        sendBtn.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                status.innerText = "Tu navegador no soporta geolocalización.";
+                return;
+            }
+
+            status.innerText = "Obteniendo ubicación...";
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const payload = {
+                    plateId: new URLSearchParams(window.location.search).get('id'),
+                    lat: pos.coords.latitude,
+                    lon: pos.coords.longitude,
+                    timestamp: new Date().toLocaleString('es-CL')
+                };
+
+                try {
+                    const res = await fetch('https://tu-worker.workers.dev', {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        status.innerText = "Alerta enviada. ¡Muchas gracias por tu ayuda!";
+                        sendBtn.classList.add('hidden');
+                    }
+                } catch (e) {
+                    status.innerText = "Error al enviar. Intenta de nuevo.";
+                }
+            }, () => {
+                status.innerText = "Debes permitir el acceso a la ubicación para ayudar.";
+            });
+        });
+    </script>
+</body>
+</html>
