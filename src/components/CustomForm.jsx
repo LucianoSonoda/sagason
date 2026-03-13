@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import QRCode from 'qrcode';
 import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle, Printer } from 'lucide-react';
 import '../styles/CustomForm.css';
 
@@ -53,6 +54,53 @@ export function CustomForm() {
     const [fileError, setFileError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+    const qrInputRef = useRef(null);
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        const form = e.target;
+
+        if (['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) {
+            try {
+                const uniqueId = `SAG-${Date.now().toString(36).toUpperCase()}`;
+                const urlFinal = "https://sagason.cl/sos.html?id=" + uniqueId;
+                
+                // Agregamos un input dinámico para que el texto "ID_QR_Asignado" se envíe por Mail también.
+                let idInput = form.querySelector('input[name="ID_QR_Asignado"]');
+                if (!idInput) {
+                    idInput = document.createElement('input');
+                    idInput.type = 'hidden';
+                    idInput.name = 'ID_QR_Asignado';
+                    form.appendChild(idInput);
+                }
+                idInput.value = uniqueId;
+
+                // Generar QR en formato PNG
+                const canvas = document.createElement('canvas');
+                await QRCode.toCanvas(canvas, urlFinal, { width: 400, margin: 2, color: { dark: '#000000', light: '#ffffff' }, errorCorrectionLevel: 'H' });
+                
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], `QR_${uniqueId}.png`, { type: 'image/png' });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    if (qrInputRef.current) {
+                        qrInputRef.current.files = dt.files;
+                    }
+                    // Ejecutamos el envío de formulario final (el cual no llama a onSubmit nuevamente)
+                    form.submit();
+                }, 'image/png');
+                
+                // Salimos aquí porque el envío se ejecutará de forma asíncrona dentro del toBlob callback
+                return;
+            } catch (err) {
+                console.error("Error al generar QR automático", err);
+            }
+        }
+        
+        // Si no era ni 'ID SALUD' ni 'ID MASCOTAS', enviaremos normal el formulario
+        form.submit();
+    };
 
     const handleNext = () => setStep(prev => prev + 1);
     const handlePrev = () => setStep(prev => prev - 1);
@@ -150,7 +198,8 @@ export function CustomForm() {
 
                 <div className="form-content-panel glass-panel">
                     <iframe name="hidden_iframe" id="hidden_iframe" style={{ display: 'none' }}></iframe>
-                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe" encType={fileName ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={() => setIsSubmitting(true)}>
+                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit}>
+                        <input type="file" name="qr_code" ref={qrInputRef} style={{display: 'none'}} />
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                         <input type="hidden" name="_next" value={window.location.origin + "/success.html"} />
                         <input type="hidden" name="_captcha" value="false" />
