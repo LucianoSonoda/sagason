@@ -16,6 +16,9 @@ import imgEstrela from '../assets/estrela.png';
 import imgMujeres from '../assets/mujeres.jpeg';
 import imgPerro from '../assets/perro.jpg';
 import imgTazonMujeres from '../assets/tazon DIa de las mujeres.png';
+import imgPlacasMascotas from '../assets/placas_mascotas_kiara_perla.jpg';
+import imgImpresionEngranaje from '../assets/impresion3d_engranaje.jpg';
+import imgImpresionOruga from '../assets/impresion3d_oruga.jpg';
 
 // Categorías idénticas al formulario multipaso
 const CATEGORIES = [
@@ -28,6 +31,7 @@ const CATEGORIES = [
     { title: 'ROMPECABEZAS', color: '#4338ca' },
     { title: 'TAZONES', color: '#a21caf', image: imgTazonMujeres },
     { title: 'TUMBLERS', color: '#0f766e' },
+    { title: 'IMPRESIÓN 3D', color: '#ea580c', image: imgImpresionOruga },
     { title: 'CORPORATIVO / OTRO', color: '#1D4ED8', image: logoCompleto, objectFit: 'contain', padding: '1rem' }
 ];
 
@@ -45,10 +49,14 @@ const ITEMS = [
 
     { id: 9, title: 'Placa Identificación Bailey', category: 'ID MASCOTAS', color: '#b45309', image: imgPlacaBailey },
     { id: 10, title: 'Retrato Mascotas', category: 'ID MASCOTAS', color: '#b45309', image: imgPerro },
+    { id: 14, title: 'Placas Mascotas', category: 'ID MASCOTAS', color: '#b45309', image: imgPlacasMascotas },
 
     { id: 11, title: 'Tazón Naturaleza', category: 'TAZONES', color: '#a21caf', image: imgEstrela },
 
     { id: 12, title: 'Tazón Especial DDM', category: 'TAZONES', color: '#a21caf', image: imgTazonMujeres },
+
+    { id: 15, title: 'Mecanismo Engranaje 3D', category: 'IMPRESIÓN 3D', color: '#ea580c', image: imgImpresionEngranaje },
+    { id: 16, title: 'Chasis Oruga', category: 'IMPRESIÓN 3D', color: '#ea580c', image: imgImpresionOruga },
 
     { id: 13, title: 'Logo Corporativo', category: 'CORPORATIVO / OTRO', color: '#1D4ED8', image: logoCompleto, objectFit: 'contain', padding: '1rem' }
 ];

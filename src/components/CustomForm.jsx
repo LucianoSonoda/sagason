@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle } from 'lucide-react';
+import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle, Printer } from 'lucide-react';
 import '../styles/CustomForm.css';
 
 const PRODUCTS = [
@@ -13,6 +13,7 @@ const PRODUCTS = [
     { id: 'rompecabezas', icon: Puzzle, title: 'ROMPECABEZAS', desc: 'Rompecabezas personalizado con tu diseño o foto' },
     { id: 'tazones', icon: Coffee, title: 'TAZONES', desc: 'Tazones sublimados personalizados' },
     { id: 'tumblers', icon: CupSoda, title: 'TUMBLERS', desc: 'Tumbler / vaso térmico personalizado' },
+    { id: 'impresion3d', icon: Printer, title: 'IMPRESIÓN 3D', desc: 'Piezas y modelos impresos en 3D' },
     { id: 'otro', icon: Package, title: 'OTRO', desc: 'Otro producto personalizado — consúltanos' },
 ];
 
@@ -36,6 +37,7 @@ const SIZES = {
     'rompecabezas': ['A4 (120 piezas)', 'A5 (30 o 36 piezas)', 'Otro'],
     'tazones': ['11oz Blanco', '11oz Mágico', 'Otro'],
     'tumblers': ['20 oz', '30 oz', 'Otro'],
+    'impresion3d': ['Cotizar Modelo', 'Otro'],
     'otro': ['Consultar tamaño']
 };
 
