@@ -33,6 +33,7 @@
             navigator.geolocation.getCurrentPosition(async (pos) => {
                 const payload = {
                     plateId: new URLSearchParams(window.location.search).get('id'),
+                    destinationEmail: new URLSearchParams(window.location.search).get('mail'),
                     lat: pos.coords.latitude,
                     lon: pos.coords.longitude,
                     timestamp: new Date().toLocaleString('es-CL')
