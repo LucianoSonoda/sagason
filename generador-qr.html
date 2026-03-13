@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Generador Interno de QR Sagason</title>
+    <!-- Usamos una librería CDN confiable para generar QRs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { margin-top: 0; color: #e63946; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: bold; margin-bottom: 0.5rem; }
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn:hover { background: #1d4ed8; }
+        .result-container {
+            display: none;
+            margin-top: 2rem;
+            border-top: 2px dashed #e5e7eb;
+            padding-top: 2rem;
+            text-align: center;
+        }
+        #qrcode {
+            margin: 1.5rem auto;
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+            background: white;
+        }
+        #urlReal {
+            font-family: monospace;
+            background: #f871711a;
+            padding: 0.5rem;
+            border-radius: 4px;
+            color: #b91c1c;
+            word-break: break-all;
+        }
+        .desc { color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Generador de QR - Alerta SOS</h1>
+        <p class="desc">Usa esta herramienta interna para crear el código QR único para la placa de cada cliente. Este código apuntará directo a tu página de emergencias incrustando la ID oculta de la placa.</p>
+
+        <div class="form-group">
+            <label for="plateId">Identificador Único Cifrado o Código Asignado (Ej: SAG-001, MARIA-123)</label>
+            <input type="text" id="plateId" placeholder="Ej: SAG-JUAN-001" autocomplete="off">
+        </div>
+
+        <button class="btn" onclick="generarQR()">Generar Código QR</button>
+
+        <div class="result-container" id="resultado">
+            <h3>QR Listo para Imprimir o Grabar 🖨️</h3>
+            <p>La persona que escanee este código será dirigida a la URL secreta para que su teléfono envíe las coordenadas a tu panel de control junto a la ID:</p>
+            <p id="urlReal"></p>
+            
+            <div id="qrcode"></div>
+            
+            <button class="btn" style="background:#059669; margin-top:10px" onclick="descargarQR()">Descargar QR</button>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = "https://sagason.cl/sos.html?id="; // <- La URL oficial a tu sitio
+        let currentQR = null;
+
+        function generarQR() {
+            const plateId = document.getElementById('plateId').value.trim();
+            
+            if(!plateId) {
+                alert("Por favor, ingresa un código para el dueño.");
+                return;
+            }
+
+            // Construir la URL final escondiendo el ID en el parámetro HTTP
+            // Se usa encodeURIComponent por si pones espacios en el código.
+            const urlFinal = baseUrl + encodeURIComponent(plateId);
+
+            document.getElementById('urlReal').innerText = urlFinal;
+            document.getElementById('resultado').style.display = 'block';
+            
+            // Limpiar QR anterior si existe
+            document.getElementById('qrcode').innerHTML = "";
+
+            // Generar la versión gráfica
+            currentQR = new QRCode(document.getElementById("qrcode"), {
+                text: urlFinal,
+                width: 300,
+                height: 300,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H // Alta capacidad de corrección de errores, ideal para grabado o impresión
+            });
+        }
+
+        function descargarQR() {
+            // Extraer la imagen autogenerada desde el Canvas y descargarla
+            const canvas = document.querySelector("#qrcode canvas");
+            if(canvas) {
+                const url = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.download = `QR_Placa_${document.getElementById('plateId').value}.png`;
+                link.href = url;
+                link.click();
+            }
+        }
+    </script>
+</body>
+</html>
