@@ -37,7 +37,7 @@ const SIZES = {
     'rompecabezas': ['A4 (120 piezas)', 'A5 (30 o 36 piezas)', 'Otro'],
     'tazones': ['11oz Blanco', '11oz Mágico', 'Otro'],
     'tumblers': ['20 oz', '30 oz', 'Otro'],
-    'impresion3d': ['Cotizar Modelo', 'Otro'],
+    'impresion3d': ['PLA', 'ABS', 'Ambos', 'Otro'],
     'otro': ['Consultar tamaño']
 };
 
@@ -198,12 +198,16 @@ export function CustomForm() {
                                     <h3 className="step-title">
                                         {selections.product === 'ID SALUD'
                                             ? '¿QUÉ FORMATO DE FICHA NECESITAS?'
-                                            : '¿QUÉ TIPO DE DISEÑO BUSCAS?'}
+                                            : selections.product === 'IMPRESIÓN 3D'
+                                                ? '¿CUÁNTOS COLORES TIENE EL MODELO?'
+                                                : '¿QUÉ TIPO DE DISEÑO BUSCAS?'}
                                     </h3>
                                     <div className="options-grid categories-grid">
                                         {(selections.product === 'ID SALUD'
                                             ? ['Salud Impresa', 'Ficha en Código QR', 'Ficha Editable en Línea']
-                                            : CATEGORIES).map(c => (
+                                            : selections.product === 'IMPRESIÓN 3D'
+                                                ? ['1 Color', '2 Colores', '3 Colores']
+                                                : CATEGORIES).map(c => (
                                                 <div
                                                     key={c}
                                                     className={`option-card simple-card ${selections.category === c ? 'selected' : ''}`}
@@ -227,7 +231,9 @@ export function CustomForm() {
                             {/* STEP 3 */}
                             {step === 3 && (
                                 <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
-                                    <h3 className="step-title">¿QUÉ TAMAÑO / FORMATO NECESITAS?</h3>
+                                    <h3 className="step-title">
+                                        {selections.product === 'IMPRESIÓN 3D' ? '¿QUÉ MATERIAL PREFIERES?' : '¿QUÉ TAMAÑO / FORMATO NECESITAS?'}
+                                    </h3>
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category}</p>
 
                                     <div className="options-grid sizes-grid">
