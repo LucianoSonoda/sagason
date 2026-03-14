@@ -217,48 +217,40 @@
         }
 
         async function sendAlert(lat, lng) {
-            // ENDPOINT de API por definir por el usuario
-            const ENDPOINT = "https://tu-api.ejemplo.com/endpoint-alerta"; 
+            // ✅ Endpoint real del Cloudflare Worker
+            const ENDPOINT = "https://alerta-sagason.brunolustoc.workers.dev";
             
+            // El payload debe coincidir exactamente con lo que espera el worker
             const payload = {
-                badge_id: badgeId,
-                latitude: lat,
-                longitude: lng,
+                lat: lat,
+                lon: lng,
+                plateId: badgeId,
+                destinationEmail: "", // El worker usará ventas@sagason.cl si está vacío
                 timestamp: new Date().toISOString()
             };
 
             try {
-                // Realizamos el envío con las cabeceras solicitadas
                 const response = await fetch(ENDPOINT, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'DNT': '1' // Do Not Track para sugerir no registrar IP
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(payload)
                 });
 
-                // Para robustez y porque un endpoint externo puede fallar por tema de CORS antes de ser configurado
-                if (response.ok || response.type === 'opaque') {
-                    setStatus('Alerta enviada correctamente, muchas gracias por su ayuda.', 'success');
-                    btnAlerta.style.display = 'none'; // Escondemos el botón para evitar doble envío
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    setStatus('✅ Alerta enviada correctamente. Muchas gracias por su ayuda.', 'success');
+                    btnAlerta.style.display = 'none'; // Evitar doble envío
                 } else {
-                    throw new Error(`Respuesta no exitosa del servidor: ${response.status}`);
+                    throw new Error(data.error || `Error del servidor: ${response.status}`);
                 }
             } catch (error) {
-                console.error("Error en la solicitud:", error);
-                
-                // IMPORTANTE: Como es un demo/template y el endpoint aún no está definido, 
-                // mostraremos el mensaje que el usuario indicó, asumiendo "éxito o fallback" 
-                // O mostrar error de red. Para la prueba lo indicamos bien y simulamos un éxito si lo desean.
-                // Requisito: "Tras el envío, muestra un mensaje de 'Alerta enviada correctamente, muchas gracias por su ayuda'."
-                
-                // NOTA: Para no romper la inmersión del usuario al probarlo sin API, mostramos éxito.
-                // En un entorno de producción estricto deberíamos mostrar un error. 
-                // Optamos por avisar el éxito temporal que requiere el dueño, y en consola dejar el fallo.
-                
-                setStatus('Alerta enviada correctamente, muchas gracias por su ayuda.', 'success');
-                btnAlerta.style.display = 'none';
+                console.error("Error al enviar la alerta:", error);
+                setStatus(`❌ No se pudo enviar la alerta. Por favor llame al 131. (${error.message})`, 'error');
+                btnAlerta.disabled = false;
+                btnAlerta.innerHTML = originalBtnHTML;
             }
         }
 
