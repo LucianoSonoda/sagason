@@ -318,7 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.ok && data.success) {
                 setStatus(statusMsg, '✅ Alerta enviada correctamente. ¡Muchas gracias por tu ayuda!', 'success');
                 btnAlerta.style.display = 'none';
-                // Mostrar tarjeta de contacto opcional
                 contactCard.style.display = 'block';
             } else {
                 throw new Error(data.error || `Error ${res.status}`);
