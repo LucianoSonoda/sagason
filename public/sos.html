@@ -350,17 +350,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const payload = {
                     type: isDetailed ? 'contact' : 'alert',
                     plateId,
-                    destinationEmail,
+                    to: destinationEmail, // Cambiado para coincidir con el botón rojo de Make
                     lat: pos.coords.latitude,
                     lon: pos.coords.longitude,
-                    timestamp: new Date().toISOString()
+                    time: new Date().toISOString() // Cambiado de timestamp a time para coincidir con Make
                 };
 
                 if (isDetailed) {
-                    payload.helperName    = document.getElementById('helper-name').value || 'No indicado';
-                    payload.helperPhone   = document.getElementById('helper-phone').value || 'No indicado';
-                    payload.helperDetails = document.getElementById('helper-details').value || 'No indicado';
-                    payload.helperPhoto   = photoBase64; // El Worker recibirá el base64
+                    payload.helperName = document.getElementById('helper-name').value || 'No indicado';
+                    payload.helperPhone = document.getElementById('helper-phone').value || 'No indicado';
+                    payload.message = document.getElementById('helper-details').value || 'No indicado'; // Cambiado de helperDetails a message
+                    payload.photo = photoBase64; // Cambiado de helperPhoto a photo
                 }
 
                 const res = await fetch(ENDPOINT, {
