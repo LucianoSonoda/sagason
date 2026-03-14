@@ -59,6 +59,7 @@ export function CustomForm() {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setSubmitStatus(null);
         const form = e.target;
 
         if (['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) {
@@ -68,7 +69,6 @@ export function CustomForm() {
                 const userEmail = emailInput ? emailInput.value : '';
                 const urlFinal = `https://sagason.cl/sos.html?id=${uniqueId}&mail=${encodeURIComponent(userEmail)}`;
                 
-                // Agregamos un input dinámico para que el texto "ID_QR_Asignado" se envíe por Mail también.
                 let idInput = form.querySelector('input[name="ID_QR_Asignado"]');
                 if (!idInput) {
                     idInput = document.createElement('input');
@@ -80,28 +80,40 @@ export function CustomForm() {
 
                 // Generar QR en formato PNG
                 const canvas = document.createElement('canvas');
-                await QRCode.toCanvas(canvas, urlFinal, { width: 400, margin: 2, color: { dark: '#000000', light: '#ffffff' }, errorCorrectionLevel: 'H' });
+                await QRCode.toCanvas(canvas, urlFinal, { 
+                    width: 400, 
+                    margin: 2, 
+                    color: { dark: '#000000', light: '#ffffff' }, 
+                    errorCorrectionLevel: 'H' 
+                });
                 
                 canvas.toBlob((blob) => {
-                    const file = new File([blob], `QR_${uniqueId}.png`, { type: 'image/png' });
-                    const dt = new DataTransfer();
-                    dt.items.add(file);
-                    if (qrInputRef.current) {
-                        qrInputRef.current.files = dt.files;
+                    try {
+                        if (blob) {
+                            const file = new File([blob], `QR_${uniqueId}.png`, { type: 'image/png' });
+                            const dt = new DataTransfer();
+                            dt.items.add(file);
+                            if (qrInputRef.current) {
+                                qrInputRef.current.files = dt.files;
+                            }
+                        }
+                        form.submit();
+                    } catch (err) {
+                        console.error("Error al adjuntar archivo QR", err);
+                        // Si falla la asignación de archivo (browsers antiguos), enviamos igual sin el QR adjunto
+                        form.submit();
                     }
-                    // Ejecutamos el envío de formulario final (el cual no llama a onSubmit nuevamente)
-                    form.submit();
                 }, 'image/png');
                 
-                // Salimos aquí porque el envío se ejecutará de forma asíncrona dentro del toBlob callback
                 return;
             } catch (err) {
                 console.error("Error al generar QR automático", err);
+                setIsSubmitting(false);
+                setSubmitStatus('error');
             }
+        } else {
+            form.submit();
         }
-        
-        // Si no era ni 'ID SALUD' ni 'ID MASCOTAS', enviaremos normal el formulario
-        form.submit();
     };
 
     const handleNext = () => setStep(prev => prev + 1);
@@ -150,7 +162,7 @@ export function CustomForm() {
             timeoutId = setTimeout(() => {
                 setSubmitStatus('error');
                 setIsSubmitting(false);
-            }, 10000); // 10 seconds timeout
+            }, 40000); // 40 seconds timeout
         }
 
         return () => {
