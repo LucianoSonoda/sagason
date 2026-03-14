@@ -25,13 +25,23 @@
         h1 { margin-top: 0; color: #e63946; }
         .form-group { margin-bottom: 1.5rem; }
         label { display: block; font-weight: bold; margin-bottom: 0.5rem; }
-        input[type="text"] {
+        input[type="text"],
+        input[type="email"] {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 1rem;
+        }
+        .tag-required {
+            background: #fef2f2;
+            color: #b91c1c;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            font-weight: normal;
         }
         .btn {
             background: #2563eb;
@@ -73,11 +83,16 @@
 
     <div class="card">
         <h1>Generador de QR - Alerta SOS</h1>
-        <p class="desc">Usa esta herramienta interna para crear el código QR único para la placa de cada cliente. Este código apuntará directo a tu página de emergencias incrustando la ID oculta de la placa.</p>
+        <p class="desc">Usa esta herramienta interna para crear el código QR único para la placa de cada cliente. El QR apuntará a la página de emergencia con el ID de la placa y el correo del cliente para que la alerta llegue directamente a su familia.</p>
 
         <div class="form-group">
-            <label for="plateId">Identificador Único Cifrado o Código Asignado (Ej: SAG-001, MARIA-123)</label>
+            <label for="plateId">Identificador de Placa <span class="tag-required">requerido</span></label>
             <input type="text" id="plateId" placeholder="Ej: SAG-JUAN-001" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label for="clientEmail">Correo del Cliente (destinatario de la alerta) <span class="tag-required">requerido</span></label>
+            <input type="email" id="clientEmail" placeholder="Ej: juan.perez@gmail.com" autocomplete="off">
         </div>
 
         <button class="btn" onclick="generarQR()">Generar Código QR</button>
@@ -94,20 +109,24 @@
     </div>
 
     <script>
-        const baseUrl = "https://sagason.cl/alerta-medica.html?id="; // <- URL oficial de la página SOS
+        const baseUrl = "https://sagason.cl/sos.html"; // <- URL oficial de la página SOS
         let currentQR = null;
 
         function generarQR() {
             const plateId = document.getElementById('plateId').value.trim();
+            const clientEmail = document.getElementById('clientEmail').value.trim();
             
-            if(!plateId) {
-                alert("Por favor, ingresa un código para el dueño.");
+            if (!plateId) {
+                alert("Por favor, ingresa el código de la placa.");
+                return;
+            }
+            if (!clientEmail) {
+                alert("Por favor, ingresa el correo del cliente.");
                 return;
             }
 
-            // Construir la URL final escondiendo el ID en el parámetro HTTP
-            // Se usa encodeURIComponent por si pones espacios en el código.
-            const urlFinal = baseUrl + encodeURIComponent(plateId);
+            // Construir la URL con id= y mail= para que la alerta llegue al correo correcto
+            const urlFinal = `${baseUrl}?id=${encodeURIComponent(plateId)}&mail=${encodeURIComponent(clientEmail)}`;
 
             document.getElementById('urlReal').innerText = urlFinal;
             document.getElementById('resultado').style.display = 'block';
@@ -122,7 +141,7 @@
                 height: 300,
                 colorDark : "#000000",
                 colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H // Alta capacidad de corrección de errores, ideal para grabado o impresión
+                correctLevel : QRCode.CorrectLevel.H
             });
         }
 
@@ -132,7 +151,7 @@
             if(canvas) {
                 const url = canvas.toDataURL("image/png");
                 const link = document.createElement('a');
-                link.download = `QR_Placa_${document.getElementById('plateId').value}.png`;
+                link.download = `QR_${document.getElementById('plateId').value}_${document.getElementById('clientEmail').value}.png`;
                 link.href = url;
                 link.click();
             }
