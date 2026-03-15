@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const plateId = params.get('id') || params.get('uid') || 'ID_NO_ESPECIFICADO';
     const destinationEmail = params.get('mail') || params.get('email') || '';
-    const ENDPOINT = "https://alerta-sos-sagason.brluson.workers.dev";
+    const ENDPOINT = "https://hook.us2.make.com/7pmyxaxtlw7olmpdgh15bbones5co8zr";
 
     let photoBase64 = "";
 
@@ -354,21 +354,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const payload = {
                     type: isDetailed ? 'contact' : 'alert',
                     plateId: String(plateId),
-                    
-                    // --- CAMPOS NUEVOS (Sincronizados con Make) ---
                     to: String(destinationEmail),
                     subject: `🚨 ALERTA SOS - Placa: ${plateId}`,
                     time: currentTime,
-                    
-                    // --- CAMPOS ANTIGUOS (Por si el Worker o Make los requieren) ---
-                    destinationEmail: String(destinationEmail),
                     lat: String(latitude),
                     lon: String(longitude),
-                    timestamp: currentTime,
-                    helperName: 'No indicado',
-                    helperPhone: 'No indicado',
-                    helperDetails: 'Alerta SOS',
-                    helperPhoto: photoBase64 || ""
+                    timestamp: currentTime
                 };
 
                 if (isDetailed) {
@@ -378,10 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     payload.helperName = name;
                     payload.helperPhone = phone;
-                    payload.helperDetails = details;
-                    
-                    // El campo 'message' lleva el resumen completo (Disfraz)
                     payload.message = `DETALLES: ${details}\n\nUBICACIÓN: https://www.google.com/maps?q=${latitude},${longitude}\nHORA: ${currentTime}`;
+                    payload.photo = photoBase64; 
                 } else {
                     payload.message = `ALERTA RÁPIDA\nUBICACIÓN: https://www.google.com/maps?q=${latitude},${longitude}\nHORA: ${currentTime}`;
                 }
