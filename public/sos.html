@@ -354,27 +354,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 const payload = {
                     type: isDetailed ? 'contact' : 'alert',
                     plateId: String(plateId),
+                    
+                    // --- CAMPOS NUEVOS (Sincronizados con Make) ---
                     to: String(destinationEmail),
-                    // Enviamos lat y lon por si acaso el worker los desbloquea
+                    subject: `🚨 ALERTA SOS - Placa: ${plateId}`,
+                    time: currentTime,
+                    
+                    // --- CAMPOS ANTIGUOS (Por si el Worker o Make los requieren) ---
+                    destinationEmail: String(destinationEmail),
                     lat: String(latitude),
                     lon: String(longitude),
-                    // El "Disfraz": Metemos todo en campos que el worker SI deja pasar
-                    subject: `🚨 ALERTA SOS - Placa: ${plateId}`,
-                    time: currentTime
+                    timestamp: currentTime,
+                    helperName: 'No indicado',
+                    helperPhone: 'No indicado',
+                    helperDetails: 'Alerta SOS',
+                    helperPhoto: photoBase64 || ""
                 };
 
                 if (isDetailed) {
-                    payload.helperName = String(document.getElementById('helper-name').value || 'No indicado');
-                    payload.helperPhone = String(document.getElementById('helper-phone').value || 'No indicado');
+                    const name = String(document.getElementById('helper-name').value || 'No indicado');
+                    const phone = String(document.getElementById('helper-phone').value || 'No indicado');
+                    const details = String(document.getElementById('helper-details').value || 'Sin detalles');
+
+                    payload.helperName = name;
+                    payload.helperPhone = phone;
+                    payload.helperDetails = details;
                     
-                    // Juntamos los detalles con la ubicación y hora en el campo 'message'
-                    const userDetails = document.getElementById('helper-details').value || 'Sin detalles';
-                    payload.message = `DETALLES: ${userDetails}\n\nUBICACIÓN: https://www.google.com/maps?q=${latitude},${longitude}\nHORA: ${currentTime}`;
-                    
-                    payload.photo = photoBase64; 
+                    // El campo 'message' lleva el resumen completo (Disfraz)
+                    payload.message = `DETALLES: ${details}\n\nUBICACIÓN: https://www.google.com/maps?q=${latitude},${longitude}\nHORA: ${currentTime}`;
                 } else {
                     payload.message = `ALERTA RÁPIDA\nUBICACIÓN: https://www.google.com/maps?q=${latitude},${longitude}\nHORA: ${currentTime}`;
                 }
+
+                console.log("Enviando Payload Super-Compatible:", payload);
 
                 const res = await fetch(ENDPOINT, {
                     method: 'POST',
