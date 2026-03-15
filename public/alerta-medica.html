@@ -349,18 +349,20 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const payload = {
                     type: isDetailed ? 'contact' : 'alert',
-                    plateId,
-                    to: destinationEmail, // Cambiado para coincidir con el botón rojo de Make
-                    lat: pos.coords.latitude,
-                    lon: pos.coords.longitude,
-                    time: new Date().toISOString() // Cambiado de timestamp a time para coincidir con Make
+                    plateId: String(plateId),
+                    to: String(destinationEmail),
+                    lat: String(pos.coords.latitude),
+                    lon: String(pos.coords.longitude),
+                    long: String(pos.coords.longitude), // Alias redundante
+                    time: new Date().toISOString(),
+                    timestamp: new Date().toISOString() // Alias redundante
                 };
 
                 if (isDetailed) {
-                    payload.helperName = document.getElementById('helper-name').value || 'No indicado';
-                    payload.helperPhone = document.getElementById('helper-phone').value || 'No indicado';
-                    payload.message = document.getElementById('helper-details').value || 'No indicado'; // Cambiado de helperDetails a message
-                    payload.photo = photoBase64; // Cambiado de helperPhoto a photo
+                    payload.helperName = String(document.getElementById('helper-name').value || 'No indicado');
+                    payload.helperPhone = String(document.getElementById('helper-phone').value || 'No indicado');
+                    payload.message = String(document.getElementById('helper-details').value || 'No indicado');
+                    payload.photo = photoBase64; 
                 }
 
                 const res = await fetch(ENDPOINT, {
