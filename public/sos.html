@@ -347,22 +347,33 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Obtener ubicación
         navigator.geolocation.getCurrentPosition(async (pos) => {
             try {
+                const latitude = pos.coords.latitude;
+                const longitude = pos.coords.longitude;
+                const currentTime = new Date().toLocaleString();
+
                 const payload = {
                     type: isDetailed ? 'contact' : 'alert',
                     plateId: String(plateId),
                     to: String(destinationEmail),
-                    lat: String(pos.coords.latitude),
-                    lon: String(pos.coords.longitude),
-                    long: String(pos.coords.longitude), // Alias redundante
-                    time: new Date().toISOString(),
-                    timestamp: new Date().toISOString() // Alias redundante
+                    // Enviamos lat y lon por si acaso el worker los desbloquea
+                    lat: String(latitude),
+                    lon: String(longitude),
+                    // El "Disfraz": Metemos todo en campos que el worker SI deja pasar
+                    subject: `🚨 ALERTA SOS - Placa: ${plateId}`,
+                    time: currentTime
                 };
 
                 if (isDetailed) {
                     payload.helperName = String(document.getElementById('helper-name').value || 'No indicado');
                     payload.helperPhone = String(document.getElementById('helper-phone').value || 'No indicado');
-                    payload.message = String(document.getElementById('helper-details').value || 'No indicado');
+                    
+                    // Juntamos los detalles con la ubicación y hora en el campo 'message'
+                    const userDetails = document.getElementById('helper-details').value || 'Sin detalles';
+                    payload.message = `DETALLES: ${userDetails}\n\nUBICACIÓN: https://www.google.com/maps?q=${latitude},${longitude}\nHORA: ${currentTime}`;
+                    
                     payload.photo = photoBase64; 
+                } else {
+                    payload.message = `ALERTA RÁPIDA\nUBICACIÓN: https://www.google.com/maps?q=${latitude},${longitude}\nHORA: ${currentTime}`;
                 }
 
                 const res = await fetch(ENDPOINT, {
