@@ -3,33 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sagason - Gestión de Placas</title>
+    <title>Sagason - Mi Panel</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
-        .container { max-width: 700px; margin: auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .section { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        h3 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; color: #333; margin: 0; }
+        .container { max-width: 750px; margin: 40px auto; }
         
-        /* Estilo de la Lista de Placas */
-        .tag-card { background: #fff; border: 1px solid #e1e4e8; border-radius: 10px; margin-bottom: 15px; overflow: hidden; transition: 0.3s; }
-        .tag-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #f8f9fa; }
-        .tag-header:hover { background: #edf2f7; }
-        .tag-info b { font-size: 16px; color: #2d3748; }
-        .tag-info span { font-size: 12px; color: #718096; display: block; }
+        /* CABECERA */
+        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .btn-logout { background: #e53e3e; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-        /* Formulario de edición dentro de la placa */
-        .tag-edit-area { display: none; padding: 20px; border-top: 1px solid #e1e4e8; background: white; }
+        /* SISTEMA DE PESTAÑAS */
+        .tabs-container { display: flex; gap: 10px; margin-bottom: 2px; padding-left: 10px; }
+        .tab-button { background: #dee2e6; border: none; padding: 12px 25px; border-radius: 10px 10px 0 0; cursor: pointer; font-weight: bold; color: #495057; transition: 0.3s; }
+        .tab-button.active { background: white; color: #3182ce; border-bottom: 3px solid #3182ce; }
+
+        /* SECCIONES (CONTENIDO) */
+        .section { background: white; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: none; }
+        .section.active { display: block; }
+
+        h3 { margin-top: 0; color: #2d3748; border-bottom: 1px solid #edf2f7; padding-bottom: 15px; margin-bottom: 20px; }
+
+        /* TARJETAS DE PLACAS */
+        .tag-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
+        .tag-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #f8fafc; }
+        .tag-header:hover { background: #f1f5f9; }
+        .tag-info b { font-size: 16px; color: #1a202c; }
+        .tag-info span { font-size: 12px; color: #64748b; display: block; }
+
+        .tag-edit-area { display: none; padding: 20px; border-top: 1px solid #e2e8f0; background: white; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         
-        label { display: block; margin-top: 10px; font-size: 13px; font-weight: bold; color: #4a5568; }
-        input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; }
+        label { display: block; margin-top: 10px; font-size: 13px; font-weight: bold; color: #475569; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
         
-        button { border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-logout { background: #e53e3e; color: white; padding: 8px 15px; }
-        .btn-activate { background: #3182ce; color: white; width: 100%; padding: 12px; margin-top: 15px; }
-        .btn-save { background: #38a169; color: white; padding: 10px 20px; margin-top: 20px; width: 100%; }
-        .btn-test { font-size: 12px; color: #3182ce; text-decoration: none; border: 1px solid #3182ce; padding: 4px 8px; border-radius: 4px; }
+        button.btn-action { border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; padding: 12px; width: 100%; }
+        .btn-activate { background: #3182ce; color: white; margin-top: 20px; }
+        .btn-save { background: #10b981; color: white; margin-top: 20px; }
+        .btn-test { font-size: 12px; color: #3182ce; text-decoration: none; border: 1px solid #3182ce; padding: 5px 10px; border-radius: 5px; }
+
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -40,24 +52,38 @@
         <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
     </div>
 
-    <!-- SECCIÓN: ACTIVAR PLACA -->
-    <div class="section">
+    <!-- PESTAÑAS -->
+    <div class="tabs-container">
+        <button class="tab-button active" id="btn-list" onclick="showTab('list')">Mis Placas</button>
+        <button class="tab-button" id="btn-activate" onclick="showTab('activate')">Activar Nueva</button>
+    </div>
+
+    <!-- SECCIÓN 1: MIS PLACAS (POR DEFECTO) -->
+    <div class="section active" id="section-list">
+        <h3>Mis Placas Registradas</h3>
+        <p style="font-size:13px; color:#64748b; margin-bottom:25px;">Haz clic en una placa para configurar sus contactos de emergencia.</p>
+        <div id="tags-list-container">Cargando tus placas...</div>
+    </div>
+
+    <!-- SECCIÓN 2: ACTIVAR PLACA -->
+    <div class="section" id="section-activate">
         <h3>Activar Nueva Placa Física</h3>
-        <input type="text" id="new-tag-id" placeholder="ID DE LA PLACA (Ej: 2UCAYZL)" style="text-transform:uppercase;">
-        <input type="text" id="new-tag-nickname" placeholder="Nombre (Ej: Mi Perro, Mi Auto)">
+        <p style="font-size:13px; color:#64748b; margin-bottom:20px;">Ingresa el código ID grabado en tu producto Sagason.</p>
+        
+        <label>Código ID de la Placa:</label>
+        <input type="text" id="new-tag-id" placeholder="EJ: 2UCAYZL" style="text-transform:uppercase; font-weight:bold;">
+        
+        <label>Nombre Identificador:</label>
+        <input type="text" id="new-tag-nickname" placeholder="Ej: Mi Perro, Maleta de mano">
+        
+        <label>Categoría:</label>
         <select id="new-tag-category">
             <option value="Mascotas">Mascota</option>
             <option value="Personas">Persona</option>
             <option value="Equipos">Equipo</option>
         </select>
-        <button class="btn-activate" onclick="registerTag()">Activar Producto</button>
-    </div>
-
-    <!-- SECCIÓN: MIS PLACAS -->
-    <div class="section">
-        <h3>Mis Placas Registradas</h3>
-        <p style="font-size:13px; color:#666; margin-bottom:20px;">Haz clic en una placa para configurar sus contactos de emergencia independientes.</p>
-        <div id="tags-list-container">Cargando...</div>
+        
+        <button class="btn-action btn-activate" onclick="registerTag()">Vincular Placa a mi Cuenta</button>
     </div>
 </div>
 
@@ -65,6 +91,15 @@
     const API = "https://k.sagason.cl";
     let ownerId = null;
     let userEmail = "";
+
+    // GESTIÓN DE PESTAÑAS
+    function showTab(tabName) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById(`section-${tabName}`).classList.add('active');
+        document.getElementById(`btn-${tabName}`).classList.add('active');
+    }
 
     function parseJwt(token) {
         try { return JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); } catch (e) { return null; }
@@ -93,7 +128,7 @@
             const tags = await response.json();
             
             if (!tags || tags.length === 0) {
-                container.innerHTML = "<p style='color:grey;'>No tienes placas activas.</p>";
+                container.innerHTML = "<p style='color:grey; text-align:center; padding:20px;'>No tienes placas activas aún.</p>";
                 return;
             }
 
@@ -102,33 +137,33 @@
                     <div class="tag-header" onclick="toggleEdit('${t.tagId}')">
                         <div class="tag-info">
                             <b>${t.nickname}</b>
-                            <span>ID: ${t.tagId} (${t.category})</span>
+                            <span>ID: ${t.tagId} • ${t.category}</span>
                         </div>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <a href="https://sagason.cl/t/${t.tagId}" target="_blank" class="btn-test" onclick="event.stopPropagation()">Probar</a>
-                            <span id="arrow-${t.tagId}">▼</span>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <a href="https://sagason.cl/t/${t.tagId}" target="_blank" class="btn-test" onclick="event.stopPropagation()">Probar Escaneo</a>
+                            <span id="arrow-${t.tagId}" style="font-size:10px; color:#94a3b8;">▼</span>
                         </div>
                     </div>
                     <div class="tag-edit-area" id="edit-${t.tagId}">
                         <div class="grid">
                             <div>
-                                <label>Emails de Alerta (1-3):</label>
-                                <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}" placeholder="Email Principal">
-                                <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Email 2 (Opcional)">
-                                <input type="email" id="e3-${t.tagId}" value="${t.email_3 || ''}" placeholder="Email 3 (Opcional)">
+                                <label>Emails de Notificación:</label>
+                                <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}" placeholder="Email 1">
+                                <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Email 2 (Plan Pro)">
+                                <input type="email" id="e3-${t.tagId}" value="${t.email_3 || ''}" placeholder="Email 3 (Plan Pro)">
                             </div>
                             <div>
                                 <label>Teléfonos (+569...):</label>
-                                <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" placeholder="Teléfono Principal">
+                                <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" placeholder="Teléfono 1">
                                 <input type="tel" id="p2-${t.tagId}" value="${t.phone_2 || ''}" placeholder="Teléfono 2">
                                 <input type="tel" id="p3-${t.tagId}" value="${t.phone_3 || ''}" placeholder="Teléfono 3">
                             </div>
                         </div>
-                        <button class="btn-save" onclick="updateTagConfig('${t.tagId}', '${t.nickname}', '${t.category}')">Guardar Contactos de esta Placa</button>
+                        <button class="btn-action btn-save" onclick="updateTagConfig('${t.tagId}', '${t.nickname}', '${t.category}')">Guardar Contactos para esta Placa</button>
                     </div>
                 </div>
             `).join('');
-        } catch (e) { container.innerHTML = "Error al cargar placas."; }
+        } catch (e) { container.innerHTML = "Error de conexión con AWS."; }
     }
 
     function toggleEdit(tagId) {
@@ -136,7 +171,6 @@
         const arrow = document.getElementById(`arrow-${tagId}`);
         const isVisible = area.style.display === "block";
         
-        // Cerrar todos primero
         document.querySelectorAll('.tag-edit-area').forEach(a => a.style.display = "none");
         document.querySelectorAll('[id^="arrow-"]').forEach(a => a.innerText = "▼");
 
@@ -163,7 +197,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (res.ok) alert("✅ Contactos actualizados para esta placa.");
+            if (res.ok) alert("✅ Cambios guardados para " + tagId);
             else alert("Error al guardar.");
         } catch (e) { alert("Error de red."); }
     }
@@ -173,7 +207,7 @@
         const nickname = document.getElementById('new-tag-nickname').value.trim();
         const category = document.getElementById('new-tag-category').value;
 
-        if (!tagId || !nickname) return alert("Completa los datos.");
+        if (!tagId || !nickname) return alert("Completa todos los campos.");
 
         try {
             const res = await fetch(`${API}/user-tags`, {
@@ -183,10 +217,10 @@
             });
             const result = await res.json();
             if (res.ok) {
-                alert("✅ Placa activada exitosamente.");
+                alert("✅ ¡Placa activada!");
                 location.reload(); 
             } else alert("❌ " + result.error);
-        } catch (e) { alert("Error."); }
+        } catch (e) { alert("Error de red."); }
     }
 
     function logout() { localStorage.removeItem('sagason_token'); window.location.href = "https://sagason.cl"; }
