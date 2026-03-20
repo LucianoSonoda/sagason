@@ -2,88 +2,229 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sagason - Mi Panel</title>
+    <!-- Favicon / Logo -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; color: #333; margin: 0; }
-        .container { max-width: 750px; margin: 40px auto; }
-        
-        /* CABECERA */
-        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .btn-logout { background: #e53e3e; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        :root {
+            --primary: #0ea5e9; /* Azul Sagason */
+            --bg-dark: #0f172a; /* Fondo Profundo */
+            --card-bg: #1e293b; /* Fondo de Tarjetas */
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: #334155;
+        }
 
-        /* SISTEMA DE PESTAÑAS */
-        .tabs-container { display: flex; gap: 10px; margin-bottom: 2px; padding-left: 10px; }
-        .tab-button { background: #dee2e6; border: none; padding: 12px 25px; border-radius: 10px 10px 0 0; cursor: pointer; font-weight: bold; color: #495057; transition: 0.3s; }
-        .tab-button.active { background: white; color: #3182ce; border-bottom: 3px solid #3182ce; }
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background-color: var(--bg-dark); 
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        /* SECCIONES (CONTENIDO) */
-        .section { background: white; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: none; }
-        .section.active { display: block; }
+        /* NAVEGACIÓN / HEADER */
+        header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
 
-        h3 { margin-top: 0; color: #2d3748; border-bottom: 1px solid #edf2f7; padding-bottom: 15px; margin-bottom: 20px; }
+        .logo-img {
+            height: 40px; /* Ajusta según el tamaño de tu logo real */
+            display: block;
+        }
 
-        /* TARJETAS DE PLACAS */
-        .tag-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
-        .tag-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #f8fafc; }
-        .tag-header:hover { background: #f1f5f9; }
-        .tag-info b { font-size: 16px; color: #1a202c; }
-        .tag-info span { font-size: 12px; color: #64748b; display: block; }
+        .btn-logout {
+            background: transparent;
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
 
-        .tag-edit-area { display: none; padding: 20px; border-top: 1px solid #e2e8f0; background: white; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
-        label { display: block; margin-top: 10px; font-size: 13px; font-weight: bold; color: #475569; }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-        
-        button.btn-action { border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; padding: 12px; width: 100%; }
-        .btn-activate { background: #3182ce; color: white; margin-top: 20px; }
-        .btn-save { background: #10b981; color: white; margin-top: 20px; }
-        .btn-test { font-size: 12px; color: #3182ce; text-decoration: none; border: 1px solid #3182ce; padding: 5px 10px; border-radius: 5px; }
+        .container {
+            max-width: 650px;
+            margin: 20px auto;
+            padding: 0 15px 80px 15px; /* Espacio extra abajo para móviles */
+        }
 
-        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+        /* SISTEMA DE PESTAÑAS (SEGMENTED CONTROL) */
+        .tabs {
+            display: flex;
+            background: var(--card-bg);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            color: var(--text-dim);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        /* CONTENIDO */
+        .content-section { display: none; animation: fadeIn 0.3s ease; }
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h2 { font-size: 18px; margin: 0 0 20px 0; color: var(--primary); }
+
+        /* LISTA DE PLACAS */
+        .tag-item {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .tag-header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .tag-name { font-weight: 600; font-size: 16px; }
+        .tag-id { font-size: 11px; color: var(--text-dim); display: block; font-family: monospace; }
+
+        .edit-panel {
+            padding: 20px;
+            background: #1e293b;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+
+        /* FORMULARIOS */
+        label { display: block; margin-top: 15px; font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px; /* Evita zoom en iOS */
+            box-sizing: border-box;
+        }
+
+        input:focus { border-color: var(--primary); outline: none; }
+
+        .btn-action {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-confirm { background: var(--primary); color: white; }
+        .btn-save { background: var(--success); color: white; }
+
+        .btn-test {
+            font-size: 11px;
+            color: var(--primary);
+            text-decoration: none;
+            border: 1px solid var(--primary);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media (max-width: 480px) {
+            .container { margin-top: 10px; }
+            .grid { display: flex; flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
+<header>
+    <!-- IMPORTANTE: Asegúrate de que la ruta del logo sea correcta -->
+    <img src="logo.png" alt="Sagason" class="logo-img" onerror="this.src='https://sagason.cl/images/logo.png'">
+    <button class="btn-logout" onclick="logout()">Cerrar</button>
+</header>
+
 <div class="container">
-    <div class="header">
-        <h2 id="user-display" style="margin:0; font-size:18px;">Cargando...</h2>
-        <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+    <p id="user-greeting" style="color: var(--text-dim); margin-bottom: 20px; font-size: 14px;">Cargando usuario...</p>
+
+    <!-- PESTAÑAS ESTILO MOVIL -->
+    <div class="tabs">
+        <button class="tab-btn active" id="btn-list" onclick="showTab('list')">Mis Placas</button>
+        <button class="tab-btn" id="btn-activate" onclick="showTab('activate')">Activar Nueva</button>
     </div>
 
-    <!-- PESTAÑAS -->
-    <div class="tabs-container">
-        <button class="tab-button active" id="btn-list" onclick="showTab('list')">Mis Placas</button>
-        <button class="tab-button" id="btn-activate" onclick="showTab('activate')">Activar Nueva</button>
+    <!-- SECCIÓN: LISTADO -->
+    <div class="content-section active" id="section-list">
+        <div id="tags-list-container">
+            <p style="text-align:center; color:var(--text-dim);">Buscando tus placas...</p>
+        </div>
     </div>
 
-    <!-- SECCIÓN 1: MIS PLACAS (POR DEFECTO) -->
-    <div class="section active" id="section-list">
-        <h3>Mis Placas Registradas</h3>
-        <p style="font-size:13px; color:#64748b; margin-bottom:25px;">Haz clic en una placa para configurar sus contactos de emergencia.</p>
-        <div id="tags-list-container">Cargando tus placas...</div>
-    </div>
-
-    <!-- SECCIÓN 2: ACTIVAR PLACA -->
-    <div class="section" id="section-activate">
-        <h3>Activar Nueva Placa Física</h3>
-        <p style="font-size:13px; color:#64748b; margin-bottom:20px;">Ingresa el código ID grabado en tu producto Sagason.</p>
-        
-        <label>Código ID de la Placa:</label>
-        <input type="text" id="new-tag-id" placeholder="EJ: 2UCAYZL" style="text-transform:uppercase; font-weight:bold;">
-        
-        <label>Nombre Identificador:</label>
-        <input type="text" id="new-tag-nickname" placeholder="Ej: Mi Perro, Maleta de mano">
-        
-        <label>Categoría:</label>
-        <select id="new-tag-category">
-            <option value="Mascotas">Mascota</option>
-            <option value="Personas">Persona</option>
-            <option value="Equipos">Equipo</option>
-        </select>
-        
-        <button class="btn-action btn-activate" onclick="registerTag()">Vincular Placa a mi Cuenta</button>
+    <!-- SECCIÓN: ACTIVACIÓN -->
+    <div class="content-section" id="section-activate">
+        <div class="card">
+            <h2>Vincular Producto</h2>
+            <label>Código ID grabado:</label>
+            <input type="text" id="new-tag-id" placeholder="EJ: 2UCAYZL" style="text-transform:uppercase;">
+            
+            <label>Nombre personalizado:</label>
+            <input type="text" id="new-tag-nickname" placeholder="Ej: Mi Perro, Maleta, etc.">
+            
+            <label>Categoría:</label>
+            <select id="new-tag-category">
+                <option value="Mascotas">Mascota</option>
+                <option value="Personas">Persona</option>
+                <option value="Equipos">Equipo</option>
+            </select>
+            
+            <button class="btn-action btn-confirm" onclick="registerTag()">Activar Ahora</button>
+        </div>
     </div>
 </div>
 
@@ -92,13 +233,11 @@
     let ownerId = null;
     let userEmail = "";
 
-    // GESTIÓN DE PESTAÑAS
-    function showTab(tabName) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-        
-        document.getElementById(`section-${tabName}`).classList.add('active');
-        document.getElementById(`btn-${tabName}`).classList.add('active');
+    function showTab(name) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`section-${name}`).classList.add('active');
+        document.getElementById(`btn-${name}`).classList.add('active');
     }
 
     function parseJwt(token) {
@@ -112,12 +251,11 @@
             window.location.href = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard"; 
             return; 
         }
-        
         localStorage.setItem('sagason_token', token);
         const user = parseJwt(token);
         ownerId = user.sub;
         userEmail = user.email;
-        document.getElementById('user-display').innerText = `Hola, ${userEmail.split('@')[0]}`;
+        document.getElementById('user-greeting').innerText = `Sesión: ${userEmail}`;
         loadTags();
     }
 
@@ -126,58 +264,45 @@
         try {
             const response = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
             const tags = await response.json();
-            
             if (!tags || tags.length === 0) {
-                container.innerHTML = "<p style='color:grey; text-align:center; padding:20px;'>No tienes placas activas aún.</p>";
+                container.innerHTML = "<div class='card' style='text-align:center; color:var(--text-dim);'>No tienes placas activas aún.</div>";
                 return;
             }
-
             container.innerHTML = tags.map(t => `
-                <div class="tag-card">
+                <div class="tag-item">
                     <div class="tag-header" onclick="toggleEdit('${t.tagId}')">
                         <div class="tag-info">
-                            <b>${t.nickname}</b>
-                            <span>ID: ${t.tagId} • ${t.category}</span>
+                            <span class="tag-name">${t.nickname}</span>
+                            <span class="tag-id">${t.tagId} · ${t.category}</span>
                         </div>
                         <div style="display:flex; align-items:center; gap:12px;">
-                            <a href="https://sagason.cl/t/${t.tagId}" target="_blank" class="btn-test" onclick="event.stopPropagation()">Probar Escaneo</a>
-                            <span id="arrow-${t.tagId}" style="font-size:10px; color:#94a3b8;">▼</span>
+                            <a href="https://sagason.cl/t/${t.tagId}" target="_blank" class="btn-test" onclick="event.stopPropagation()">Probar</a>
+                            <span id="arrow-${t.tagId}" style="color:var(--text-dim);">▼</span>
                         </div>
                     </div>
-                    <div class="tag-edit-area" id="edit-${t.tagId}">
-                        <div class="grid">
-                            <div>
-                                <label>Emails de Notificación:</label>
-                                <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}" placeholder="Email 1">
-                                <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Email 2 (Plan Pro)">
-                                <input type="email" id="e3-${t.tagId}" value="${t.email_3 || ''}" placeholder="Email 3 (Plan Pro)">
-                            </div>
-                            <div>
-                                <label>Teléfonos (+569...):</label>
-                                <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" placeholder="Teléfono 1">
-                                <input type="tel" id="p2-${t.tagId}" value="${t.phone_2 || ''}" placeholder="Teléfono 2">
-                                <input type="tel" id="p3-${t.tagId}" value="${t.phone_3 || ''}" placeholder="Teléfono 3">
-                            </div>
-                        </div>
-                        <button class="btn-action btn-save" onclick="updateTagConfig('${t.tagId}', '${t.nickname}', '${t.category}')">Guardar Contactos para esta Placa</button>
+                    <div class="edit-panel" id="edit-${t.tagId}">
+                        <label>Emails de Alerta:</label>
+                        <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}">
+                        <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Opcional">
+                        
+                        <label>Teléfonos (+569...):</label>
+                        <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" placeholder="WhatsApp 1">
+                        <input type="tel" id="p2-${t.tagId}" value="${t.phone_2 || ''}" placeholder="WhatsApp 2">
+                        
+                        <button class="btn-action btn-save" onclick="updateTagConfig('${t.tagId}', '${t.nickname}', '${t.category}')">Guardar Contactos</button>
                     </div>
                 </div>
             `).join('');
-        } catch (e) { container.innerHTML = "Error de conexión con AWS."; }
+        } catch (e) { container.innerHTML = "Error al conectar con AWS."; }
     }
 
     function toggleEdit(tagId) {
         const area = document.getElementById(`edit-${tagId}`);
         const arrow = document.getElementById(`arrow-${tagId}`);
         const isVisible = area.style.display === "block";
-        
-        document.querySelectorAll('.tag-edit-area').forEach(a => a.style.display = "none");
+        document.querySelectorAll('.edit-panel').forEach(a => a.style.display = "none");
         document.querySelectorAll('[id^="arrow-"]').forEach(a => a.innerText = "▼");
-
-        if (!isVisible) {
-            area.style.display = "block";
-            arrow.innerText = "▲";
-        }
+        if (!isVisible) { area.style.display = "block"; arrow.innerText = "▲"; }
     }
 
     async function updateTagConfig(tagId, nickname, category) {
@@ -185,19 +310,16 @@
             ownerId, tagId, nickname, category,
             email_1: document.getElementById(`e1-${tagId}`).value,
             email_2: document.getElementById(`e2-${tagId}`).value,
-            email_3: document.getElementById(`e3-${tagId}`).value,
             phone_1: document.getElementById(`p1-${tagId}`).value,
-            phone_2: document.getElementById(`p2-${tagId}`).value,
-            phone_3: document.getElementById(`p3-${tagId}`).value
+            phone_2: document.getElementById(`p2-${tagId}`).value
         };
-
         try {
             const res = await fetch(`${API}/user-tags`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (res.ok) alert("✅ Cambios guardados para " + tagId);
+            if (res.ok) alert("✅ Contactos guardados.");
             else alert("Error al guardar.");
         } catch (e) { alert("Error de red."); }
     }
@@ -206,9 +328,7 @@
         const tagId = document.getElementById('new-tag-id').value.toUpperCase().trim();
         const nickname = document.getElementById('new-tag-nickname').value.trim();
         const category = document.getElementById('new-tag-category').value;
-
-        if (!tagId || !nickname) return alert("Completa todos los campos.");
-
+        if (!tagId || !nickname) return alert("Completa los datos.");
         try {
             const res = await fetch(`${API}/user-tags`, {
                 method: 'POST',
@@ -216,10 +336,8 @@
                 body: JSON.stringify({ ownerId, tagId, nickname, category, email_1: userEmail })
             });
             const result = await res.json();
-            if (res.ok) {
-                alert("✅ ¡Placa activada!");
-                location.reload(); 
-            } else alert("❌ " + result.error);
+            if (res.ok) { alert("✅ ¡Placa activada!"); location.reload(); }
+            else alert("❌ " + result.error);
         } catch (e) { alert("Error de red."); }
     }
 
