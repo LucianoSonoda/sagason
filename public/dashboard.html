@@ -106,6 +106,51 @@
                 document.getElementById('phone_3').value = config.phone_3 || "";
             }
         } catch (e) { console.error("Error cargando perfil", e); }
+
+        loadTags(); // Cargar la lista de placas
+    }
+
+    async function loadTags() {
+        try {
+            const response = await fetch(`https://k.sagason.cl/user-tags?ownerId=${ownerId}`);
+            const tags = await response.json();
+            const container = document.getElementById('tags-list-container');
+            
+            if (tags.length === 0) {
+                container.innerHTML = "No tienes placas registradas aún.";
+                return;
+            }
+
+            container.innerHTML = tags.map(t => `
+                <div style="border-bottom:1px solid #eee; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong>${t.nickname}</strong> (${t.category})<br>
+                        <small style="color:#7f8c8d;">ID: ${t.tagId}</small>
+                    </div>
+                    <a href="https://sagason.cl/t/${t.tagId}" target="_blank" style="color:#3498db; text-decoration:none; font-size:12px;">Ver QR / Probar</a>
+                </div>
+            `).join('');
+        } catch (e) { console.error("Error cargando tags", e); }
+    }
+
+    async function registerTag() {
+        const nickname = document.getElementById('new-tag-nickname').value;
+        const category = document.getElementById('new-tag-category').value;
+        if (!nickname) return alert("Ponle un nombre a la placa");
+
+        try {
+            const response = await fetch(`https://k.sagason.cl/user-tags`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ownerId, nickname, category })
+            });
+
+            if (response.ok) {
+                document.getElementById('new-tag-nickname').value = "";
+                loadTags(); // Recargar la lista
+                alert("✅ Placa registrada con éxito");
+            }
+        } catch (e) { alert("Error al registrar"); }
     }
 
     // 4. Guardar Configuración
