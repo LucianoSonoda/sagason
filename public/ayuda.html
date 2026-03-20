@@ -127,10 +127,25 @@
                 let finalMsg = customThanksMsg || "Gracias por encontrar mi pertenencia. Me comunicaré contigo de inmediato.";
                 document.getElementById('app').innerHTML = `
                     <div class="card" style="text-align:center;">
-                        <h2 style="color:var(--success);">✅ ¡Reporte Enviado!</h2>
+                        <h2 style="color:var(--success);">✅ ¡Mensaje Enviado!</h2>
                         <div class="thanks-box">${finalMsg}</div>
-                        <p style="color:var(--text-dim); font-size:13px;">El propietario ha sido notificado.</p>
+                        <p style="color:var(--text-dim); font-size:13px;">El propietario ha sido notificado con éxito.</p>
                         <button onclick="location.href='https://sagason.cl'" class="btn-submit" style="background:var(--primary); margin-top:10px;">Finalizar</button>
+                    </div>
+                `;
+            } else if (res.status === 403) {
+                document.getElementById('app').innerHTML = `
+                    <div class="card" style="text-align:center;">
+                        <h2 style="color:var(--primary);">Aviso de Servicio</h2>
+                        <div class="thanks-box" style="border-color:var(--primary); background:rgba(14, 165, 233, 0.1);">
+                            Lamentablemente, este protector ha alcanzado su límite de notificaciones gratuitas anuales. 
+                            <br><br>
+                            <b>¿Eres el dueño?</b> Por favor, accede a tu panel para renovar o mejorar tu suscripción y seguir protegido.
+                        </div>
+                        <p style="color:var(--text-dim); font-size:13px; margin-top:20px;">
+                            Si encontraste este objeto, por favor intenta contactar al dueño por otros medios si el tag tiene información física visible.
+                        </p>
+                        <button onclick="location.href='https://sagason.cl'" class="btn-submit" style="background:var(--primary); margin-top:10px;">Volver</button>
                     </div>
                 `;
             } else {
