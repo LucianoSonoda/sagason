@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sagason - ¿Cómo funciona?</title>
+    <style>
+        :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --text-dim: #94a3b8; --border: #334155; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        header { background: rgba(15, 23, 42, 0.95); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .btn-close { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 6px 12px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 12px; }
+        .container { max-width: 480px; margin: 0 auto; padding: 20px 15px 100px 15px; }
+        .step { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; margin-bottom: 25px; position: relative; }
+        .step-num { position: absolute; top: -15px; left: 20px; background: var(--primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.4); }
+        h2 { color: var(--primary); font-size: 20px; margin-top: 10px; }
+        p { font-size: 15px; color: var(--text-dim); }
+        .img-placeholder { background: #0f172a; border-radius: 12px; padding: 20px; text-align: center; margin: 15px 0; border: 1px dashed var(--border); color: var(--primary); font-size: 13px; }
+        .btn-cta { display: block; text-align: center; background: var(--primary); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'">
+    <a href="https://sagason.cl" class="btn-close">Cerrar</a>
+</header>
+
+<div class="container">
+    <h1 style="text-align:center; font-size:24px;">Guía de Inicio</h1>
+    <p style="text-align:center; margin-bottom:40px;">Configura tu protección en menos de 2 minutos.</p>
+
+    <!-- PASO 1 -->
+    <div class="step">
+        <div class="step-num">1</div>
+        <h2>Adquiere tu Tag</h2>
+        <p>Solicita tu placa física Sagason a través de nuestros canales oficiales. Cada tag viene con un <b>ID Único</b> grabado que es intransferible.</p>
+        <div class="img-placeholder">📸 Imagina aquí el ID grabado en el metal</div>
+    </div>
+
+    <!-- PASO 2 -->
+    <div class="step">
+        <div class="step-num">2</div>
+        <h2>Crea tu Cuenta</h2>
+        <p>Ingresa a nuestro portal y haz clic en <b>"Entrar con Google"</b>. No necesitas recordar nuevas contraseñas; usamos la seguridad de Google para proteger tu acceso.</p>
+    </div>
+
+    <!-- PASO 3 -->
+    <div class="step">
+        <div class="step-num">3</div>
+        <h2>Activa tu Producto</h2>
+        <p>Dentro de tu panel, ve a la pestaña <b>"Activar Nueva"</b>. Escribe el ID de tu placa y asígnale un nombre (ej: "Mi Perro Bobby").</p>
+        <div class="img-placeholder">⌨️ Ingresa el ID > Click en Activar</div>
+    </div>
+
+    <!-- PASO 4 -->
+    <div class="step">
+        <div class="step-num">4</div>
+        <h2>Configura Alertas</h2>
+        <p>Haz clic sobre tu placa activada para definir quién recibirá los avisos. Puedes cambiar los correos y teléfonos en cualquier momento sin cambiar el QR físico.</p>
+    </div>
+
+    <a href="https://sagason.cl/dashboard" class="btn-cta">Ir a mi Panel de Control</a>
+</div>
+</body>
+</html>

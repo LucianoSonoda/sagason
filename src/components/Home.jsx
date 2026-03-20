@@ -59,6 +59,28 @@ export function Home() {
                 </motion.div>
             </section>
 
+            {/* Sagason Tag Section */}
+            <section className="tag-promo-section container">
+                <motion.div 
+                    className="glass-panel tag-promo-card"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <div className="tag-promo-content">
+                        <span className="promo-badge">NUEVO SISTEMA</span>
+                        <h2 className="promo-title">Sagason <span style={{ color: 'var(--color-primary)' }}>Tag</span></h2>
+                        <p className="promo-text">Protección inteligente para lo que más quieres. Placas metálicas con QR dinámico para mascotas, personas y equipos.</p>
+                        <div className="promo-ctas">
+                            <a href="/como-funciona.html" className="btn btn-outline">¿Cómo funciona?</a>
+                            <a href="/tecnologia.html" className="btn btn-outline">Nuestra Tecnología</a>
+                            <a href="/dashboard.html" className="btn btn-primary-small">Panel de Control</a>
+                        </div>
+                    </div>
+                </motion.div>
+            </section>
+
             {/* Services Overview */}
             <section className="services-section container">
                 <div className="section-header">
