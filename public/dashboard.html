@@ -4,29 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sagason - Dashboard</title>
+    <!-- Librería para Generar QR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
         header { background: rgba(15, 23, 42, 0.95); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        .btn-close { background: transparent; border: 1px solid var(--border); color: #94a3b8; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .btn-close { background: transparent; border: 1px solid var(--border); color: #94a3b8; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; }
         .container { max-width: 480px; margin: 0 auto; padding: 20px 15px 100px 15px; }
         .tabs { display: flex; background: var(--card); padding: 4px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
         .tab-btn { flex: 1; padding: 10px; border: none; background: none; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 8px; font-size: 11px; }
         .tab-btn.active { background: var(--primary); color: white; }
         .content-section { display: none; } .content-section.active { display: block; }
+        
+        /* TARJETAS Y FORMULARIOS */
         .tag-item { background: #0f172a; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
         .tag-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .tag-name { font-weight: 600; font-size: 15px; }
-        .tag-sub { font-size: 10px; color: #94a3b8; font-family: monospace; display: block; margin-top: 2px; }
-        .arrow { font-size: 10px; transition: 0.3s; color: var(--primary); }
-        .arrow.up { transform: rotate(180deg); }
         .edit-panel { padding: 15px; background: #1e293b; border-top: 1px solid var(--border); display: none; }
         label { display: block; margin-top: 12px; font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
         input, select, textarea { width: 100%; padding: 11px; margin-top: 5px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 14px; box-sizing: border-box; }
         .btn-action { width: 100%; padding: 13px; margin-top: 20px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-save { background: #10b981; color: white; }
-        .btn-confirm { background: var(--primary); color: white; }
-        .admin-box { border: 1px dashed var(--primary); padding: 15px; border-radius: 12px; background: rgba(14, 165, 233, 0.05); }
+        
+        /* ADMIN PANEL */
+        .admin-box { border: 1px dashed var(--primary); padding: 20px; border-radius: 16px; background: rgba(14, 165, 233, 0.05); }
+        #qr-result { margin-top: 25px; padding: 20px; background: white; border-radius: 12px; color: #333; text-align: center; display: none; }
+        #qrcode { display: inline-block; margin: 15px 0; }
+        .url-display { font-size: 11px; background: #f1f5f9; padding: 8px; border-radius: 6px; word-break: break-all; color: #64748b; margin-bottom: 15px; border: 1px solid #cbd5e1; }
+        .btn-download { background: #1e293b; color: white; padding: 10px; width: 100%; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -40,47 +44,39 @@
     <div class="tabs">
         <button class="tab-btn active" id="btn-list" onclick="showTab('list')">Mis Placas</button>
         <button class="tab-btn" id="btn-activate" onclick="showTab('activate')">Activar Nueva</button>
-        <button class="tab-btn" id="btn-admin" onclick="showTab('admin')" style="display:none; color:var(--primary);">ADMIN</button>
+        <button class="tab-btn" id="btn-admin" onclick="showTab('admin')" style="display:none; color:var(--primary);">FÁBRICA</button>
     </div>
 
-    <!-- LISTADO -->
+    <!-- SECCIÓN: LISTADO USUARIO -->
     <div class="content-section active" id="section-list">
-        <div id="tags-list-container">
-            <p style="text-align:center; color:#475569; font-size: 13px;">Cargando tus placas...</p>
-        </div>
+        <div id="tags-list-container"><p style="text-align:center; color:#475569;">Cargando...</p></div>
     </div>
 
-    <!-- ACTIVACIÓN USUARIO -->
+    <!-- SECCIÓN: ACTIVACIÓN USUARIO -->
     <div class="content-section" id="section-activate">
         <div style="background:var(--card); padding:20px; border-radius:12px; border:1px solid var(--border);">
-            <h3 style="margin:0 0 15px 0; font-size:16px;">Vincular Producto</h3>
+            <h3>Vincular Placa</h3>
             <label>ID de la Placa:</label>
-            <input type="text" id="new-tag-id" placeholder="xxxx-xxxx-xxxx-xxxx" style="font-family:monospace;">
-            <label>Nombre Identificador:</label>
+            <input type="text" id="new-tag-id" placeholder="xxxx-xxxx-xxxx-xxxx">
+            <label>Nombre Referencia:</label>
             <input type="text" id="new-tag-nickname" placeholder="Ej: Mi Perro Bobby">
-            <label>Categoría Inicial:</label>
-            <select id="new-tag-category">
-                <option value="Mascotas">Mascota</option>
-                <option value="Personas">Persona</option>
-                <option value="Equipos">Equipo</option>
-            </select>
-            <button class="btn-action btn-confirm" onclick="registerTag()">Activar Ahora</button>
+            <button class="btn-action" style="background:var(--primary); color:white;" onclick="registerTag()">Activar Ahora</button>
         </div>
     </div>
 
-    <!-- PANEL ADMIN (SOLO PARA TI) -->
+    <!-- SECCIÓN: ADMIN FÁBRICA -->
     <div class="content-section" id="section-admin">
         <div class="admin-box">
-            <h3 style="margin:0 0 10px 0; font-size:16px; color:var(--primary);">Generador de Fábrica</h3>
-            <p style="font-size:11px; color:#94a3b8; margin-bottom:15px;">Crea nuevos IDs aleatorios para grabar en metal.</p>
-            <label>Referencia Interna (opcional):</label>
-            <input type="text" id="admin-nick" placeholder="Ej: Lote Marzo 2024">
-            <button class="btn-action btn-confirm" onclick="adminCreateTag()">Generar Nuevo ID Único</button>
+            <h3 style="margin:0; color:var(--primary);">Generador de IDs</h3>
+            <label>Referencia Interna (Nombre del archivo):</label>
+            <input type="text" id="admin-nick" placeholder="Ej: Placa_Metal_001">
+            <button class="btn-action" style="background:var(--primary); color:white;" onclick="adminCreateTag()">Generar y Crear QR</button>
             
-            <div id="admin-result" style="margin-top:20px; display:none; text-align:center;">
-                <p style="font-size:11px; color:var(--primary);">ID GENERADO EXITOSAMENTE:</p>
-                <b id="generated-id" style="font-size:18px; font-family:monospace; background:#0f172a; padding:10px; border-radius:8px; display:block; border:1px solid var(--primary); letter-spacing:1px;"></b>
-                <p style="font-size:10px; color:#94a3b8; margin-top:10px;">Cópialo ahora. Ya está guardado como 'DISPONIBLE' en la base de datos.</p>
+            <div id="qr-result">
+                <span style="font-size:12px; font-weight:bold;">URL DEL TAG:</span>
+                <div class="url-display" id="generated-url"></div>
+                <div id="qrcode"></div>
+                <button class="btn-download" onclick="downloadQR()">📥 Descargar Imagen QR</button>
             </div>
         </div>
     </div>
@@ -104,64 +100,94 @@
         localStorage.setItem('sagason_token', token);
         const user = JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
         ownerId = user.sub; userEmail = user.email;
-
-        // ACTIVAR PESTAÑA ADMIN SOLO PARA TI
         if (userEmail === "brluson@gmail.com") { document.getElementById('btn-admin').style.display = "block"; }
-
         loadTags();
     }
 
-    // --- FUNCIONES ADMIN ---
+    // --- LÓGICA DE ADMIN ---
+    let currentQRData = "";
     async function adminCreateTag() {
-        const nickname = document.getElementById('admin-nick').value || "Producto Fábrica";
-        const res = await fetch(`${API}/admin-create-tag`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ email: userEmail, nickname: nickname })
-        });
-        const data = await res.json();
-        if (res.ok) {
-            document.getElementById('admin-result').style.display = "block";
-            document.getElementById('generated-id').innerText = data.tagId;
-        } else { alert("Error al crear tag."); }
+        const nick = document.getElementById('admin-nick').value || "Tag_Sagason";
+        const btn = document.querySelector('#section-admin .btn-action');
+        const prevText = btn.innerText;
+        btn.innerText = "Generando..."; btn.disabled = true;
+
+        try {
+            const res = await fetch(`${API}/admin-create-tag`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email: userEmail, nickname: nick })
+            });
+            const data = await res.json();
+            
+            if (res.ok) {
+                const fullUrl = `https://sagason.cl/t/${data.tagId}`;
+                document.getElementById('generated-url').innerText = fullUrl;
+                
+                // Limpiar y generar QR
+                document.getElementById('qrcode').innerHTML = "";
+                new QRCode(document.getElementById("qrcode"), {
+                    text: fullUrl,
+                    width: 256,
+                    height: 256,
+                    colorDark : "#0f172a",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+
+                document.getElementById('qr-result').style.display = "block";
+            } else {
+                alert("Error: " + (data.error || "No se pudo crear"));
+            }
+        } catch (e) { alert("Error de red"); }
+        btn.innerText = prevText; btn.disabled = false;
     }
 
-    // --- FUNCIONES USUARIO (MANTENER IGUAL) ---
+    function downloadQR() {
+        const img = document.querySelector('#qrcode img');
+        if (!img) return alert("Primero genera un código");
+        const nick = document.getElementById('admin-nick').value || "Tag_Sagason";
+        const link = document.createElement('a');
+        link.href = img.src;
+        link.download = `${nick}.png`;
+        link.click();
+    }
+
+    // --- LÓGICA DE USUARIO ---
     async function loadTags() {
         const res = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
         const tags = await res.json();
         const cont = document.getElementById('tags-list-container');
-        if (tags.length === 0) { cont.innerHTML = "<p style='text-align:center; color:#475569; padding:20px;'>No tienes placas registradas.</p>"; return; }
+        if (tags.length === 0) { cont.innerHTML = "<p style='text-align:center; color:#475569; padding:20px;'>No tienes placas.</p>"; return; }
+        
         cont.innerHTML = tags.map(t => {
             const tier = t.tier || "Free";
             const canWA = tier !== "Free";
-            const isAdv = tier === "Advanced";
             const limit = tier === "Advanced" ? 150 : (tier === "Basic" ? 50 : 12);
             const progress = Math.min(100, Math.round((t.scan_count || 0) / limit * 100));
 
             return `
             <div class="tag-item">
                 <div class="tag-header" onclick="toggleEdit('${t.tagId}')">
-                    <div><span class="tag-name">${t.nickname}</span><span class="tag-sub">${t.tagId} • ${tier}</span></div>
-                    <span class="arrow" id="arrow-${t.tagId}">▼</span>
+                    <div><span class="tag-name">${t.nickname}</span><span style="font-size:10px; color:#94a3b8; display:block;">${t.tagId} • ${tier}</span></div>
+                    <span id="arrow-${t.tagId}" style="font-size:10px; color:var(--primary);">▼</span>
                 </div>
                 <div class="edit-panel" id="edit-${t.tagId}">
                     <label>Nombre:</label><input type="text" id="nick-${t.tagId}" value="${t.nickname}">
-                    <label>Categoría:</label><select id="cat-${t.tagId}"><option value="Mascotas" ${t.category==='Mascotas'?'selected':''}>Mascota</option><option value="Personas" ${t.category==='Personas'?'selected':''}>Persona</option><option value="Equipos" ${t.category==='Equipos'?'selected':''}>Equipo</option></select>
                     <label>Email Notificación:</label><input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}">
                     <label>WhatsApp:</label><input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" ${canWA?'':'disabled'}>
                     <label>Mensaje Agradecimiento:</label><textarea id="msg-${t.tagId}" rows="2">${t.thanks_msg || ''}</textarea>
                     
                     <div style="margin-top:15px; border-top:1px solid var(--border); padding-top:10px;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-size:9px; color:#94a3b8;">CONSUMO: ${t.scan_count || 0} / ${limit}</span>
+                            <span style="font-size:8px; color:#94a3b8;">CONSUMO: ${t.scan_count || 0} / ${limit}</span>
                         </div>
                         <div style="width:100%; height:4px; background:#0f172a; border-radius:10px; margin-top:5px;">
                             <div style="width:${progress}%; height:100%; background:${progress > 80 ? '#ef4444' : '#0ea5e9'}; border-radius:10px;"></div>
                         </div>
                     </div>
 
-                    <button class="btn-action btn-save" onclick="updateTag('${t.tagId}')">Guardar Cambios</button>
+                    <button class="btn-action" style="background:#10b981; color:white;" onclick="updateTag('${t.tagId}')">Guardar Cambios</button>
                     <div style="text-align:center; margin-top:15px;"><a href="https://sagason.cl/t/${t.tagId}" target="_blank" style="color:var(--primary); font-size:11px; text-decoration:none;">🔗 Probar Escaneo</a></div>
                 </div>
             </div>`;
@@ -170,32 +196,30 @@
 
     function toggleEdit(id) {
         const area = document.getElementById(`edit-${id}`);
-        const arrow = document.getElementById(`arrow-${id}`);
         const isVisible = area.style.display === "block";
         document.querySelectorAll('.edit-panel').forEach(a => a.style.display = "none");
-        document.querySelectorAll('.arrow').forEach(a => a.classList.remove('up'));
-        if (!isVisible) { area.style.display = "block"; arrow.classList.add('up'); }
+        if (!isVisible) area.style.display = "block";
     }
 
     async function updateTag(tagId) {
-        const payload = {
-            ownerId, tagId, nickname: document.getElementById(`nick-${tagId}`).value,
-            category: document.getElementById(`cat-${tagId}`).value,
-            email_1: document.getElementById(`e1-${tagId}`).value,
+        const payload = { 
+            ownerId, 
+            tagId, 
+            nickname: document.getElementById(`nick-${tagId}`).value, 
+            email_1: document.getElementById(`e1-${tagId}`).value, 
             phone_1: document.getElementById(`p1-${tagId}`).value,
-            thanks_msg: document.getElementById(`msg-${tagId}`).value
+            thanks_msg: document.getElementById(`msg-${tagId}`).value 
         };
-        const res = await fetch(`${API}/user-tags`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-        if (res.ok) { alert("✅ Guardado."); loadTags(); }
+        await fetch(`${API}/user-tags`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+        alert("✅ Guardado"); loadTags();
     }
 
     async function registerTag() {
         const tagId = document.getElementById('new-tag-id').value.trim();
         const nickname = document.getElementById('new-tag-nickname').value.trim();
-        const category = document.getElementById('new-tag-category').value;
         if (!tagId || !nickname) return alert("Faltan datos");
-        const res = await fetch(`${API}/user-tags`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ ownerId, tagId, nickname, category, email_1: userEmail }) });
-        if (res.ok) location.reload(); else alert("ID No existe o ya tiene dueño.");
+        const res = await fetch(`${API}/user-tags`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ ownerId, tagId, nickname, category: 'Equipos', email_1: userEmail }) });
+        if (res.ok) location.reload(); else alert("ID No existe en fábrica.");
     }
 
     function logout() { localStorage.removeItem('sagason_token'); location.href="https://sagason.cl"; }
