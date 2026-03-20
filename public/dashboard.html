@@ -22,12 +22,22 @@
         <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
     </div>
 
-    <h1>Mis Tags de Seguridad</h1>
-    <p>Desde aquí puedes gestionar tus placas y los contactos de emergencia.</p>
-    
-    <div id="tags-list">
-        <!-- Aquí cargaremos los tags del usuario desde AWS -->
-        <p>Próximamente: Lista de tus tags activos...</p>
+    <div id="tags-section" style="margin-top: 30px;">
+        <h3>Mis Placas Registradas</h3>
+        <div id="tags-list-container" style="background:#fff; border:1px solid #ddd; padding:10px; border-radius:8px;">
+            Cargando tus placas...
+        </div>
+
+        <h4 style="margin-top:20px;">Registrar Nueva Placa</h4>
+        <div style="display:flex; gap:10px;">
+            <input type="text" id="new-tag-nickname" placeholder="Nombre (ej: Maleta Azul)" style="flex: 2;">
+            <select id="new-tag-category" style="padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                <option value="Mascotas">Mascota</option>
+                <option value="Personas">Persona</option>
+                <option value="Equipos">Equipo</option>
+            </select>
+            <button onclick="registerTag()" style="background:#3498db; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; flex: 1;">Registrar</button>
+        </div>
     </div>
 
     <div id="profile-section" style="margin-top: 30px; display:none;">
