@@ -21,20 +21,20 @@
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2 { font-size: 18px; text-align: center; margin: 0 0 20px 0; color: var(--text); }
+        h2 { font-size: 18px; text-align: center; margin: 0 0 10px 0; color: var(--text); }
+        .optional-notice { font-size: 12px; color: var(--primary); text-align: center; margin-bottom: 20px; font-weight: 500; }
         
-        .found-info { background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 25px; border-left: 4px solid var(--primary); text-align: center; }
+        .found-info { background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--primary); text-align: center; }
         .found-info span { display: block; font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
         .found-info b { font-size: 18px; color: var(--primary); }
 
         label { display: block; margin-top: 15px; font-size: 11px; color: var(--text-dim); text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 12px; margin-top: 6px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 16px; box-sizing: border-box; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 5px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 16px; box-sizing: border-box; }
         
-        .btn-submit { width: 100%; padding: 14px; margin-top: 25px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; background: var(--success); color: white; font-size: 15px; }
+        .btn-submit { width: 100%; padding: 16px; margin-top: 25px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; background: var(--success); color: white; font-size: 15px; }
         .btn-gps { width: 100%; padding: 12px; margin-top: 15px; background: transparent; border: 1px solid var(--primary); color: var(--primary); border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13px; }
         .btn-gps.active { background: var(--primary); color: white; }
 
-        /* ESTILO MENSAJE FINAL */
         .thanks-box { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); padding: 20px; border-radius: 15px; line-height: 1.6; margin: 20px 0; font-size: 15px; text-align: center; }
     </style>
 </head>
@@ -50,6 +50,8 @@
 
     <div class="card" id="main-card" style="display: none;">
         <h2>¡Gracias por ayudar!</h2>
+        <p class="optional-notice">No es obligatorio rellenar todo. Puedes enviar el reporte ahora mismo.</p>
+
         <div class="found-info">
             <span>Has encontrado a:</span>
             <b id="display-nickname">---</b>
@@ -57,14 +59,16 @@
         </div>
 
         <form id="reportForm">
-            <label>Tu Nombre:</label>
-            <input type="text" id="informant-name" required placeholder="Ej: Juan Pérez">
-            <label>Tu Teléfono:</label>
-            <input type="tel" id="informant-phone" required placeholder="Ej: +569 1234 5678">
-            <label id="label-desc">Descripción / Lugar:</label>
-            <textarea id="informant-msg" rows="3" required placeholder="¿Cómo está y dónde se encuentra?"></textarea>
+            <label>Tu Nombre (Opcional):</label>
+            <input type="text" id="informant-name" placeholder="Ej: Juan Pérez">
+            
+            <label>Tu Teléfono (Opcional):</label>
+            <input type="tel" id="informant-phone" placeholder="Ej: +569 1234 5678">
+            
+            <label id="label-desc">Descripción / Lugar (Opcional):</label>
+            <textarea id="informant-msg" rows="3" placeholder="¿Cómo está y dónde se encuentra?"></textarea>
 
-            <button type="button" class="btn-gps" id="btn-gps">📍 Compartir mi Ubicación GPS</button>
+            <button type="button" class="btn-gps" id="btn-gps">📍 Compartir mi Ubicación GPS (Opcional)</button>
             <button type="submit" class="btn-submit" id="btn-submit">Enviar Reporte al Dueño</button>
         </form>
     </div>
@@ -98,18 +102,25 @@
             coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
             btn.innerText = "✅ Ubicación Capturada";
             btn.classList.add('active');
-        }, () => { alert("Activa el GPS de tu celular."); btn.innerText = "📍 Reintentar GPS"; });
+        }, () => { alert("No se pudo obtener el GPS. Puedes enviar el formulario igualmente."); btn.innerText = "📍 Reintentar GPS"; });
     };
 
     document.getElementById('reportForm').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btn-submit');
         btn.disabled = true; btn.innerText = "Enviando...";
+        
         try {
             const res = await fetch('https://k.sagason.cl/report', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tagId, name: document.getElementById('informant-name').value, phone: document.getElementById('informant-phone').value, message: document.getElementById('informant-msg').value, location: coords })
+                body: JSON.stringify({ 
+                    tagId, 
+                    name: document.getElementById('informant-name').value || "Anónimo", 
+                    phone: document.getElementById('informant-phone').value || "No provisto", 
+                    message: document.getElementById('informant-msg').value || "Sin descripción adicional", 
+                    location: coords 
+                })
             });
 
             if (res.ok) {
@@ -119,7 +130,7 @@
                         <h2 style="color:var(--success);">✅ ¡Reporte Enviado!</h2>
                         <div class="thanks-box">${finalMsg}</div>
                         <p style="color:var(--text-dim); font-size:13px;">El propietario ha sido notificado.</p>
-                        <button onclick="location.href='https://sagason.cl'" class="btn-submit" style="background:var(--primary);">Finalizar</button>
+                        <button onclick="location.href='https://sagason.cl'" class="btn-submit" style="background:var(--primary); margin-top:10px;">Finalizar</button>
                     </div>
                 `;
             } else {
