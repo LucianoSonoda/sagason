@@ -3,66 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sagason - Mi Panel</title>
+    <title>Sagason - Dashboard</title>
     <style>
-        :root {
-            --primary: #0ea5e9; 
-            --bg: #0f172a; 
-            --card: #1e293b; 
-            --text: #f8fafc; 
-            --border: #334155;
-            /* Colores de Planes */
-            --plan-free: #94a3b8;
-            --plan-basic: #3b82f6;
-            --plan-advanced: #10b981;
-        }
+        :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        header { background: rgba(15, 23, 42, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top:0; z-index:10; }
-        .container { max-width: 650px; margin: 20px auto; padding: 0 15px 100px 15px; }
         
-        /* PESTAÑAS */
-        .tabs { display: flex; background: var(--card); padding: 4px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border); }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 8px; font-size: 14px; }
-        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(14,165,233,0.2); }
-        
+        /* HEADER ESTILO MOVIL */
+        header { 
+            background: rgba(15, 23, 42, 0.95); 
+            padding: 10px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .btn-logout { background: transparent; border: 1px solid var(--border); color: #94a3b8; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+
+        /* CONTENEDOR CENTRADO (ESTILO TELEFONO EN WEB) */
+        .container { max-width: 480px; margin: 0 auto; padding: 20px 15px 100px 15px; }
+
+        .tabs { display: flex; background: var(--card); padding: 4px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: none; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 8px; font-size: 13px; }
+        .tab-btn.active { background: var(--primary); color: white; }
+
         .content-section { display: none; }
         .content-section.active { display: block; }
 
-        /* TARJETAS DE PLACAS */
-        .tag-item { background: #0f172a; border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px; overflow: hidden; }
-        .tag-header { padding: 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .tag-name { font-weight: 700; font-size: 16px; color: var(--text); }
-        .tag-sub { font-size: 11px; color: #94a3b8; font-family: monospace; }
+        /* TARJETAS */
+        .tag-item { background: #0f172a; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+        .tag-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .tag-name { font-weight: 600; font-size: 15px; }
+        .tag-sub { font-size: 10px; color: #94a3b8; font-family: monospace; display: block; margin-top: 2px; }
+        .arrow { font-size: 10px; transition: transform 0.3s; color: var(--primary); }
+        .arrow.up { transform: rotate(180deg); }
 
-        /* BADGES DE PLANES */
-        .badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; margin-left: 10px; }
-        .badge-free { background: rgba(148, 163, 184, 0.2); color: var(--plan-free); border: 1px solid var(--plan-free); }
-        .badge-basic { background: rgba(59, 130, 246, 0.2); color: var(--plan-basic); border: 1px solid var(--plan-basic); }
-        .badge-advanced { background: rgba(16, 185, 129, 0.2); color: var(--plan-advanced); border: 1px solid var(--plan-advanced); }
-
-        /* PANEL DE EDICIÓN */
-        .edit-panel { padding: 20px; background: #1e293b; border-top: 1px solid var(--border); display: none; }
-        .plan-info { background: rgba(15, 23, 42, 0.5); padding: 12px; border-radius: 8px; font-size: 12px; margin-bottom: 20px; color: var(--primary); border: 1px dashed var(--border); }
+        .edit-panel { padding: 15px; background: #1e293b; border-top: 1px solid var(--border); display: none; }
         
-        .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
-        input, textarea, select { width: 100%; padding: 12px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: white; box-sizing: border-box; font-size: 14px; }
-        input:disabled { opacity: 0.3; cursor: not-allowed; border-color: transparent; }
+        label { display: block; margin-top: 12px; font-size: 10px; color: #94a3b8; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 14px; box-sizing: border-box; }
+        input:disabled { opacity: 0.2; cursor: not-allowed; }
 
-        .btn-action { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-save { background: #10b981; color: white; margin-top: 20px; }
-        .btn-confirm { background: var(--primary); color: white; margin-top: 20px; }
-        
-        .btn-test { font-size: 11px; color: var(--primary); text-decoration: none; border: 1px solid var(--primary); padding: 4px 10px; border-radius: 6px; }
+        .btn-action { width: 100%; padding: 12px; margin-top: 20px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; }
+        .btn-save { background: #10b981; color: white; }
+        .btn-confirm { background: var(--primary); color: white; }
 
-        @media (max-width: 480px) { .input-group { grid-template-columns: 1fr; } }
+        .badge { font-size: 9px; padding: 2px 5px; border-radius: 4px; margin-left: 5px; border: 1px solid currentColor; }
+        .badge-free { color: #94a3b8; } .badge-basic { color: #3b82f6; } .badge-advanced { color: #10b981; }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="logo-chico.png" height="35" onerror="this.src='https://sagason.cl/images/logo.png'">
-    <button onclick="logout()" class="tab-btn" style="width:auto; padding:5px 15px; border:1px solid var(--border);">Cerrar</button>
+    <img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'">
+    <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
 </header>
 
 <div class="container">
@@ -74,16 +68,16 @@
     <!-- LISTADO -->
     <div class="content-section active" id="section-list">
         <div id="tags-list-container">
-            <p style="text-align:center; padding:40px; color:var(--text-dim);">Cargando placas...</p>
+            <p style="text-align:center; color:#475569; font-size: 13px;">Cargando placas...</p>
         </div>
     </div>
 
     <!-- ACTIVACIÓN -->
     <div class="content-section" id="section-activate">
-        <div style="background:var(--card); padding:25px; border-radius:16px; border:1px solid var(--border);">
-            <h3 style="margin-top:0;">Activar Producto</h3>
+        <div style="background:var(--card); padding:20px; border-radius:12px; border:1px solid var(--border);">
+            <h3 style="margin:0 0 15px 0; font-size:16px;">Vincular Producto</h3>
             <label>ID de la Placa:</label>
-            <input type="text" id="new-tag-id" placeholder="EJ: 2UCAYZL" style="text-transform:uppercase; font-weight:bold;">
+            <input type="text" id="new-tag-id" placeholder="EJ: 2UCAYZL" style="text-transform:uppercase;">
             <label>Nombre Identificador:</label>
             <input type="text" id="new-tag-nickname" placeholder="Ej: Mi Perro Firulais">
             <label>Categoría:</label>
@@ -92,7 +86,7 @@
                 <option value="Personas">Persona</option>
                 <option value="Equipos">Equipo</option>
             </select>
-            <button class="btn-action btn-confirm" onclick="registerTag()">Vincular a mi Cuenta</button>
+            <button class="btn-action btn-confirm" onclick="registerTag()">Activar Ahora</button>
         </div>
     </div>
 </div>
@@ -126,58 +120,40 @@
             const cont = document.getElementById('tags-list-container');
             
             if (!tags || tags.length === 0) {
-                cont.innerHTML = "<div style='text-align:center; padding:40px; color:#64748b;'>No tienes placas activas.</div>";
+                cont.innerHTML = "<p style='text-align:center; color:#475569; font-size:13px;'>No tienes placas registradas.</p>";
                 return;
             }
 
             cont.innerHTML = tags.map(t => {
                 const tier = t.tier || "Free";
-                const badgeClass = `badge badge-${tier.toLowerCase()}`;
-                
-                // Lógica de Bloqueo por Plan
-                const canWA1 = tier === "Basic" || tier === "Advanced";
-                const canWA2 = tier === "Advanced";
-                const canEmail2 = tier === "Advanced";
-
-                // Resumen de beneficios para el usuario
-                let benefits = "Plan Free: Notificación por Email 1.";
-                if(tier === "Basic") benefits = "Plan Basic: Email 1 + WhatsApp 1.";
-                if(tier === "Advanced") benefits = "Plan Advanced: Alertas a todos los contactos.";
+                const canWA = tier === "Basic" || tier === "Advanced";
+                const isAdv = tier === "Advanced";
 
                 return `
                 <div class="tag-item">
                     <div class="tag-header" onclick="toggleEdit('${t.tagId}')">
                         <div>
                             <span class="tag-name">${t.nickname}</span>
-                            <span class="tag-sub">${t.tagId} • ${t.category} <span class="${badgeClass}">${tier}</span></span>
+                            <span class="tag-sub">${t.tagId} • ${t.category} <span class="badge badge-${tier.toLowerCase()}">${tier}</span></span>
                         </div>
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <a href="https://sagason.cl/t/${t.tagId}" target="_blank" class="btn-test" onclick="event.stopPropagation()">Probar</a>
-                            <span id="arrow-${t.tagId}">▼</span>
-                        </div>
+                        <span class="arrow" id="arrow-${t.tagId}">▼</span>
                     </div>
                     <div class="edit-panel" id="edit-${t.tagId}">
-                        <div class="plan-info">ℹ️ ${benefits}</div>
+                        <label>Emails Notificación:</label>
+                        <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}">
+                        <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Solo Plan Advanced" ${isAdv ? '' : 'disabled'}>
+                        <input type="email" id="e3-${t.tagId}" value="${t.email_3 || ''}" placeholder="Solo Plan Advanced" ${isAdv ? '' : 'disabled'}>
                         
-                        <div class="input-group">
-                            <div>
-                                <label>Emails de Alerta:</label>
-                                <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}" placeholder="Email 1">
-                                <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Email 2" ${canEmail2 ? '' : 'disabled'}>
-                                <input type="email" id="e3-${t.tagId}" value="${t.email_3 || ''}" placeholder="Email 3" ${canEmail2 ? '' : 'disabled'}>
-                            </div>
-                            <div>
-                                <label>WhatsApp (+569...):</label>
-                                <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" placeholder="Teléfono 1" ${canWA1 ? '' : 'disabled'}>
-                                <input type="tel" id="p2-${t.tagId}" value="${t.phone_2 || ''}" placeholder="Teléfono 2" ${canWA2 ? '' : 'disabled'}>
-                                <input type="tel" id="p3-${t.tagId}" value="${t.phone_3 || ''}" placeholder="Teléfono 3" ${canWA2 ? '' : 'disabled'}>
-                            </div>
-                        </div>
+                        <label>Teléfonos (+569...):</label>
+                        <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" placeholder="Plan Basic o superior" ${canWA ? '' : 'disabled'}>
+                        <input type="tel" id="p2-${t.tagId}" value="${t.phone_2 || ''}" placeholder="Solo Plan Advanced" ${isAdv ? '' : 'disabled'}>
+                        <input type="tel" id="p3-${t.tagId}" value="${t.phone_3 || ''}" placeholder="Solo Plan Advanced" ${isAdv ? '' : 'disabled'}>
                         
-                        <label style="margin-top:20px;">Mensaje de Agradecimiento:</label>
-                        <textarea id="msg-${t.tagId}" rows="3" placeholder="Mensaje personalizado para quien lo encuentre...">${t.thanks_msg || ''}</textarea>
+                        <label>Mensaje Agradecimiento:</label>
+                        <textarea id="msg-${t.tagId}" rows="2" placeholder="Mensaje personalizado...">${t.thanks_msg || ''}</textarea>
                         
                         <button class="btn-action btn-save" onclick="updateTag('${t.tagId}', '${t.nickname}', '${t.category}')">Guardar Configuración</button>
+                        <div style="text-align:center; margin-top:15px;"><a href="https://sagason.cl/t/${t.tagId}" target="_blank" style="color:var(--primary); font-size:11px; text-decoration:none;">🔗 Probar Escaneo</a></div>
                     </div>
                 </div>`;
             }).join('');
@@ -188,29 +164,27 @@
 
     function toggleEdit(id) {
         const area = document.getElementById(`edit-${id}`);
+        const arrow = document.getElementById(`arrow-${id}`);
         const isVisible = area.style.display === "block";
         document.querySelectorAll('.edit-panel').forEach(a => a.style.display = "none");
-        if (!isVisible) area.style.display = "block";
+        document.querySelectorAll('.arrow').forEach(a => a.classList.remove('up'));
+        if (!isVisible) { area.style.display = "block"; arrow.classList.add('up'); }
     }
 
     async function updateTag(tagId, nickname, category) {
         const payload = {
             ownerId, tagId, nickname, category,
             email_1: document.getElementById(`e1-${tagId}`).value,
-            email_2: document.getElementById(`e2-${tagId}`).value || "",
-            email_3: document.getElementById(`e3-${tagId}`).value || "",
-            phone_1: document.getElementById(`p1-${tagId}`).value || "",
-            phone_2: document.getElementById(`p2-${tagId}`).value || "",
-            phone_3: document.getElementById(`p3-${tagId}`).value || "",
+            email_2: document.getElementById(`e2-${tagId}`).value,
+            email_3: document.getElementById(`e3-${tagId}`).value,
+            phone_1: document.getElementById(`p1-${tagId}`).value,
+            phone_2: document.getElementById(`p2-${tagId}`).value,
+            phone_3: document.getElementById(`p3-${tagId}`).value,
             thanks_msg: document.getElementById(`msg-${tagId}`).value
         };
         try {
-            const res = await fetch(`${API}/user-tags`, { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload) 
-            });
-            if (res.ok) alert("✅ Configuración guardada.");
+            const res = await fetch(`${API}/user-tags`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            if (res.ok) alert("✅ Guardado");
         } catch (e) {
             alert("❌ Error de red.");
         }
@@ -220,17 +194,10 @@
         const tagId = document.getElementById('new-tag-id').value.toUpperCase().trim();
         const nickname = document.getElementById('new-tag-nickname').value.trim();
         const category = document.getElementById('new-tag-category').value;
-        if (!tagId || !nickname) return alert("Completa los datos");
+        if (!tagId || !nickname) return alert("Faltan datos");
         try {
-            const res = await fetch(`${API}/user-tags`, { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ ownerId, tagId, nickname, category, email_1: userEmail }) 
-            });
-            if (res.ok) { alert("¡Producto Vinculado!"); location.reload(); } else {
-                const err = await res.json();
-                alert("❌ " + err.error);
-            }
+            const res = await fetch(`${API}/user-tags`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ ownerId, tagId, nickname, category, email_1: userEmail }) });
+            if (res.ok) { alert("¡Éxito!"); location.reload(); } else { const err = await res.json(); alert("❌ " + err.error); }
         } catch (e) {
             alert("❌ Error de red.");
         }
