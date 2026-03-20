@@ -49,26 +49,96 @@
 </div>
 
 <script>
-    // 1. Verificar si el usuario viene logeado desde Cognito
-    // Cognito envía un "access_token" en la URL después del login exitoso
-    const urlParams = new URLSearchParams(window.location.hash.substring(1));
-    let accessToken = urlParams.get('access_token') || localStorage.getItem('sagason_token');
+    // 1. Configuración Global
+    const API_URL = "https://k.sagason.cl/user-config";
+    let ownerId = null;
 
-    if (!accessToken) {
-        // Si no hay token, lo mandamos al Login de Cognito que configuramos antes
-        const loginUrl = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard";
-        window.location.href = loginUrl;
-    } else {
-        localStorage.setItem('sagason_token', accessToken);
-        // Aquí podrías hacer una llamada a una API para obtener el email del usuario
-        document.getElementById('user-email').innerText = "Sesión Iniciada ✅";
-        document.getElementById('profile-section').style.display = 'block';
+    // 2. Utilidad para decodificar el token de Google/Cognito
+    function parseJwt(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(window.atob(base64));
+        } catch (e) { return null; }
     }
+
+    // 3. Inicialización del Dashboard
+    async function initDashboard() {
+        // Extraer tokens de la URL (después del #)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        let idToken = hashParams.get('id_token') || localStorage.getItem('sagason_id_token');
+
+        if (!idToken) {
+            // Si no hay sesión, redirigir al Login de AWS
+            window.location.href = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard";
+            return;
+        }
+
+        // Guardar token y obtener el ID único del usuario (sub)
+        localStorage.setItem('sagason_id_token', idToken);
+        const userData = parseJwt(idToken);
+        ownerId = userData.sub; // Este es el ID único de Google para este usuario
+        
+        document.getElementById('user-email').innerText = `Hola, ${userData.email} ✅`;
+        document.getElementById('profile-section').style.display = "block";
+
+        // Cargar datos existentes desde la base de datos
+        try {
+            const response = await fetch(`${API_URL}?ownerId=${ownerId}`);
+            const config = await response.json();
+            
+            if (config) {
+                document.getElementById('email_1').value = config.email_1 || userData.email;
+                document.getElementById('email_2').value = config.email_2 || "";
+                document.getElementById('email_3').value = config.email_3 || "";
+                document.getElementById('phone_1').value = config.phone_1 || "";
+                document.getElementById('phone_2').value = config.phone_2 || "";
+                document.getElementById('phone_3').value = config.phone_3 || "";
+            }
+        } catch (e) { console.error("Error cargando perfil", e); }
+    }
+
+    // 4. Guardar Configuración
+    document.getElementById('profileForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('button');
+        btn.disabled = true;
+        btn.innerText = "Guardando...";
+
+        const payload = {
+            ownerId: ownerId,
+            email_1: document.getElementById('email_1').value,
+            email_2: document.getElementById('email_2').value,
+            email_3: document.getElementById('email_3').value,
+            phone_1: document.getElementById('phone_1').value,
+            phone_2: document.getElementById('phone_2').value,
+            phone_3: document.getElementById('phone_3').value
+        };
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                alert("✅ Configuración guardada con éxito.");
+            } else {
+                alert("❌ Error al guardar.");
+            }
+        } catch (e) { alert("Error de red."); }
+        
+        btn.disabled = false;
+        btn.innerText = "Guardar Configuración";
+    };
 
     function logout() {
-        localStorage.removeItem('sagason_token');
+        localStorage.removeItem('sagason_id_token');
         window.location.href = "https://sagason.cl";
     }
+
+    initDashboard();
 </script>
 </body>
 </html>
