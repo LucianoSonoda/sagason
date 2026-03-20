@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagason - Mi Panel</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .user-info { font-weight: bold; color: #2c3e50; }
+        .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="user-info" id="user-email">Cargando...</div>
+        <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+    </div>
+
+    <h1>Mis Tags de Seguridad</h1>
+    <p>Desde aquí puedes gestionar tus placas y los contactos de emergencia.</p>
+    
+    <div id="tags-list">
+        <!-- Aquí cargaremos los tags del usuario desde AWS -->
+        <p>Próximamente: Lista de tus tags activos...</p>
+    </div>
+</div>
+
+<script>
+    // 1. Verificar si el usuario viene logeado desde Cognito
+    // Cognito envía un "access_token" en la URL después del login exitoso
+    const urlParams = new URLSearchParams(window.location.hash.substring(1));
+    let accessToken = urlParams.get('access_token') || localStorage.getItem('sagason_token');
+
+    if (!accessToken) {
+        // Si no hay token, lo mandamos al Login de Cognito que configuramos antes
+        window.location.href = "https://sa-east-1-oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard";
+    } else {
+        localStorage.setItem('sagason_token', accessToken);
+        // Aquí podrías hacer una llamada a una API para obtener el email del usuario
+        document.getElementById('user-email').innerText = "Sesión Iniciada ✅";
+    }
+
+    function logout() {
+        localStorage.removeItem('sagason_token');
+        window.location.href = "https://sagason.cl";
+    }
+</script>
+</body>
+</html>
