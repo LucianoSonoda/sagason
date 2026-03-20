@@ -3,208 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sagason - Panel de Control</title>
+    <title>Sagason - Gestión de Placas</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
-        .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        h1, h3 { margin: 0; color: #1a1a1a; }
-        .section { margin-bottom: 40px; padding: 20px; background: #fafafa; border-radius: 8px; border: 1px solid #eaeaea; }
-        label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; }
-        .btn-main { background: #3498db; color: white; margin-top: 20px; }
-        .btn-main:hover { background: #2980b9; }
-        .btn-save { background: #27ae60; color: white; margin-top: 25px; }
-        .btn-save:hover { background: #219150; }
-        .btn-logout { background: #e74c3c; color: white; width: auto; padding: 8px 15px; }
-        .tag-item { background: white; padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .tag-info b { color: #2c3e50; display: block; }
-        .tag-info small { color: #7f8c8d; font-family: monospace; }
-        .link-test { color: #3498db; text-decoration: none; font-size: 13px; font-weight: bold; }
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2, h3 { color: #2c3e50; margin-top: 0; }
+        .tag-card { border-left: 5px solid #3498db; margin-bottom: 15px; padding: 15px; background: #fff; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        input, select { width: 100%; padding: 10px; margin: 5px 0 15px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { cursor: pointer; border: none; border-radius: 5px; font-weight: bold; }
+        .btn-add { background: #3498db; color: white; padding: 12px; width: 100%; }
+        .btn-save-tag { background: #27ae60; color: white; padding: 8px 15px; font-size: 12px; }
+        .btn-logout { background: #e74c3c; color: white; padding: 10px 20px; float: right; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h3 id="user-display">Cargando...</h3>
-        <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
-    </div>
-
-    <!-- SECCIÓN DE MIS PLACAS -->
-    <div class="section">
-        <h3>Mis Placas Registradas</h3>
-        <div id="tags-list-container" style="margin-top:15px;">
-            <p style="color:grey;">Cargando tus placas activas...</p>
-        </div>
-    </div>
+    <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+    <h2 id="welcome">Hola!</h2>
 
     <!-- SECCIÓN DE ACTIVACIÓN -->
-    <div class="section">
-        <h3>Activar Nueva Placa Física</h3>
-        <p style="font-size:13px; color:#666;">Ingresa el código ID que aparece grabado en tu placa Sagason.</p>
-        <input type="text" id="new-tag-id" placeholder="ID DE LA PLACA (Ej: 2UCAYZL)" style="text-transform:uppercase; font-weight:bold; letter-spacing:1px;">
-        <input type="text" id="new-tag-nickname" placeholder="Nombre (Ej: Mi Perro Firulais, Maleta Viaje)">
+    <div class="card">
+        <h3>Activar Nueva Placa</h3>
+        <input type="text" id="new-tag-id" placeholder="CÓDIGO ID DE LA PLACA (Ej: PLACA-777)" style="text-transform:uppercase;">
+        <input type="text" id="new-tag-nickname" placeholder="Nombre (Ej: Mi Perro, Mi Auto)">
         <select id="new-tag-category">
             <option value="Mascotas">Mascota</option>
             <option value="Personas">Persona</option>
             <option value="Equipos">Equipo</option>
         </select>
-        <button class="btn-main" onclick="registerTag()">Activar Producto</button>
+        <button class="btn-add" onclick="saveTagDetails(true)">Activar y Configurar</button>
     </div>
 
-    <!-- SECCIÓN DE CONFIGURACIÓN DE ALERTAS -->
-    <div class="section">
-        <h3>Configuración de Alertas</h3>
-        <form id="profileForm">
-            <label>Correo Principal (Gratis):</label>
-            <input type="email" id="email_1" required>
-            <label>Correos Secundarios (Plan Avanzado):</label>
-            <input type="email" id="email_2" placeholder="Opcional">
-            <input type="email" id="email_3" placeholder="Opcional">
-
-            <label>Teléfonos de Alerta (Formato: +569...):</label>
-            <input type="tel" id="phone_1" placeholder="Teléfono Principal">
-            <input type="tel" id="phone_2" placeholder="Opcional">
-            <input type="tel" id="phone_3" placeholder="Opcional">
-
-            <button type="submit" class="btn-save">Guardar Cambios</button>
-        </form>
-    </div>
+    <!-- LISTA DE PLACAS -->
+    <h3>Mis Placas y sus Contactos</h3>
+    <div id="tags-container">Cargando tus placas...</div>
 </div>
 
 <script>
-    const API_URL = "https://k.sagason.cl";
+    const API = "https://k.sagason.cl";
     let ownerId = null;
+    let userEmail = "";
 
     function parseJwt(token) {
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            return JSON.parse(window.atob(base64));
-        } catch (e) { return null; }
+        try { return JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); } catch (e) { return null; }
     }
 
-    async function initDashboard() {
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        let idToken = hashParams.get('id_token') || localStorage.getItem('sagason_id_token');
-
-        if (!idToken) {
-            window.location.href = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard";
-            return;
-        }
-
-        localStorage.setItem('sagason_id_token', idToken);
-        const userData = parseJwt(idToken);
-        ownerId = userData.sub; 
+    async function init() {
+        const hash = new URLSearchParams(window.location.hash.substring(1));
+        const token = hash.get('id_token') || localStorage.getItem('sagason_token');
+        if (!token) { window.location.href = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard"; return; }
         
-        document.getElementById('user-display').innerText = `Hola, ${userData.email.split('@')[0]}`;
-        
-        loadProfile(userData.email);
+        localStorage.setItem('sagason_token', token);
+        const user = parseJwt(token);
+        ownerId = user.sub;
+        userEmail = user.email;
+        document.getElementById('welcome').innerText = `Panel de ${userEmail}`;
         loadTags();
     }
 
-    async function loadProfile(defaultEmail) {
-        try {
-            const response = await fetch(`${API_URL}/user-config?ownerId=${ownerId}`);
-            const config = await response.json();
-            if (config) {
-                document.getElementById('email_1').value = config.email_1 || defaultEmail;
-                document.getElementById('email_2').value = config.email_2 || "";
-                document.getElementById('email_3').value = config.email_3 || "";
-                document.getElementById('phone_1').value = config.phone_1 || "";
-                document.getElementById('phone_2').value = config.phone_2 || "";
-                document.getElementById('phone_3').value = config.phone_3 || "";
-            }
-        } catch (e) { console.error("Error perfil:", e); }
-    }
-
     async function loadTags() {
-        const container = document.getElementById('tags-list-container');
-        try {
-            const response = await fetch(`${API_URL}/user-tags?ownerId=${ownerId}`);
-            const tags = await response.json();
-            
-            if (!tags || tags.length === 0) {
-                container.innerHTML = "<p style='color:grey; font-size:14px;'>No tienes placas activas.</p>";
-                return;
-            }
+        const res = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
+        const tags = await res.json();
+        const cont = document.getElementById('tags-container');
+        cont.innerHTML = tags.length ? "" : "No tienes placas activas.";
 
-            container.innerHTML = tags.map(t => `
-                <div class="tag-item">
-                    <div class="tag-info">
-                        <b>${t.nickname}</b>
-                        <small>ID: ${t.tagId} (${t.category})</small>
+        if (Array.isArray(tags)) {
+            tags.forEach(t => {
+                const div = document.createElement('div');
+                div.className = "tag-card";
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong>${t.nickname} [${t.tagId}]</strong>
+                        <span>Plan: ${t.tier || 'Básico'}</span>
                     </div>
-                    <a href="https://sagason.cl/t/${t.tagId}" target="_blank" class="link-test">Probar Escaneo</a>
-                </div>
-            `).join('');
-        } catch (e) { 
-            container.innerHTML = "Error al conectar con el servidor.";
+                    <div class="grid" style="margin-top:10px;">
+                        <div>
+                            <label>Emails de Alerta:</label>
+                            <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}" placeholder="Email 1">
+                            <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Email 2">
+                            <input type="email" id="e3-${t.tagId}" value="${t.email_3 || ''}" placeholder="Email 3">
+                        </div>
+                        <div>
+                            <label>Teléfonos (+569...):</label>
+                            <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" placeholder="Teléfono 1">
+                            <input type="tel" id="p2-${t.tagId}" value="${t.phone_2 || ''}" placeholder="Teléfono 2">
+                            <input type="tel" id="p3-${t.tagId}" value="${t.phone_3 || ''}" placeholder="Teléfono 3">
+                        </div>
+                    </div>
+                    <button class="btn-save-tag" onclick="saveTagDetails(false, '${t.tagId}', '${t.nickname}', '${t.category}')">Actualizar Contactos de este Tag</button>
+                    <a href="https://sagason.cl/t/${t.tagId}" target="_blank" style="margin-left:10px; font-size:11px;">Probar Link</a>
+                `;
+                cont.appendChild(div);
+            });
         }
     }
 
-    async function registerTag() {
-        const tagIdInput = document.getElementById('new-tag-id');
-        const nicknameInput = document.getElementById('new-tag-nickname');
-        const category = document.getElementById('new-tag-category').value;
+    async function saveTagDetails(isNew, tid, nick, cat) {
+        const tagId = isNew ? document.getElementById('new-tag-id').value.toUpperCase() : tid;
+        const nickname = isNew ? document.getElementById('new-tag-nickname').value : nick;
+        const category = isNew ? document.getElementById('new-tag-category').value : cat;
 
-        const tagId = tagIdInput.value.toUpperCase().trim();
-        const nickname = nicknameInput.value.trim();
+        if (!tagId || !nickname) return alert("Completa los datos");
 
-        if (!tagId || !nickname) return alert("Por favor completa el ID de la placa y el nombre.");
+        const payload = {
+            ownerId, tagId, nickname, category,
+            email_1: isNew ? userEmail : document.getElementById(`e1-${tid}`).value,
+            email_2: isNew ? "" : document.getElementById(`e2-${tid}`).value,
+            email_3: isNew ? "" : document.getElementById(`e3-${tid}`).value,
+            phone_1: isNew ? "" : document.getElementById(`p1-${tid}`).value,
+            phone_2: isNew ? "" : document.getElementById(`p2-${tid}`).value,
+            phone_3: isNew ? "" : document.getElementById(`p3-${tid}`).value
+        };
 
-        try {
-            const response = await fetch(`${API_URL}/user-tags`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ownerId, tagId, nickname, category })
-            });
+        const res = await fetch(`${API}/user-tags`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
 
-            const result = await response.json();
-
-            if (response.ok) {
-                alert("✅ ¡Placa activada con éxito!");
-                tagIdInput.value = "";
-                nicknameInput.value = "";
-                loadTags();
-            } else {
-                alert("❌ " + (result.error || "Error al activar"));
-            }
-        } catch (e) { alert("Error de red al intentar activar la placa."); }
+        if (res.ok) {
+            alert("✅ Guardado correctamente");
+            if (isNew) { document.getElementById('new-tag-id').value = ""; document.getElementById('new-tag-nickname').value = ""; }
+            loadTags();
+        } else {
+            const err = await res.json();
+            alert("❌ " + err.error);
+        }
     }
 
-    document.getElementById('profileForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector('button');
-        btn.innerText = "Guardando...";
-        try {
-            const payload = {
-                ownerId,
-                email_1: document.getElementById('email_1').value,
-                email_2: document.getElementById('email_2').value,
-                email_3: document.getElementById('email_3').value,
-                phone_1: document.getElementById('phone_1').value,
-                phone_2: document.getElementById('phone_2').value,
-                phone_3: document.getElementById('phone_3').value
-            };
-            await fetch(`${API_URL}/user-config`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            alert("✅ Configuración guardada correctamente.");
-        } catch (e) { alert("Error al guardar la configuración."); }
-        btn.innerText = "Guardar Cambios";
-    };
-
-    function logout() {
-        localStorage.removeItem('sagason_id_token');
-        window.location.href = "https://sagason.cl";
-    }
-
-    initDashboard();
+    function logout() { localStorage.removeItem('sagason_token'); window.location.href = "https://sagason.cl"; }
+    init();
 </script>
 </body>
 </html>
