@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagason - Sistema de Ayuda</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; color: #333; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+        h2 { color: #2c3e50; text-align: center; }
+        .info-tag { background: #e8f4fd; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 5px; margin-top: 20px; cursor: pointer; font-size: 16px; }
+        button:disabled { background: #bdc3c7; }
+        #gps-status { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="card" id="app">
+    <div id="loading">Cargando información del tag...</div>
+    
+    <div id="form-container" style="display: none;">
+        <h2>¡Gracias por ayudar!</h2>
+        <div class="info-tag">
+            Has encontrado a: <b id="display-nickname"></b><br>
+            Categoría: <span id="display-category"></span>
+        </div>
+
+        <form id="reportForm">
+            <label>Tu Nombre:</label>
+            <input type="text" id="informant-name" required placeholder="Ej: Juan Pérez">
+
+            <label>Tu Teléfono de contacto:</label>
+            <input type="tel" id="informant-phone" required placeholder="Ej: +569 1234 5678">
+
+            <!-- Campo dinámico que cambia según categoría -->
+            <label id="label-desc">Descripción del hallazgo:</label>
+            <textarea id="informant-msg" rows="3" required placeholder="¿Cómo está y dónde exactamente se encuentra?"></textarea>
+
+            <div id="gps-section">
+                <button type="button" id="btn-gps" style="background: #2980b9;">📍 Compartir mi Ubicación Exacta</button>
+                <p id="gps-status">Ubicación no compartida (opcional pero recomendada)</p>
+            </div>
+
+            <button type="submit" id="btn-submit">Enviar reporte al dueño</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const tagId = urlParams.get('id');
+    let coords = null;
+
+    // 1. Cargar datos del tag al iniciar
+    async function init() {
+        if (!tagId) { document.getElementById('loading').innerText = "ID de tag inválido."; return; }
+
+        try {
+            const response = await fetch(`https://k.sagason.cl/scan?id=${tagId}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                document.getElementById('display-nickname').innerText = data.nickname;
+                document.getElementById('display-category').innerText = data.category;
+                
+                // Personalizar textos según categoría
+                if (data.category === "Personas") {
+                    document.getElementById('label-desc').innerText = "Estado de salud / Lugar:";
+                } else if (data.category === "Equipos") {
+                    document.getElementById('label-desc').innerText = "Estado del equipo / Lugar de hallazgo:";
+                }
+
+                document.getElementById('loading').style.display = "none";
+                document.getElementById('form-container').style.display = "block";
+            } else {
+                document.getElementById('loading').innerText = "Este tag no está activo.";
+            }
+        } catch (e) {
+            document.getElementById('loading').innerText = "Error de conexión con el servidor.";
+        }
+    }
+
+    // 2. Manejar GPS
+    document.getElementById('btn-gps').onclick = () => {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                document.getElementById('gps-status').innerText = "✅ Ubicación capturada con éxito.";
+                document.getElementById('btn-gps').style.display = "none";
+            },
+            (err) => { alert("No pudimos obtener tu ubicación. Por favor descríbela en el mensaje."); }
+        );
+    };
+
+    // 3. Enviar Formulario
+    document.getElementById('reportForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-submit');
+        btn.disabled = true;
+        btn.innerText = "Enviando...";
+
+        const payload = {
+            tagId: tagId,
+            name: document.getElementById('informant-name').value,
+            phone: document.getElementById('informant-phone').value,
+            message: document.getElementById('informant-msg').value,
+            location: coords
+        };
+
+        try {
+            const response = await fetch('https://k.sagason.cl/report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                document.getElementById('app').innerHTML = "<h2>¡Mensaje Enviado!</h2><p>El propietario ha sido notificado y se pondrá en contacto contigo a la brevedad. Gracias por tu humanidad.</p>";
+            } else {
+                alert("Error al enviar el reporte. Intenta de nuevo.");
+                btn.disabled = false;
+            }
+        } catch (e) {
+            alert("Error de red.");
+            btn.disabled = false;
+        }
+    };
+
+    init();
+</script>
+</body>
+</html>
