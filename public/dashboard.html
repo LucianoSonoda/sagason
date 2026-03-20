@@ -37,7 +37,8 @@
 
     if (!accessToken) {
         // Si no hay token, lo mandamos al Login de Cognito que configuramos antes
-        window.location.href = "https://sa-east-1-oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard";
+        const loginUrl = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard";
+        window.location.href = loginUrl;
     } else {
         localStorage.setItem('sagason_token', accessToken);
         // Aquí podrías hacer una llamada a una API para obtener el email del usuario
