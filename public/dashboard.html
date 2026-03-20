@@ -2,228 +2,59 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sagason - Mi Panel</title>
-    <!-- Favicon / Logo -->
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
-        :root {
-            --primary: #0ea5e9; /* Azul Sagason */
-            --bg-dark: #0f172a; /* Fondo Profundo */
-            --card-bg: #1e293b; /* Fondo de Tarjetas */
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --success: #10b981;
-            --danger: #ef4444;
-            --border: #334155;
-        }
-
-        body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            background-color: var(--bg-dark); 
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* NAVEGACIÓN / HEADER */
-        header {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo-img {
-            height: 40px; /* Ajusta según el tamaño de tu logo real */
-            display: block;
-        }
-
-        .btn-logout {
-            background: transparent;
-            color: var(--text-dim);
-            border: 1px solid var(--border);
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: 0.2s;
-        }
-
-        .container {
-            max-width: 650px;
-            margin: 20px auto;
-            padding: 0 15px 80px 15px; /* Espacio extra abajo para móviles */
-        }
-
-        /* SISTEMA DE PESTAÑAS (SEGMENTED CONTROL) */
-        .tabs {
-            display: flex;
-            background: var(--card-bg);
-            padding: 4px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            border: 1px solid var(--border);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: none;
-            color: var(--text-dim);
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: 0.3s;
-            font-size: 14px;
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
-        }
-
-        /* CONTENIDO */
-        .content-section { display: none; animation: fadeIn 0.3s ease; }
-        .content-section.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        h2 { font-size: 18px; margin: 0 0 20px 0; color: var(--primary); }
-
-        /* LISTA DE PLACAS */
-        .tag-item {
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            overflow: hidden;
-        }
-
-        .tag-header {
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .tag-name { font-weight: 600; font-size: 16px; }
-        .tag-id { font-size: 11px; color: var(--text-dim); display: block; font-family: monospace; }
-
-        .edit-panel {
-            padding: 20px;
-            background: #1e293b;
-            border-top: 1px solid var(--border);
-            display: none;
-        }
-
-        /* FORMULARIOS */
-        label { display: block; margin-top: 15px; font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin-top: 6px;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: white;
-            font-size: 16px; /* Evita zoom en iOS */
-            box-sizing: border-box;
-        }
-
-        input:focus { border-color: var(--primary); outline: none; }
-
-        .btn-action {
-            width: 100%;
-            padding: 14px;
-            margin-top: 25px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
+        :root { --primary: #0ea5e9; --bg-dark: #0f172a; --card-bg: #1e293b; --text: #f8fafc; --border: #334155; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text); margin: 0; padding: 0; }
+        .container { max-width: 650px; margin: 20px auto; padding: 0 15px 80px 15px; }
+        header { background: rgba(15, 23, 42, 0.9); padding: 15px 20px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); }
+        .tabs { display: flex; background: var(--card-bg); padding: 4px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border); }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: none; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 8px; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .content-section { display: none; } .content-section.active { display: block; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .tag-item { background: #0f172a; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; }
+        .tag-header { padding: 16px; display: flex; justify-content: space-between; cursor: pointer; }
+        .edit-panel { padding: 20px; background: #1e293b; border-top: 1px solid var(--border); display: none; }
+        label { display: block; margin-top: 15px; font-size: 11px; color: #94a3b8; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 6px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: white; box-sizing: border-box; }
+        .btn-action { width: 100%; padding: 14px; margin-top: 25px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
         .btn-confirm { background: var(--primary); color: white; }
-        .btn-save { background: var(--success); color: white; }
-
-        .btn-test {
-            font-size: 11px;
-            color: var(--primary);
-            text-decoration: none;
-            border: 1px solid var(--primary);
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
-
-        /* MOBILE OPTIMIZATION */
-        @media (max-width: 480px) {
-            .container { margin-top: 10px; }
-            .grid { display: flex; flex-direction: column; }
-        }
+        .btn-save { background: #10b981; color: white; }
     </style>
 </head>
 <body>
 
 <header>
-    <!-- IMPORTANTE: Asegúrate de que la ruta del logo sea correcta -->
-    <img src="logo-chico.png" alt="Sagason" class="logo-img">
-    <button class="btn-logout" onclick="logout()">Cerrar</button>
+    <img src="logo-chico.png" height="35" onerror="this.src='https://sagason.cl/images/logo.png'">
+    <button onclick="logout()" style="background:none; border:1px solid var(--border); color:white; padding:5px 10px; border-radius:5px;">Salir</button>
 </header>
 
 <div class="container">
-    <p id="user-greeting" style="color: var(--text-dim); margin-bottom: 20px; font-size: 14px;">Cargando usuario...</p>
-
-    <!-- PESTAÑAS ESTILO MOVIL -->
     <div class="tabs">
         <button class="tab-btn active" id="btn-list" onclick="showTab('list')">Mis Placas</button>
         <button class="tab-btn" id="btn-activate" onclick="showTab('activate')">Activar Nueva</button>
     </div>
 
-    <!-- SECCIÓN: LISTADO -->
     <div class="content-section active" id="section-list">
-        <div id="tags-list-container">
-            <p style="text-align:center; color:var(--text-dim);">Buscando tus placas...</p>
-        </div>
+        <div id="tags-list-container">Cargando...</div>
     </div>
 
-    <!-- SECCIÓN: ACTIVACIÓN -->
     <div class="content-section" id="section-activate">
         <div class="card">
-            <h2>Vincular Producto</h2>
-            <label>Código ID grabado:</label>
+            <h3>Vincular Producto</h3>
+            <label>ID de Placa:</label>
             <input type="text" id="new-tag-id" placeholder="EJ: 2UCAYZL" style="text-transform:uppercase;">
-            
-            <label>Nombre personalizado:</label>
-            <input type="text" id="new-tag-nickname" placeholder="Ej: Mi Perro, Maleta, etc.">
-            
+            <label>Nombre:</label>
+            <input type="text" id="new-tag-nickname" placeholder="Ej: Mi Perro">
             <label>Categoría:</label>
             <select id="new-tag-category">
                 <option value="Mascotas">Mascota</option>
                 <option value="Personas">Persona</option>
                 <option value="Equipos">Equipo</option>
             </select>
-            
-            <button class="btn-action btn-confirm" onclick="registerTag()">Activar Ahora</button>
+            <button class="btn-action btn-confirm" onclick="registerTag()">Activar</button>
         </div>
     </div>
 </div>
@@ -233,112 +64,86 @@
     let ownerId = null;
     let userEmail = "";
 
-    function showTab(name) {
+    function showTab(n) { 
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(`section-${name}`).classList.add('active');
-        document.getElementById(`btn-${name}`).classList.add('active');
-    }
-
-    function parseJwt(token) {
-        try { return JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); } catch (e) { return null; }
+        document.getElementById(`section-${n}`).classList.add('active');
+        document.getElementById(`btn-${n}`).classList.add('active');
     }
 
     async function init() {
         const hash = new URLSearchParams(window.location.hash.substring(1));
         const token = hash.get('id_token') || localStorage.getItem('sagason_token');
-        if (!token) { 
-            window.location.href = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard"; 
-            return; 
-        }
+        if (!token) { window.location.href = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard"; return; }
         localStorage.setItem('sagason_token', token);
-        const user = parseJwt(token);
-        ownerId = user.sub;
-        userEmail = user.email;
-        document.getElementById('user-greeting').innerText = `Sesión: ${userEmail}`;
+        const user = JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+        ownerId = user.sub; userEmail = user.email;
         loadTags();
     }
 
     async function loadTags() {
-        const container = document.getElementById('tags-list-container');
         try {
-            const response = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
-            const tags = await response.json();
+            const res = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
+            const tags = await res.json();
+            const cont = document.getElementById('tags-list-container');
             if (!tags || tags.length === 0) {
-                container.innerHTML = "<div class='card' style='text-align:center; color:var(--text-dim);'>No tienes placas activas aún.</div>";
+                cont.innerHTML = "<p style='text-align:center; color:#94a3b8;'>No tienes placas registradas.</p>";
                 return;
             }
-            container.innerHTML = tags.map(t => `
+            cont.innerHTML = tags.map(t => `
                 <div class="tag-item">
                     <div class="tag-header" onclick="toggleEdit('${t.tagId}')">
-                        <div class="tag-info">
-                            <span class="tag-name">${t.nickname}</span>
-                            <span class="tag-id">${t.tagId} · ${t.category}</span>
-                        </div>
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <a href="https://sagason.cl/t/${t.tagId}" target="_blank" class="btn-test" onclick="event.stopPropagation()">Probar</a>
-                            <span id="arrow-${t.tagId}" style="color:var(--text-dim);">▼</span>
-                        </div>
+                        <b>${t.nickname}</b>
+                        <span id="arrow-${t.tagId}">▼</span>
                     </div>
                     <div class="edit-panel" id="edit-${t.tagId}">
-                        <label>Emails de Alerta:</label>
+                        <label>Email Notificación:</label>
                         <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}">
-                        <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Opcional">
-                        
-                        <label>Teléfonos (+569...):</label>
-                        <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" placeholder="WhatsApp 1">
-                        <input type="tel" id="p2-${t.tagId}" value="${t.phone_2 || ''}" placeholder="WhatsApp 2">
-                        
-                        <button class="btn-action btn-save" onclick="updateTagConfig('${t.tagId}', '${t.nickname}', '${t.category}')">Guardar Contactos</button>
+                        <label>Teléfono (+569...):</label>
+                        <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}">
+                        <label>Mensaje de Agradecimiento:</label>
+                        <textarea id="msg-${t.tagId}" rows="3" placeholder="Mensaje que verá quien encuentre tu tag...">${t.thanks_msg || ''}</textarea>
+                        <button class="btn-action btn-save" onclick="updateTag('${t.tagId}', '${t.nickname}', '${t.category}')">Guardar</button>
                     </div>
                 </div>
             `).join('');
-        } catch (e) { container.innerHTML = "Error al conectar con AWS."; }
+        } catch (e) {
+            document.getElementById('tags-list-container').innerHTML = "<p style='text-align:center;'>Error al cargar placas.</p>";
+        }
     }
 
-    function toggleEdit(tagId) {
-        const area = document.getElementById(`edit-${tagId}`);
-        const arrow = document.getElementById(`arrow-${tagId}`);
+    function toggleEdit(id) {
+        const area = document.getElementById(`edit-${id}`);
         const isVisible = area.style.display === "block";
         document.querySelectorAll('.edit-panel').forEach(a => a.style.display = "none");
-        document.querySelectorAll('[id^="arrow-"]').forEach(a => a.innerText = "▼");
-        if (!isVisible) { area.style.display = "block"; arrow.innerText = "▲"; }
+        if (!isVisible) area.style.display = "block";
     }
 
-    async function updateTagConfig(tagId, nickname, category) {
+    async function updateTag(tagId, nickname, category) {
         const payload = {
             ownerId, tagId, nickname, category,
             email_1: document.getElementById(`e1-${tagId}`).value,
-            email_2: document.getElementById(`e2-${tagId}`).value,
             phone_1: document.getElementById(`p1-${tagId}`).value,
-            phone_2: document.getElementById(`p2-${tagId}`).value
+            thanks_msg: document.getElementById(`msg-${tagId}`).value
         };
-        try {
-            const res = await fetch(`${API}/user-tags`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            if (res.ok) alert("✅ Contactos guardados.");
-            else alert("Error al guardar.");
-        } catch (e) { alert("Error de red."); }
+        const res = await fetch(`${API}/user-tags`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload) 
+        });
+        if (res.ok) alert("✅ Guardado");
     }
 
     async function registerTag() {
         const tagId = document.getElementById('new-tag-id').value.toUpperCase().trim();
         const nickname = document.getElementById('new-tag-nickname').value.trim();
         const category = document.getElementById('new-tag-category').value;
-        if (!tagId || !nickname) return alert("Completa los datos.");
-        try {
-            const res = await fetch(`${API}/user-tags`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ownerId, tagId, nickname, category, email_1: userEmail })
-            });
-            const result = await res.json();
-            if (res.ok) { alert("✅ ¡Placa activada!"); location.reload(); }
-            else alert("❌ " + result.error);
-        } catch (e) { alert("Error de red."); }
+        const res = await fetch(`${API}/user-tags`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ownerId, tagId, nickname, category, email_1: userEmail }) 
+        });
+        if (res.ok) location.reload(); else alert("ID No existe");
     }
 
     function logout() { localStorage.removeItem('sagason_token'); window.location.href = "https://sagason.cl"; }
