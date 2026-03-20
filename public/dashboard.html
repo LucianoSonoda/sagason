@@ -11,7 +11,7 @@
         .btn-close { background: transparent; border: 1px solid var(--border); color: #94a3b8; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
         .container { max-width: 480px; margin: 0 auto; padding: 20px 15px 100px 15px; }
         .tabs { display: flex; background: var(--card); padding: 4px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: none; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 8px; font-size: 13px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: none; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 8px; font-size: 11px; }
         .tab-btn.active { background: var(--primary); color: white; }
         .content-section { display: none; } .content-section.active { display: block; }
         .tag-item { background: #0f172a; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
@@ -22,10 +22,11 @@
         .arrow.up { transform: rotate(180deg); }
         .edit-panel { padding: 15px; background: #1e293b; border-top: 1px solid var(--border); display: none; }
         label { display: block; margin-top: 12px; font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 14px; box-sizing: border-box; }
-        input:disabled { opacity: 0.2; cursor: not-allowed; }
-        .btn-action { width: 100%; padding: 13px; margin-top: 20px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; background: #10b981; color: white; }
-        .badge { font-size: 9px; padding: 2px 5px; border-radius: 4px; border: 1px solid currentColor; margin-left: 5px; }
+        input, select, textarea { width: 100%; padding: 11px; margin-top: 5px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 14px; box-sizing: border-box; }
+        .btn-action { width: 100%; padding: 13px; margin-top: 20px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-save { background: #10b981; color: white; }
+        .btn-confirm { background: var(--primary); color: white; }
+        .admin-box { border: 1px dashed var(--primary); padding: 15px; border-radius: 12px; background: rgba(14, 165, 233, 0.05); }
     </style>
 </head>
 <body>
@@ -39,21 +40,22 @@
     <div class="tabs">
         <button class="tab-btn active" id="btn-list" onclick="showTab('list')">Mis Placas</button>
         <button class="tab-btn" id="btn-activate" onclick="showTab('activate')">Activar Nueva</button>
+        <button class="tab-btn" id="btn-admin" onclick="showTab('admin')" style="display:none; color:var(--primary);">ADMIN</button>
     </div>
 
-    <!-- SECCIÓN: LISTADO -->
+    <!-- LISTADO -->
     <div class="content-section active" id="section-list">
         <div id="tags-list-container">
-            <p style="text-align:center; color:#475569; font-size: 13px;">Cargando placas...</p>
+            <p style="text-align:center; color:#475569; font-size: 13px;">Cargando tus placas...</p>
         </div>
     </div>
 
-    <!-- SECCIÓN: ACTIVACIÓN -->
+    <!-- ACTIVACIÓN USUARIO -->
     <div class="content-section" id="section-activate">
         <div style="background:var(--card); padding:20px; border-radius:12px; border:1px solid var(--border);">
             <h3 style="margin:0 0 15px 0; font-size:16px;">Vincular Producto</h3>
             <label>ID de la Placa:</label>
-            <input type="text" id="new-tag-id" placeholder="EJ: 2UCAYZL" style="text-transform:uppercase; font-weight:bold;">
+            <input type="text" id="new-tag-id" placeholder="xxxx-xxxx-xxxx-xxxx" style="font-family:monospace;">
             <label>Nombre Identificador:</label>
             <input type="text" id="new-tag-nickname" placeholder="Ej: Mi Perro Bobby">
             <label>Categoría Inicial:</label>
@@ -62,15 +64,31 @@
                 <option value="Personas">Persona</option>
                 <option value="Equipos">Equipo</option>
             </select>
-            <button class="btn-action" style="background:var(--primary);" onclick="registerTag()">Activar Ahora</button>
+            <button class="btn-action btn-confirm" onclick="registerTag()">Activar Ahora</button>
+        </div>
+    </div>
+
+    <!-- PANEL ADMIN (SOLO PARA TI) -->
+    <div class="content-section" id="section-admin">
+        <div class="admin-box">
+            <h3 style="margin:0 0 10px 0; font-size:16px; color:var(--primary);">Generador de Fábrica</h3>
+            <p style="font-size:11px; color:#94a3b8; margin-bottom:15px;">Crea nuevos IDs aleatorios para grabar en metal.</p>
+            <label>Referencia Interna (opcional):</label>
+            <input type="text" id="admin-nick" placeholder="Ej: Lote Marzo 2024">
+            <button class="btn-action btn-confirm" onclick="adminCreateTag()">Generar Nuevo ID Único</button>
+            
+            <div id="admin-result" style="margin-top:20px; display:none; text-align:center;">
+                <p style="font-size:11px; color:var(--primary);">ID GENERADO EXITOSAMENTE:</p>
+                <b id="generated-id" style="font-size:18px; font-family:monospace; background:#0f172a; padding:10px; border-radius:8px; display:block; border:1px solid var(--primary); letter-spacing:1px;"></b>
+                <p style="font-size:10px; color:#94a3b8; margin-top:10px;">Cópialo ahora. Ya está guardado como 'DISPONIBLE' en la base de datos.</p>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
     const API = "https://k.sagason.cl";
-    let ownerId = null;
-    let userEmail = "";
+    let ownerId = null; let userEmail = "";
 
     function showTab(n) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
@@ -86,19 +104,34 @@
         localStorage.setItem('sagason_token', token);
         const user = JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
         ownerId = user.sub; userEmail = user.email;
+
+        // ACTIVAR PESTAÑA ADMIN SOLO PARA TI
+        if (userEmail === "brluson@gmail.com") { document.getElementById('btn-admin').style.display = "block"; }
+
         loadTags();
     }
 
+    // --- FUNCIONES ADMIN ---
+    async function adminCreateTag() {
+        const nickname = document.getElementById('admin-nick').value || "Producto Fábrica";
+        const res = await fetch(`${API}/admin-create-tag`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ email: userEmail, nickname: nickname })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            document.getElementById('admin-result').style.display = "block";
+            document.getElementById('generated-id').innerText = data.tagId;
+        } else { alert("Error al crear tag."); }
+    }
+
+    // --- FUNCIONES USUARIO (MANTENER IGUAL) ---
     async function loadTags() {
         const res = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
         const tags = await res.json();
         const cont = document.getElementById('tags-list-container');
-        
-        if (tags.length === 0) {
-            cont.innerHTML = "<p style='text-align:center; color:#475569; padding:20px;'>No tienes placas registradas.</p>";
-            return;
-        }
-
+        if (tags.length === 0) { cont.innerHTML = "<p style='text-align:center; color:#475569; padding:20px;'>No tienes placas registradas.</p>"; return; }
         cont.innerHTML = tags.map(t => {
             const tier = t.tier || "Free";
             const canWA = tier !== "Free";
@@ -109,35 +142,15 @@
             return `
             <div class="tag-item">
                 <div class="tag-header" onclick="toggleEdit('${t.tagId}')">
-                    <div>
-                        <span class="tag-name">${t.nickname}</span>
-                        <span class="tag-sub">${t.tagId} • ${tier}</span>
-                    </div>
+                    <div><span class="tag-name">${t.nickname}</span><span class="tag-sub">${t.tagId} • ${tier}</span></div>
                     <span class="arrow" id="arrow-${t.tagId}">▼</span>
                 </div>
                 <div class="edit-panel" id="edit-${t.tagId}">
-                    <label>Nombre de Referencia:</label>
-                    <input type="text" id="nick-${t.tagId}" value="${t.nickname}">
-
-                    <label>Categoría:</label>
-                    <select id="cat-${t.tagId}">
-                        <option value="Mascotas" ${t.category === 'Mascotas' ? 'selected' : ''}>Mascota</option>
-                        <option value="Personas" ${t.category === 'Personas' ? 'selected' : ''}>Persona</option>
-                        <option value="Equipos" ${t.category === 'Equipos' ? 'selected' : ''}>Equipo</option>
-                    </select>
-
-                    <label>Emails de Notificación:</label>
-                    <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}">
-                    <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Solo Advanced" ${isAdv ? '' : 'disabled'}>
-                    <input type="email" id="e3-${t.tagId}" value="${t.email_3 || ''}" placeholder="Solo Advanced" ${isAdv ? '' : 'disabled'}>
-                    
-                    <label>Teléfonos (+569...):</label>
-                    <input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" placeholder="Plan Basic o superior" ${canWA ? '' : 'disabled'}>
-                    <input type="tel" id="p2-${t.tagId}" value="${t.phone_2 || ''}" placeholder="Solo Advanced" ${isAdv ? '' : 'disabled'}>
-                    <input type="tel" id="p3-${t.tagId}" value="${t.phone_3 || ''}" placeholder="Solo Advanced" ${isAdv ? '' : 'disabled'}>
-                    
-                    <label>Mensaje Agradecimiento:</label>
-                    <textarea id="msg-${t.tagId}" rows="2" placeholder="Mensaje personalizado...">${t.thanks_msg || ''}</textarea>
+                    <label>Nombre:</label><input type="text" id="nick-${t.tagId}" value="${t.nickname}">
+                    <label>Categoría:</label><select id="cat-${t.tagId}"><option value="Mascotas" ${t.category==='Mascotas'?'selected':''}>Mascota</option><option value="Personas" ${t.category==='Personas'?'selected':''}>Persona</option><option value="Equipos" ${t.category==='Equipos'?'selected':''}>Equipo</option></select>
+                    <label>Email Notificación:</label><input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}">
+                    <label>WhatsApp:</label><input type="tel" id="p1-${t.tagId}" value="${t.phone_1 || ''}" ${canWA?'':'disabled'}>
+                    <label>Mensaje Agradecimiento:</label><textarea id="msg-${t.tagId}" rows="2">${t.thanks_msg || ''}</textarea>
                     
                     <div style="margin-top:15px; border-top:1px solid var(--border); padding-top:10px;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -148,7 +161,7 @@
                         </div>
                     </div>
 
-                    <button class="btn-action" onclick="updateTag('${t.tagId}')">Guardar Cambios</button>
+                    <button class="btn-action btn-save" onclick="updateTag('${t.tagId}')">Guardar Cambios</button>
                     <div style="text-align:center; margin-top:15px;"><a href="https://sagason.cl/t/${t.tagId}" target="_blank" style="color:var(--primary); font-size:11px; text-decoration:none;">🔗 Probar Escaneo</a></div>
                 </div>
             </div>`;
@@ -166,29 +179,23 @@
 
     async function updateTag(tagId) {
         const payload = {
-            ownerId, tagId,
-            nickname: document.getElementById(`nick-${tagId}`).value,
+            ownerId, tagId, nickname: document.getElementById(`nick-${tagId}`).value,
             category: document.getElementById(`cat-${tagId}`).value,
             email_1: document.getElementById(`e1-${tagId}`).value,
-            email_2: document.getElementById(`e2-${tagId}`).value,
-            email_3: document.getElementById(`e3-${tagId}`).value,
             phone_1: document.getElementById(`p1-${tagId}`).value,
-            phone_2: document.getElementById(`p2-${tagId}`).value,
-            phone_3: document.getElementById(`p3-${tagId}`).value,
             thanks_msg: document.getElementById(`msg-${tagId}`).value
         };
         const res = await fetch(`${API}/user-tags`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-        if (res.ok) { alert("✅ Cambios guardados."); loadTags(); }
-        else alert("Error al guardar.");
+        if (res.ok) { alert("✅ Guardado."); loadTags(); }
     }
 
     async function registerTag() {
-        const tagId = document.getElementById('new-tag-id').value.toUpperCase().trim();
+        const tagId = document.getElementById('new-tag-id').value.trim();
         const nickname = document.getElementById('new-tag-nickname').value.trim();
         const category = document.getElementById('new-tag-category').value;
         if (!tagId || !nickname) return alert("Faltan datos");
         const res = await fetch(`${API}/user-tags`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ ownerId, tagId, nickname, category, email_1: userEmail }) });
-        if (res.ok) { alert("¡Éxito!"); location.reload(); } else { const err = await res.json(); alert("❌ ID no existe en fábrica."); }
+        if (res.ok) location.reload(); else alert("ID No existe o ya tiene dueño.");
     }
 
     function logout() { localStorage.removeItem('sagason_token'); location.href="https://sagason.cl"; }
