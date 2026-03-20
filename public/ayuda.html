@@ -53,6 +53,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const tagId = urlParams.get('id');
     let coords = null;
+    let customThanksMsg = ""; // Se llenará en init()
 
     // 1. Cargar datos del tag al iniciar
     async function init() {
@@ -63,6 +64,9 @@
             const data = await response.json();
 
             if (response.ok) {
+                // Guardamos el mensaje personalizado si existe
+                customThanksMsg = data.thanks_msg || "";
+                
                 document.getElementById('display-nickname').innerText = data.nickname;
                 document.getElementById('display-category').innerText = data.category;
                 
@@ -118,14 +122,33 @@
             });
 
             if (response.ok) {
-                document.getElementById('app').innerHTML = "<h2>¡Mensaje Enviado!</h2><p>El propietario ha sido notificado y se pondrá en contacto contigo a la brevedad. Gracias por tu humanidad.</p>";
+                // Determinar mensaje final
+                let finalMsg = customThanksMsg;
+                if (!finalMsg) {
+                    const category = document.getElementById('display-category').innerText;
+                    if (category === "Mascotas") finalMsg = "¡Muchas gracias por encontrar a mi mascota! Por favor, cuídala un momento mientras me pongo en contacto contigo. Estaré allí lo antes posible.";
+                    else if (category === "Personas") finalMsg = "Muchas gracias por tu ayuda. Por favor, mantente cerca de la persona y asegúrate de que esté en un lugar seguro hasta que podamos llegar.";
+                    else finalMsg = "Gracias por encontrar mi pertenencia. Por favor, mantenla resguardada en un lugar seguro. Me comunicaré contigo de inmediato.";
+                }
+
+                document.getElementById('app').innerHTML = `
+                    <div style="text-align:center; padding:20px;">
+                        <h2 style="color:#27ae60;">✅ ¡Mensaje Enviado!</h2>
+                        <p style="font-size:18px; line-height:1.5; background:#f9f9f9; padding:15px; border-radius:10px; border-left:5px solid #27ae60;">
+                            ${finalMsg}
+                        </p>
+                        <p style="color:#666; margin-top:20px;">El propietario ha sido notificado.</p>
+                    </div>
+                `;
             } else {
                 alert("Error al enviar el reporte. Intenta de nuevo.");
                 btn.disabled = false;
+                btn.innerText = "Enviar reporte al dueño";
             }
         } catch (e) {
             alert("Error de red.");
             btn.disabled = false;
+            btn.innerText = "Enviar reporte al dueño";
         }
     };
 
