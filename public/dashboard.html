@@ -175,22 +175,29 @@
     }
 
     async function payRAKA(tagId, plan, price) {
-        const btn = event.target; 
-        const originalText = btn.innerText;
+        const btn = event.target;
         btn.innerText = "Abriendo Pago...";
         btn.disabled = true;
+
         try {
-            const res = await fetch(`${API}/create-preference`, { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ tagId, planName: plan, price }) 
+            const res = await fetch(`${API}/create-preference`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tagId, planName: plan, price: price })
             });
+
+            if (!res.ok) throw new Error("Error en servidor");
+            
             const data = await res.json();
             if (data.url) window.location.href = data.url;
-            else alert("Error al generar link de pago.");
-        } catch (e) { alert("Error de conexión."); }
-        btn.innerText = originalText;
-        btn.disabled = false;
+            else alert("No se pudo generar el link de pago.");
+
+        } catch (e) {
+            alert("Error de conexión con la pasarela.");
+            console.error(e);
+            btn.innerText = "Reintentar Pago";
+            btn.disabled = false;
+        }
     }
 
     async function updateTag(tagId) {
