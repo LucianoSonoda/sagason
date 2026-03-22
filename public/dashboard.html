@@ -183,14 +183,17 @@
             const res = await fetch(`${API}/create-preference`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tagId, planName: plan, price: price })
+                body: JSON.stringify({ tagId, planName: plan, price: price, email: userEmail })
             });
 
-            if (!res.ok) throw new Error("Error en servidor");
+            if (!res.ok) throw new Error("Error en servidor al iniciar pago Flow");
             
             const data = await res.json();
             if (data.url) window.location.href = data.url;
-            else alert("No se pudo generar el link de pago.");
+            else {
+                alert("No se pudo generar el link de pago en Flow.");
+                console.error(data);
+            }
 
         } catch (e) {
             alert("Error de conexión con la pasarela.");
