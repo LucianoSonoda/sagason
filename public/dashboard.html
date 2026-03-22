@@ -150,9 +150,9 @@
                 `;
             }
             
-            if(progress >= 80 && tier !== "Advanced") {
+            if(progress >= 80 && tier === "Basic") {
                 upgradeHTML += `
-                    <button onclick="payRAKA('${t.tagId}', '${tier}', ${tier==='Basic'?7000:15000})" class="btn-upgrade" style="background:#ef4444; margin-top:5px;">⚠️ RENOVAR CRÉDITOS</button>
+                    <button onclick="payRAKA('${t.tagId}', 'Basic', 7000)" class="btn-upgrade" style="background:#ef4444; margin-top:5px;">⚠️ RENOVAR CRÉDITOS ($7.000)</button>
                 `;
             }
 
