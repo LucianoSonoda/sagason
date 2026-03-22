@@ -138,6 +138,8 @@
         cont.innerHTML = tags.map(t => {
             const tier = t.computedTier;
             const finalExpire = t.finalExpire;
+            const isAdv = tier === "Advanced";
+            const canWA = tier !== "Free";
 
             // Contar cuántas OTRAS placas (activas) tienen plan Advanced
             const otherAdvCount = tags.filter(other => other.tagId !== t.tagId && other.computedTier === "Advanced").length;
