@@ -158,26 +158,44 @@
             }
 
             let upgradeHTML = "";
+            
+            const btnStyle = "padding:8px 0; font-size:11px;";
+
             if(tier === "Free") {
                 upgradeHTML = `
-                    <button onclick="payRAKA('${t.tagId}', 'Basic', 7000)" class="btn-upgrade">🚀 Subir a Basic ($7.000)</button>
-                    <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice})" class="btn-upgrade" style="background:var(--success); margin-top:5px;">💎 Subir a Advanced ${advText}</button>
+                    <div style="display:flex; gap:5px; margin-bottom:5px;">
+                        <button onclick="payRAKA('${t.tagId}', 'Basic', 7000, 'flow')" class="btn-upgrade" style="flex:1; ${btnStyle}">🚀 Basic ($7.000) Flow</button>
+                        <button onclick="payRAKA('${t.tagId}', 'Basic', 7000, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">🚀 Basic ($7.000) MP</button>
+                    </div>
+                    <div style="display:flex; gap:5px;">
+                        <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'flow')" class="btn-upgrade" style="flex:1; background:var(--success); ${btnStyle}">💎 Advanced ${advText} Flow</button>
+                        <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">💎 Advanced ${advText} MP</button>
+                    </div>
                 `;
             } else if(tier === "Basic") {
                 upgradeHTML = `
-                    <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice})" class="btn-upgrade" style="background:var(--success);">💎 Mejorar a Advanced ${advText}</button>
+                    <div style="display:flex; gap:5px;">
+                        <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'flow')" class="btn-upgrade" style="flex:1; background:var(--success); ${btnStyle}">💎 Mejorar Advanced ${advText} Flow</button>
+                        <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">💎 Mejorar Advanced ${advText} MP</button>
+                    </div>
                 `;
             }
             
             if(progress >= 80 && tier === "Basic") {
                 upgradeHTML += `
-                    <button onclick="payRAKA('${t.tagId}', 'Basic', 7000)" class="btn-upgrade" style="background:#ef4444; margin-top:5px;">⚠️ RENOVAR CRÉDITOS ($7.000)</button>
+                    <div style="display:flex; gap:5px; margin-top:5px;">
+                        <button onclick="payRAKA('${t.tagId}', 'Basic', 7000, 'flow')" class="btn-upgrade" style="flex:1; background:#ef4444; ${btnStyle}">⚠️ Renovar ($7.000) Flow</button>
+                        <button onclick="payRAKA('${t.tagId}', 'Basic', 7000, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">⚠️ Renovar ($7.000) MP</button>
+                    </div>
                 `;
             }
             
             if(progress >= 80 && tier === "Advanced") {
                 upgradeHTML += `
-                    <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice})" class="btn-upgrade" style="background:#ef4444; margin-top:5px;">⚠️ RENOVAR CRÉDITOS ${advText}</button>
+                    <div style="display:flex; gap:5px; margin-top:5px;">
+                        <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'flow')" class="btn-upgrade" style="flex:1; background:#ef4444; ${btnStyle}">⚠️ Renovar ${advText} Flow</button>
+                        <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">⚠️ Renovar ${advText} MP</button>
+                    </div>
                 `;
             }
 
@@ -233,16 +251,16 @@
         }).join('');
     }
 
-    async function payRAKA(tagId, plan, price) {
+    async function payRAKA(tagId, plan, price, gateway) {
         const btn = event.target;
-        btn.innerText = "Abriendo Pago...";
+        btn.innerText = "Abriendo...";
         btn.disabled = true;
 
         try {
             const res = await fetch(`${API}/create-preference`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tagId, planName: plan, price: price, email: userEmail })
+                body: JSON.stringify({ tagId, planName: plan, price: price, email: userEmail, gateway: gateway })
             });
 
             if (!res.ok) throw new Error("Error en servidor al iniciar pago Flow");
