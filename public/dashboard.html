@@ -114,17 +114,28 @@
         if (!tags || tags.length === 0) { cont.innerHTML = "<p style='text-align:center; padding:20px;'>No tienes placas registradas.</p>"; return; }
         
         cont.innerHTML = tags.map(t => {
-            const tier = t.tier || "Free";
-            const isAdv = tier === "Advanced";
-            const canWA = tier !== "Free";
+            let tier = t.tier || "Free";
+            const now = new Date();
+            let finalExpire = null;
+
+            if (t.expire_date) {
+                finalExpire = new Date(t.expire_date);
+            } else if (t.last_pay && tier !== "Free") {
+                finalExpire = new Date(t.last_pay);
+                finalExpire.setFullYear(finalExpire.getFullYear() + 1);
+            }
+
+            // Si ya pasó la fecha, el plan baja a Free visualmente
+            if (finalExpire && now > finalExpire) {
+                tier = "Free";
+            }
+
             const limit = tier === "Advanced" ? 150 : (tier === "Basic" ? 50 : 12);
             const progress = Math.min(100, Math.round((t.scan_count || 0) / limit * 100));
 
             let expireText = "";
-            if (tier !== "Free" && t.last_pay) {
-                const expireDate = new Date(t.last_pay);
-                expireDate.setFullYear(expireDate.getFullYear() + 1);
-                expireText = ` • Vence: ${expireDate.toLocaleDateString('es-CL')}`;
+            if (tier !== "Free" && finalExpire) {
+                expireText = ` • Vence: ${finalExpire.toLocaleDateString('es-CL')}`;
             }
 
             let upgradeHTML = "";
