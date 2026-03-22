@@ -120,6 +120,13 @@
             const limit = tier === "Advanced" ? 150 : (tier === "Basic" ? 50 : 12);
             const progress = Math.min(100, Math.round((t.scan_count || 0) / limit * 100));
 
+            let expireText = "";
+            if (tier !== "Free" && t.last_pay) {
+                const expireDate = new Date(t.last_pay);
+                expireDate.setFullYear(expireDate.getFullYear() + 1);
+                expireText = ` • Vence: ${expireDate.toLocaleDateString('es-CL')}`;
+            }
+
             let upgradeHTML = "";
             if(tier === "Free") {
                 upgradeHTML = `
@@ -141,7 +148,7 @@
             return `
             <div class="tag-item">
                 <div class="tag-header" onclick="toggleEdit('${t.tagId}')">
-                    <div><span class="tag-name">${t.nickname}</span><span class="tag-sub">${t.tagId} • ${tier}</span></div>
+                    <div><span class="tag-name">${t.nickname}</span><span class="tag-sub">${t.tagId} • ${tier}${expireText}</span></div>
                     <span class="arrow" id="arrow-${t.tagId}">▼</span>
                 </div>
                 <div class="edit-panel" id="edit-${t.tagId}">
