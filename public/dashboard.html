@@ -213,6 +213,19 @@
                     <input type="tel" id="p2-${t.tagId}" value="${t.phone_2 || ''}" placeholder="Solo Advanced" ${isAdv?'':'disabled'}>
                     <input type="tel" id="p3-${t.tagId}" value="${t.phone_3 || ''}" placeholder="Solo Advanced" ${isAdv?'':'disabled'}>
                     <label>Agradecimiento:</label><textarea id="msg-${t.tagId}" rows="2">${t.thanks_msg || ''}</textarea>
+                    
+                    <label style="margin-top:10px;">Alertas (Ahorro de escaneos):</label>
+                    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px; font-size:13px; margin-top:5px;">
+                        <label style="display:flex; align-items:center; gap:8px; margin:0; cursor:pointer;">
+                            <input type="checkbox" id="ns-${t.tagId}" ${t.notify_scan !== false ? 'checked' : ''}>
+                            Recibir aviso automático al ser escaneado
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; margin:0; cursor:pointer;">
+                            <input type="checkbox" id="nf-${t.tagId}" ${t.notify_form !== false ? 'checked' : ''}>
+                            Recibir aviso al enviar datos por el formulario
+                        </label>
+                    </div>
+
                     <button class="btn-action btn-save" onclick="updateTag('${t.tagId}')">Guardar Cambios</button>
                     <div style="text-align:center; margin-top:12px;"><a href="https://sagason.cl/t/${t.tagId}" target="_blank" style="color:var(--primary); font-size:11px; text-decoration:none;">🔗 Probar Link Escaneo</a></div>
                 </div>
@@ -255,7 +268,9 @@
             category: document.getElementById(`cat-${tagId}`).value,
             email_1: document.getElementById(`e1-${tagId}`).value, email_2: document.getElementById(`e2-${tagId}`).value, email_3: document.getElementById(`e3-${tagId}`).value,
             phone_1: document.getElementById(`p1-${tagId}`).value, phone_2: document.getElementById(`p2-${tagId}`).value, phone_3: document.getElementById(`p3-${tagId}`).value,
-            thanks_msg: document.getElementById(`msg-${tagId}`).value
+            thanks_msg: document.getElementById(`msg-${tagId}`).value,
+            notify_scan: document.getElementById(`ns-${tagId}`).checked,
+            notify_form: document.getElementById(`nf-${tagId}`).checked
         };
         const res = await fetch(`${API}/user-tags`, { 
             method: 'POST', 
