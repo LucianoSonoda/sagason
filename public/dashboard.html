@@ -123,18 +123,18 @@
             let upgradeHTML = "";
             if(tier === "Free") {
                 upgradeHTML = `
-                    <button onclick="payRAKA('${t.tagId}', 'Basic', 5000)" class="btn-upgrade">🚀 Subir a Basic ($5.000)</button>
-                    <button onclick="payRAKA('${t.tagId}', 'Advanced', 12000)" class="btn-upgrade" style="background:var(--success); margin-top:5px;">💎 Subir a Advanced ($12.000)</button>
+                    <button onclick="payRAKA('${t.tagId}', 'Basic', 7000)" class="btn-upgrade">🚀 Subir a Basic ($7.000)</button>
+                    <button onclick="payRAKA('${t.tagId}', 'Advanced', 15000)" class="btn-upgrade" style="background:var(--success); margin-top:5px;">💎 Subir a Advanced ($15.000)</button>
                 `;
             } else if(tier === "Basic") {
                 upgradeHTML = `
-                    <button onclick="payRAKA('${t.tagId}', 'Advanced', 12000)" class="btn-upgrade" style="background:var(--success);">💎 Mejorar a Advanced ($12.000)</button>
+                    <button onclick="payRAKA('${t.tagId}', 'Advanced', 15000)" class="btn-upgrade" style="background:var(--success);">💎 Mejorar a Advanced ($15.000)</button>
                 `;
             }
             
             if(progress >= 80 && tier !== "Advanced") {
                 upgradeHTML += `
-                    <button onclick="payRAKA('${t.tagId}', '${tier}', ${tier==='Basic'?5000:12000})" class="btn-upgrade" style="background:#ef4444; margin-top:5px;">⚠️ RENOVAR CRÉDITOS</button>
+                    <button onclick="payRAKA('${t.tagId}', '${tier}', ${tier==='Basic'?7000:15000})" class="btn-upgrade" style="background:#ef4444; margin-top:5px;">⚠️ RENOVAR CRÉDITOS</button>
                 `;
             }
 
