@@ -143,9 +143,11 @@
 
             // Contar cuántas OTRAS placas (activas) tienen plan Advanced
             const otherAdvCount = tags.filter(other => other.tagId !== t.tagId && other.computedTier === "Advanced").length;
-            // Si la cantidad de otras es impar, te toca descuento en esta.
-            const advPrice = (otherAdvCount % 2 === 1) ? 11250 : 15000;
-            const advText = (advPrice === 11250) ? "PROMO ($11.250)" : "($15.000)";
+            
+            // Lógica escalonada: 5% por placa extra, tope 15% (equivalente a cobrar mínimo $12.750)
+            const discountPct = Math.min(15, otherAdvCount * 5);
+            const advPrice = 15000 * (1 - (discountPct / 100));
+            const advText = discountPct > 0 ? `PROMO -${discountPct}% ($${advPrice.toLocaleString('es-CL')})` : `($15.000)`;
 
             const limit = tier === "Advanced" ? 150 : (tier === "Basic" ? 50 : 12);
             const progress = Math.min(100, Math.round((t.scan_count || 0) / limit * 100));
