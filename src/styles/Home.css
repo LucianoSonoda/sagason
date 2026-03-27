@@ -281,3 +281,75 @@
         font-size: 2rem;
     }
 }
+
+/* ── Mobile responsive (iPhone 14 y similares) ── */
+@media (max-width: 640px) {
+
+    /* Hero */
+    .hero {
+        min-height: 70vh;
+        padding-top: 2rem;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 10vw, 3.5rem);
+        line-height: 1.05;
+        word-break: break-word;
+    }
+
+    .hero-subtitle-top {
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.55;
+    }
+
+    .cta-group {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 0.85rem 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .trust-badges {
+        gap: 0.4rem;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.6rem;
+    }
+
+    /* Section headers */
+    .section-title {
+        font-size: clamp(1.4rem, 6vw, 2.2rem);
+        word-break: break-word;
+    }
+
+    .section-subtitle {
+        font-size: 0.75rem;
+    }
+
+    /* Blockquote de filosofía */
+    .filosofia-4k-section blockquote {
+        padding: 16px 18px;
+        font-size: 0.88rem;
+    }
+
+    /* Tarjetas de servicio */
+    .service-title {
+        font-size: 1rem;
+        word-break: break-word;
+    }
+
+    .service-desc {
+        font-size: 0.85rem;
+    }
+}
