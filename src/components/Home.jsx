@@ -3,6 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Image, PenTool, Truck, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../styles/Home.css';
 
+function useWindowWidth() {
+    const [width, setWidth] = useState(window.innerWidth);
+    useEffect(() => {
+        const onResize = () => setWidth(window.innerWidth);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+    return width;
+}
+
 export function Home() {
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -102,6 +112,7 @@ function ServicesCarousel() {
     const [[current, direction], setCurrent] = useState([0, 0]);
     const [paused, setPaused] = useState(false);
     const intervalRef = useRef(null);
+    const isMobile = useWindowWidth() < 640;
 
     const paginate = (dir) => {
         const next = (current + dir + SERVICIOS.length) % SERVICIOS.length;
@@ -131,7 +142,7 @@ function ServicesCarousel() {
                 <h2 className="section-title">LA DIFERENCIA ESTÁ <span style={{ color: 'var(--color-primary)' }}>EN LOS DETALLES</span></h2>
             </div>
 
-            <div style={{ position: 'relative', maxWidth: '520px', margin: '0 auto' }}
+            <div style={{ position: 'relative', maxWidth: isMobile ? '100%' : '520px', margin: '0 auto', padding: isMobile ? '0 40px' : '0' }}
                 onMouseEnter={() => setPaused(true)}
                 onMouseLeave={() => setPaused(false)}
             >
@@ -149,11 +160,11 @@ function ServicesCarousel() {
                             exit="exit"
                             transition={{ duration: 0.35, ease: 'easeInOut' }}
                             className="glass-panel service-card"
-                            style={{ textAlign: 'center', padding: '40px 36px', minHeight: '200px', justifyContent: 'center' }}
+                            style={{ textAlign: 'center', padding: isMobile ? '28px 20px' : '40px 36px', minHeight: isMobile ? '160px' : '200px', justifyContent: 'center' }}
                         >
-                            <div className="service-icon" style={{ marginBottom: '16px' }}>{svc.icon}</div>
-                            <h3 className="service-title">{svc.title}</h3>
-                            <p className="service-desc">{svc.desc}</p>
+                            <div className="service-icon" style={{ marginBottom: '12px' }}>{svc.icon}</div>
+                            <h3 className="service-title" style={{ fontSize: isMobile ? '1rem' : undefined, wordBreak: 'break-word' }}>{svc.title}</h3>
+                            <p className="service-desc" style={{ fontSize: isMobile ? '13px' : undefined }}>{svc.desc}</p>
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -185,6 +196,7 @@ function S4KCarousel() {
     const [[current, direction], setCurrent] = useState([0, 0]);
     const [paused, setPaused] = useState(false);
     const intervalRef = useRef(null);
+    const isMobile = useWindowWidth() < 640;
 
     const paginate = (dir) => {
         const next = (current + dir + PILARES.length) % PILARES.length;
@@ -220,7 +232,7 @@ function S4KCarousel() {
                 <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON S4K</span></h2>
             </div>
 
-            <div style={{ position: 'relative', maxWidth: '560px', margin: '0 auto 36px auto' }}
+            <div style={{ position: 'relative', maxWidth: isMobile ? '100%' : '560px', margin: '0 auto 36px auto', padding: isMobile ? '0 40px' : '0' }}
                 onMouseEnter={() => setPaused(true)}
                 onMouseLeave={() => setPaused(false)}
             >
@@ -238,17 +250,17 @@ function S4KCarousel() {
                             exit="exit"
                             transition={{ duration: 0.35, ease: 'easeInOut' }}
                             style={{
-                                padding: '36px 40px', textAlign: 'left',
+                                padding: isMobile ? '24px 20px' : '36px 40px', textAlign: 'left',
                                 border: '1px solid rgba(14, 165, 233, 0.35)',
                                 background: 'rgba(14, 165, 233, 0.05)',
-                                borderRadius: '16px', minHeight: '160px',
+                                borderRadius: '16px', minHeight: isMobile ? '140px' : '160px',
                             }}
                         >
-                            <div style={{ marginBottom: '14px' }}>
-                                <span style={{ fontSize: '26px', fontWeight: '800', color: 'var(--color-primary)', letterSpacing: '1px' }}>{pilar.name}</span>
-                                <span style={{ fontSize: '13px', color: 'var(--color-text)', opacity: 0.55, marginLeft: '10px', fontStyle: 'italic' }}>— {pilar.sub}</span>
+                            <div style={{ marginBottom: '10px' }}>
+                                <span style={{ fontSize: isMobile ? '20px' : '26px', fontWeight: '800', color: 'var(--color-primary)', letterSpacing: '1px', wordBreak: 'break-word' }}>{pilar.name}</span>
+                                <span style={{ fontSize: '13px', color: 'var(--color-text)', opacity: 0.55, marginLeft: '8px', fontStyle: 'italic' }}>— {pilar.sub}</span>
                             </div>
-                            <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.75', opacity: 0.88 }}>{pilar.desc}</p>
+                            <p style={{ margin: 0, fontSize: isMobile ? '13px' : '15px', lineHeight: '1.75', opacity: 0.88 }}>{pilar.desc}</p>
                         </motion.div>
                     </AnimatePresence>
                 </div>
