@@ -85,59 +85,94 @@ export function Home() {
             {/* Filosofía SAGASON S4K - Carrusel */}
             <S4KCarousel />
 
-            {/* Services Overview */}
-            <section className="services-section container">
-                <div className="section-header">
-                    <p className="section-subtitle">POR QUÉ ELEGIRNOS</p>
-                    <h2 className="section-title">LA DIFERENCIA ESTÁ <span style={{ color: 'var(--color-primary)' }}>EN LOS DETALLES</span></h2>
-                </div>
-
-                <div className="services-grid">
-                    <ServiceCard
-                        icon={<Image size={40} />}
-                        title="Calidad Fotográfica"
-                        desc="Transferencia de imagen de alta resolución que mantiene los colores vivos y detalles nítidos por años."
-                        delay={0}
-                    />
-                    <ServiceCard
-                        icon={<PenTool size={40} />}
-                        title="Diseño Personalizado"
-                        desc="Nosotros hacemos realidad cualquier imagen en metal."
-                        delay={0.2}
-                    />
-                    <ServiceCard
-                        icon={<Shield size={40} />}
-                        title="Metal Premium"
-                        desc="Placas de aluminio de alta calidad, resistentes al agua y el paso del tiempo."
-                        delay={0.3}
-                    />
-                    <ServiceCard
-                        icon={<Truck size={40} />}
-                        title="Envío a Todo Chile"
-                        desc="Embalaje seguro y envíos rápidos para que recibas tu placa en perfectas condiciones."
-                        delay={0.4}
-                    />
-                </div>
-            </section>
+            {/* Services Overview - Carrusel */}
+            <ServicesCarousel />
         </div>
     );
 }
 
-function ServiceCard({ icon, title, desc, delay }) {
+const SERVICIOS = [
+    { icon: <Image size={40} />, title: 'Calidad Fotográfica', desc: 'Transferencia de imagen de alta resolución que mantiene los colores vivos y detalles nítidos por años.' },
+    { icon: <PenTool size={40} />, title: 'Diseño Personalizado', desc: 'Nosotros hacemos realidad cualquier imagen en metal.' },
+    { icon: <Shield size={40} />, title: 'Metal Premium', desc: 'Placas de aluminio de alta calidad, resistentes al agua y el paso del tiempo.' },
+    { icon: <Truck size={40} />, title: 'Envío a Todo Chile', desc: 'Embalaje seguro y envíos rápidos para que recibas tu placa en perfectas condiciones.' },
+];
+
+function ServicesCarousel() {
+    const [[current, direction], setCurrent] = useState([0, 0]);
+    const [paused, setPaused] = useState(false);
+    const intervalRef = useRef(null);
+
+    const paginate = (dir) => {
+        const next = (current + dir + SERVICIOS.length) % SERVICIOS.length;
+        setCurrent([next, dir]);
+    };
+
+    useEffect(() => {
+        if (paused) return;
+        intervalRef.current = setInterval(() => {
+            setCurrent(([c]) => [(c + 1) % SERVICIOS.length, 1]);
+        }, 3500);
+        return () => clearInterval(intervalRef.current);
+    }, [paused, current]);
+
+    const variants = {
+        enter: (dir) => ({ x: dir > 0 ? 220 : -220, opacity: 0 }),
+        center: { x: 0, opacity: 1 },
+        exit: (dir) => ({ x: dir > 0 ? -220 : 220, opacity: 0 }),
+    };
+
+    const svc = SERVICIOS[current];
+
     return (
-        <motion.div
-            className="glass-panel service-card"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay }}
-        >
-            <div className="service-icon">{icon}</div>
-            <h3 className="service-title">{title}</h3>
-            <p className="service-desc">{desc}</p>
-        </motion.div>
+        <section className="services-section container">
+            <div className="section-header">
+                <p className="section-subtitle">POR QUÉ ELEGIRNOS</p>
+                <h2 className="section-title">LA DIFERENCIA ESTÁ <span style={{ color: 'var(--color-primary)' }}>EN LOS DETALLES</span></h2>
+            </div>
+
+            <div style={{ position: 'relative', maxWidth: '520px', margin: '0 auto' }}
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+            >
+                <button onClick={() => paginate(-1)} style={arrowStyle('left')}><ChevronLeft size={22} /></button>
+                <button onClick={() => paginate(1)} style={arrowStyle('right')}><ChevronRight size={22} /></button>
+
+                <div style={{ overflow: 'hidden', borderRadius: '16px' }}>
+                    <AnimatePresence custom={direction} mode="wait">
+                        <motion.div
+                            key={current}
+                            custom={direction}
+                            variants={variants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{ duration: 0.35, ease: 'easeInOut' }}
+                            className="glass-panel service-card"
+                            style={{ textAlign: 'center', padding: '40px 36px', minHeight: '200px', justifyContent: 'center' }}
+                        >
+                            <div className="service-icon" style={{ marginBottom: '16px' }}>{svc.icon}</div>
+                            <h3 className="service-title">{svc.title}</h3>
+                            <p className="service-desc">{svc.desc}</p>
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '20px' }}>
+                    {SERVICIOS.map((_, i) => (
+                        <button key={i} onClick={() => setCurrent([i, i > current ? 1 : -1])} style={{
+                            width: i === current ? '24px' : '8px', height: '8px',
+                            borderRadius: '9999px', border: 'none', cursor: 'pointer',
+                            background: i === current ? 'var(--color-primary)' : 'rgba(14,165,233,0.3)',
+                            transition: 'all 0.3s ease', padding: 0,
+                        }} />
+                    ))}
+                </div>
+            </div>
+        </section>
     );
 }
+
 
 const PILARES = [
     { name: 'Kaeru', sub: 'Regresar', desc: 'Nuestra promesa fundamental. Al escanear el tag, activas un puente digital inmediato que reduce la incertidumbre del extravío.' },
