@@ -82,6 +82,34 @@ export function Home() {
                 </motion.div>
             </section>
 
+            {/* Filosofía Sagason 4K */}
+            <section className="filosofia-4k-section container" style={{ marginBottom: 'var(--spacing-xl)', textAlign: 'center' }}>
+                <div className="section-header">
+                    <p className="section-subtitle">NUESTRA ESENCIA</p>
+                    <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON 4K</span></h2>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+                    {['Kaeru : El Regreso', 'Kizuna : El Vínculo', 'Kansha : La Gratitud', 'Kenshin : La Dedicación'].map((pilar, index) => {
+                        const name = pilar.split(' : ')[0];
+                        return (
+                            <motion.button 
+                                key={index}
+                                className="glass-panel"
+                                style={{ padding: '20px', border: '1px solid var(--color-primary)', background: 'rgba(14, 165, 233, 0.05)', cursor: 'pointer', color: 'var(--color-text)', borderRadius: '12px' }}
+                                whileHover={{ scale: 1.05, backgroundColor: 'rgba(14, 165, 233, 0.2)' }}
+                                onClick={() => {
+                                    window.dataLayer = window.dataLayer || [];
+                                    window.dataLayer.push({ event: 'pilar_4k_click', pilar: name });
+                                }}
+                            >
+                                <h3 style={{ margin: '0 0 10px 0', color: 'var(--color-primary)' }}>{name}</h3>
+                                <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>{pilar.split(' : ')[1]}</p>
+                            </motion.button>
+                        );
+                    })}
+                </div>
+            </section>
+
             {/* Services Overview */}
             <section className="services-section container">
                 <div className="section-header">
