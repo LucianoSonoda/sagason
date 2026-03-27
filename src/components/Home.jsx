@@ -59,7 +59,7 @@ export function Home() {
                 </motion.div>
             </section>
 
-            {/* Sagason Tag Section */}
+            {/* SAGASON S4K Section */}
             <section className="tag-promo-section container">
                 <motion.div 
                     className="glass-panel tag-promo-card"
@@ -70,7 +70,7 @@ export function Home() {
                 >
                     <div className="tag-promo-content">
                         <span className="promo-badge">NUEVO SISTEMA</span>
-                        <h2 className="promo-title">Sagason <span style={{ color: 'var(--color-primary)' }}>Tag</span></h2>
+                        <h2 className="promo-title">SAGASON <span style={{ color: 'var(--color-primary)' }}>S4K</span></h2>
                         <p className="promo-text" style={{ marginBottom: '10px' }}>Protección inteligente para lo que más quieres. Placas metálicas con QR dinámico para mascotas, personas y equipos.</p>
                         <p style={{ color: 'var(--color-primary)', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '25px' }}>¡PRÓXIMO LANZAMIENTO!</p>
                         <div className="promo-ctas">
@@ -82,7 +82,7 @@ export function Home() {
                 </motion.div>
             </section>
 
-            {/* Filosofía Sagason 4K */}
+            {/* Filosofía SAGASON S4K */}
             <section className="filosofia-4k-section container" style={{ marginBottom: 'var(--spacing-xl)', textAlign: 'center' }}>
                 <div className="section-header">
                     <p className="section-subtitle">NUESTRA ESENCIA</p>
