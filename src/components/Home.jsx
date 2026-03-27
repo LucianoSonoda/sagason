@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Image, PenTool, Truck, Shield } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Image, PenTool, Truck, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../styles/Home.css';
 
 export function Home() {
@@ -82,59 +82,8 @@ export function Home() {
                 </motion.div>
             </section>
 
-            {/* Filosofía SAGASON S4K */}
-            <section className="filosofia-4k-section container" style={{ marginBottom: 'var(--spacing-xl)', textAlign: 'center' }}>
-                <div className="section-header">
-                    <p className="section-subtitle">NUESTRA ESENCIA</p>
-                    <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON S4K</span></h2>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '40px' }}>
-                    {[
-                        { name: 'Kaeru', sub: 'Regresar', desc: 'Nuestra promesa fundamental. Al escanear el tag, activas un puente digital inmediato que reduce la incertidumbre del extravío.' },
-                        { name: 'Kizuna', sub: 'Vínculo', desc: 'Gestionas la información de quienes más amas en un entorno seguro y siempre disponible.' },
-                        { name: 'Kansha', sub: 'Gratitud', desc: 'Diseñamos la interfaz para que quien ayuda lo haga con facilidad. La gratitud permite un ciclo eterno de ayuda al prójimo.' },
-                        { name: 'Kenshin', sub: 'Dedicación', desc: 'Desde Chile hacia el mundo, cada placa es grabada con precisión láser para resistir el tiempo y la aventura.' },
-                    ].map((pilar, index) => (
-                        <motion.div
-                            key={index}
-                            className="glass-panel"
-                            style={{ padding: '24px', border: '1px solid rgba(14, 165, 233, 0.3)', background: 'rgba(14, 165, 233, 0.04)', borderRadius: '16px', textAlign: 'left' }}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            whileHover={{ scale: 1.03, borderColor: 'var(--color-primary)' }}
-                            onClick={() => {
-                                window.dataLayer = window.dataLayer || [];
-                                window.dataLayer.push({ event: 'pilar_s4k_click', pilar: pilar.name });
-                            }}
-                        >
-                            <div style={{ marginBottom: '10px' }}>
-                                <span style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-primary)', letterSpacing: '1px' }}>{pilar.name}</span>
-                                <span style={{ fontSize: '13px', color: 'var(--color-text)', opacity: 0.6, marginLeft: '8px', fontStyle: 'italic' }}>— {pilar.sub}</span>
-                            </div>
-                            <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.7', opacity: 0.85 }}>{pilar.desc}</p>
-                        </motion.div>
-                    ))}
-                </div>
-                <motion.blockquote
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.4 }}
-                    style={{
-                        maxWidth: '620px', margin: '0 auto', padding: '24px 32px',
-                        borderLeft: '4px solid var(--color-primary)',
-                        background: 'rgba(14, 165, 233, 0.06)',
-                        borderRadius: '0 12px 12px 0',
-                        textAlign: 'left', fontStyle: 'italic',
-                        fontSize: '1rem', lineHeight: '1.7',
-                        color: 'var(--color-text)', opacity: 0.9,
-                    }}
-                >
-                    "No proteges un objeto, cuidas el silencio de tu hogar. Asegura el regreso de quien no sabe pedir ayuda."
-                </motion.blockquote>
-            </section>
+            {/* Filosofía SAGASON S4K - Carrusel */}
+            <S4KCarousel />
 
             {/* Services Overview */}
             <section className="services-section container">
@@ -188,4 +137,110 @@ function ServiceCard({ icon, title, desc, delay }) {
             <p className="service-desc">{desc}</p>
         </motion.div>
     );
+}
+
+const PILARES = [
+    { name: 'Kaeru', sub: 'Regresar', desc: 'Nuestra promesa fundamental. Al escanear el tag, activas un puente digital inmediato que reduce la incertidumbre del extravío.' },
+    { name: 'Kizuna', sub: 'Vínculo', desc: 'Gestionas la información de quienes más amas en un entorno seguro y siempre disponible.' },
+    { name: 'Kansha', sub: 'Gratitud', desc: 'Diseñamos la interfaz para que quien ayuda lo haga con facilidad. La gratitud permite un ciclo eterno de ayuda al prójimo.' },
+    { name: 'Kenshin', sub: 'Dedicación', desc: 'Desde Chile hacia el mundo, cada placa es grabada con precisión láser para resistir el tiempo y la aventura.' },
+];
+
+function S4KCarousel() {
+    const [[current, direction], setCurrent] = useState([0, 0]);
+
+    const paginate = (dir) => {
+        const next = (current + dir + PILARES.length) % PILARES.length;
+        setCurrent([next, dir]);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'pilar_s4k_click', pilar: PILARES[next].name });
+    };
+
+    const variants = {
+        enter: (dir) => ({ x: dir > 0 ? 220 : -220, opacity: 0 }),
+        center: { x: 0, opacity: 1 },
+        exit: (dir) => ({ x: dir > 0 ? -220 : 220, opacity: 0 }),
+    };
+
+    const pilar = PILARES[current];
+
+    return (
+        <section className="filosofia-4k-section container" style={{ marginBottom: 'var(--spacing-xl)', textAlign: 'center' }}>
+            <div className="section-header">
+                <p className="section-subtitle">NUESTRA ESENCIA</p>
+                <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON S4K</span></h2>
+            </div>
+
+            <div style={{ position: 'relative', maxWidth: '560px', margin: '0 auto 36px auto' }}>
+                <button onClick={() => paginate(-1)} style={arrowStyle('left')}><ChevronLeft size={22} /></button>
+                <button onClick={() => paginate(1)} style={arrowStyle('right')}><ChevronRight size={22} /></button>
+
+                <div style={{ overflow: 'hidden', borderRadius: '16px' }}>
+                    <AnimatePresence custom={direction} mode="wait">
+                        <motion.div
+                            key={current}
+                            custom={direction}
+                            variants={variants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{ duration: 0.35, ease: 'easeInOut' }}
+                            style={{
+                                padding: '36px 40px', textAlign: 'left',
+                                border: '1px solid rgba(14, 165, 233, 0.35)',
+                                background: 'rgba(14, 165, 233, 0.05)',
+                                borderRadius: '16px', minHeight: '160px',
+                            }}
+                        >
+                            <div style={{ marginBottom: '14px' }}>
+                                <span style={{ fontSize: '26px', fontWeight: '800', color: 'var(--color-primary)', letterSpacing: '1px' }}>{pilar.name}</span>
+                                <span style={{ fontSize: '13px', color: 'var(--color-text)', opacity: 0.55, marginLeft: '10px', fontStyle: 'italic' }}>— {pilar.sub}</span>
+                            </div>
+                            <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.75', opacity: 0.88 }}>{pilar.desc}</p>
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '18px' }}>
+                    {PILARES.map((_, i) => (
+                        <button key={i} onClick={() => setCurrent([i, i > current ? 1 : -1])} style={{
+                            width: i === current ? '24px' : '8px', height: '8px',
+                            borderRadius: '9999px', border: 'none', cursor: 'pointer',
+                            background: i === current ? 'var(--color-primary)' : 'rgba(14,165,233,0.3)',
+                            transition: 'all 0.3s ease', padding: 0,
+                        }} />
+                    ))}
+                </div>
+            </div>
+
+            <motion.blockquote
+                initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                style={{
+                    maxWidth: '580px', margin: '0 auto', padding: '22px 28px',
+                    borderLeft: '4px solid var(--color-primary)',
+                    background: 'rgba(14, 165, 233, 0.06)',
+                    borderRadius: '0 12px 12px 0',
+                    textAlign: 'left', fontStyle: 'italic',
+                    fontSize: '0.97rem', lineHeight: '1.7',
+                    color: 'var(--color-text)', opacity: 0.9,
+                }}
+            >
+                "No proteges un objeto, cuidas el silencio de tu hogar. Asegura el regreso de quien no sabe pedir ayuda."
+            </motion.blockquote>
+        </section>
+    );
+}
+
+function arrowStyle(side) {
+    return {
+        position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+        [side]: '-40px', zIndex: 10,
+        background: 'rgba(14, 165, 233, 0.12)',
+        border: '1px solid rgba(14, 165, 233, 0.4)',
+        color: 'var(--color-primary)',
+        borderRadius: '50%', width: '36px', height: '36px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'pointer', transition: 'background 0.2s ease',
+    };
 }
