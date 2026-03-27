@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Image, PenTool, Truck, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../styles/Home.css';
@@ -148,6 +148,8 @@ const PILARES = [
 
 function S4KCarousel() {
     const [[current, direction], setCurrent] = useState([0, 0]);
+    const [paused, setPaused] = useState(false);
+    const intervalRef = useRef(null);
 
     const paginate = (dir) => {
         const next = (current + dir + PILARES.length) % PILARES.length;
@@ -155,6 +157,18 @@ function S4KCarousel() {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ event: 'pilar_s4k_click', pilar: PILARES[next].name });
     };
+
+    // Auto-play: avanza cada 4 segundos, se pausa con hover
+    useEffect(() => {
+        if (paused) return;
+        intervalRef.current = setInterval(() => {
+            setCurrent(([c]) => {
+                const next = (c + 1) % PILARES.length;
+                return [next, 1];
+            });
+        }, 4000);
+        return () => clearInterval(intervalRef.current);
+    }, [paused, current]);
 
     const variants = {
         enter: (dir) => ({ x: dir > 0 ? 220 : -220, opacity: 0 }),
@@ -171,7 +185,10 @@ function S4KCarousel() {
                 <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON S4K</span></h2>
             </div>
 
-            <div style={{ position: 'relative', maxWidth: '560px', margin: '0 auto 36px auto' }}>
+            <div style={{ position: 'relative', maxWidth: '560px', margin: '0 auto 36px auto' }}
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+            >
                 <button onClick={() => paginate(-1)} style={arrowStyle('left')}><ChevronLeft size={22} /></button>
                 <button onClick={() => paginate(1)} style={arrowStyle('right')}><ChevronRight size={22} /></button>
 
