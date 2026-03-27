@@ -71,7 +71,8 @@ export function Home() {
                     <div className="tag-promo-content">
                         <span className="promo-badge">NUEVO SISTEMA</span>
                         <h2 className="promo-title">Sagason <span style={{ color: 'var(--color-primary)' }}>Tag</span></h2>
-                        <p className="promo-text">Protección inteligente para lo que más quieres. Placas metálicas con QR dinámico para mascotas, personas y equipos.</p>
+                        <p className="promo-text" style={{ marginBottom: '10px' }}>Protección inteligente para lo que más quieres. Placas metálicas con QR dinámico para mascotas, personas y equipos.</p>
+                        <p style={{ color: 'var(--color-primary)', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '25px' }}>¡PRÓXIMO LANZAMIENTO!</p>
                         <div className="promo-ctas">
                             <a href="/como-funciona.html" className="btn btn-outline">¿Cómo funciona?</a>
                             <a href="/tecnologia.html" className="btn btn-outline">Nuestra Tecnología</a>
