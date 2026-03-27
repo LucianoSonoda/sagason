@@ -59,7 +59,17 @@ export function Gallery() {
     const [[current, direction], setCurrent] = useState([0, 0]);
     const [paused, setPaused] = useState(false);
     const intervalRef = useRef(null);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const total = CATEGORIES.length;
+
+    useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Tarjetas visibles según ancho de pantalla
+    const visibleCount = windowWidth < 640 ? 1 : windowWidth < 1024 ? 2 : 3;
 
     const paginate = (dir) => {
         setCurrent(([c]) => [(c + dir + total) % total, dir]);
@@ -73,11 +83,17 @@ export function Gallery() {
         return () => clearInterval(intervalRef.current);
     }, [paused, current, activeCategory]);
 
-    const getVisible = () =>
-        [-1, 0, 1].map(offset => {
+    const getVisible = () => {
+        if (visibleCount === 1) return [{ ...CATEGORIES[current], idx: current, offset: 0 }];
+        if (visibleCount === 2) return [-1, 0].map(offset => {
             const idx = (current + offset + total) % total;
             return { ...CATEGORIES[idx], idx, offset };
         });
+        return [-1, 0, 1].map(offset => {
+            const idx = (current + offset + total) % total;
+            return { ...CATEGORIES[idx], idx, offset };
+        });
+    };
 
     const openLightbox = (item) => { if (item.image) setSelectedImage(item); };
     const closeLightbox = () => setSelectedImage(null);
@@ -98,7 +114,7 @@ export function Gallery() {
                     <motion.div key="carousel-view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         {/* Carrusel de 3 categorías visibles */}
                         <div
-                            style={{ position: 'relative', maxWidth: '860px', margin: '0 auto 28px auto', padding: '0 48px' }}
+                            style={{ position: 'relative', maxWidth: visibleCount === 1 ? '340px' : visibleCount === 2 ? '620px' : '860px', margin: '0 auto 28px auto', padding: '0 44px' }}
                             onMouseEnter={() => setPaused(true)}
                             onMouseLeave={() => setPaused(false)}
                         >
@@ -117,7 +133,7 @@ export function Gallery() {
                                             transition={{ duration: 0.35, ease: 'easeInOut' }}
                                             onClick={() => offset === 0 ? setActiveCategory(title) : paginate(offset)}
                                             style={{
-                                                flex: '0 0 calc(33.33% - 11px)',
+                                                flex: `0 0 calc(${100 / visibleCount}% - ${visibleCount > 1 ? '11px' : '0px'})`,
                                                 aspectRatio: '3/2',
                                                 borderRadius: '16px',
                                                 overflow: 'hidden',
@@ -133,7 +149,12 @@ export function Gallery() {
                                                 <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, #1A1A1A, ${color})`, opacity: 0.75 }} />
                                             )}
                                             <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                                <h3 style={{ color: '#fff', fontWeight: 800, fontSize: offset === 0 ? '1.2rem' : '0.9rem', letterSpacing: '1px', margin: 0, textAlign: 'center' }}>{title}</h3>
+                                                <h3 style={{
+                                                    color: '#fff', fontWeight: 800,
+                                                    fontSize: offset === 0 ? (windowWidth < 640 ? '1rem' : '1.2rem') : '0.85rem',
+                                                    letterSpacing: '1px', margin: 0, textAlign: 'center',
+                                                    wordBreak: 'break-word', padding: '0 8px',
+                                                }}>{title}</h3>
                                                 {offset === 0 && (
                                                     <span style={{ background: 'var(--color-primary)', color: '#000', padding: '2px 14px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>EXPLORAR</span>
                                                 )}
