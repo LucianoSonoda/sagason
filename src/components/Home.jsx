@@ -241,7 +241,7 @@ function S4KCarousel() {
                                 textAlign: 'left',
                             }}
                         >
-                            {/* Kanji de fondo — metálico dorado */}
+                            {/* Kanji de fondo — metálico, sin fondo blanco */}
                             {pilar.kanji && (
                                 <img
                                     src={pilar.kanji}
@@ -249,14 +249,16 @@ function S4KCarousel() {
                                     aria-hidden="true"
                                     style={{
                                         position: 'absolute',
-                                        right: '-5%',
-                                        top: 0,
-                                        height: '100%',
+                                        right: '-2%',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        height: '130%',
                                         width: 'auto',
                                         objectFit: 'contain',
                                         opacity: 0.35,
-                                        /* Negro → dorado metálico */
-                                        filter: 'sepia(1) saturate(3) hue-rotate(5deg) brightness(1.1)',
+                                        /* invert: negro→blanco, screen: fondo negro→transparente */
+                                        filter: 'invert(1) sepia(0.6) saturate(2) hue-rotate(5deg) brightness(1.2)',
+                                        mixBlendMode: 'screen',
                                         pointerEvents: 'none',
                                         zIndex: 0,
                                     }}
