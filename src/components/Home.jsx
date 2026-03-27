@@ -233,7 +233,7 @@ function S4KCarousel() {
                             exit="exit"
                             transition={{ duration: 0.35, ease: 'easeInOut' }}
                             style={{
-                                display: 'flex', alignItems: 'center', gap: '20px',
+                                position: 'relative', overflow: 'hidden',
                                 padding: isMobile ? '24px 16px' : '32px 36px',
                                 border: '1px solid rgba(14, 165, 233, 0.35)',
                                 background: 'rgba(14, 165, 233, 0.05)',
@@ -241,22 +241,37 @@ function S4KCarousel() {
                                 textAlign: 'left',
                             }}
                         >
-                            {/* Texto izquierda */}
-                            <div style={{ flex: 1 }}>
+                            {/* Kanji de fondo — metálico dorado */}
+                            {pilar.kanji && (
+                                <img
+                                    src={pilar.kanji}
+                                    alt=""
+                                    aria-hidden="true"
+                                    style={{
+                                        position: 'absolute',
+                                        right: '-5%',
+                                        top: 0,
+                                        height: '100%',
+                                        width: 'auto',
+                                        objectFit: 'contain',
+                                        opacity: 0.35,
+                                        /* Negro → dorado metálico */
+                                        filter: 'sepia(1) saturate(3) hue-rotate(5deg) brightness(1.1)',
+                                        pointerEvents: 'none',
+                                        zIndex: 0,
+                                    }}
+                                />
+                            )}
+                            {/* Texto encima */}
+                            <div style={{ position: 'relative', zIndex: 1 }}>
                                 <div style={{ marginBottom: '10px' }}>
                                     <span style={{ fontSize: isMobile ? '18px' : '24px', fontWeight: '800', color: 'var(--color-primary)', letterSpacing: '1px' }}>{pilar.name}</span>
                                     <span style={{ fontSize: '12px', color: 'var(--color-text)', opacity: 0.55, marginLeft: '8px', fontStyle: 'italic' }}>— {pilar.sub}</span>
                                 </div>
                                 <p style={{ margin: 0, fontSize: isMobile ? '13px' : '14.5px', lineHeight: '1.7', opacity: 0.88 }}>{pilar.desc}</p>
                             </div>
-                            {/* Kanji derecha */}
-                            {pilar.kanji && (
-                                <div style={{ flexShrink: 0, width: isMobile ? '64px' : '90px', opacity: 0.18 }}>
-                                    <img src={pilar.kanji} alt={pilar.name}
-                                        style={{ width: '100%', filter: 'invert(1)', display: 'block' }} />
-                                </div>
-                            )}
                         </motion.div>
+
                     </AnimatePresence>
                 </div>
 
