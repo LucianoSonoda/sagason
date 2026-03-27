@@ -45,13 +45,13 @@ export function Home() {
                     animate="visible"
                 >
                     <motion.h2 className="hero-subtitle-top" variants={itemVariants}>
-                        ESPECIALISTAS EN SUBLIMACIÓN Y PERSONALIZACIÓN
+                        ESPECIALISTAS EN PERSONALIZACIÓN
                     </motion.h2>
                     <motion.h1 className="hero-title" variants={itemVariants}>
                         INMORTALIZA <span style={{ color: 'var(--color-primary)' }}>TUS MOMENTOS</span> EN CUADROS DE METAL
                     </motion.h1>
                     <motion.p className="hero-subtitle" variants={itemVariants}>
-                        Líderes en sublimación premium y personalización en Chile. Cuadros y placas de metal, tazones, rompecabezas y más. Calidad fotográfica infinita para tus recuerdos, diseños o logos corporativos.
+                        Sublimación premium y personalización en Chile. Cuadros y placas de metal, tazones, rompecabezas y más. Calidad fotográfica para tus recuerdos, diseños o logos corporativos.
                     </motion.p>
                     <motion.div className="cta-group" variants={itemVariants}>
                         <a href="#custom" className="btn btn-primary">
