@@ -91,9 +91,9 @@ export function Home() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '40px' }}>
                     {[
                         { name: 'Kaeru', sub: 'Regresar', desc: 'Nuestra promesa fundamental. Al escanear el tag, activas un puente digital inmediato que reduce la incertidumbre del extravío.' },
-                        { name: 'Kizuna', sub: 'Vínculo', desc: 'Gestionas la información de quienes más amas (como Kiara o Perla) en un entorno seguro y siempre disponible.' },
-                        { name: 'Kansha', sub: 'Gratitud', desc: 'Diseñamos la interfaz para que quien ayuda lo haga con facilidad. Un rescatista agradecido es un reencuentro más rápido.' },
-                        { name: 'Kenshin', sub: 'Dedicación', desc: 'Desde Peñalolén al mundo, cada placa es grabada con precisión láser para resistir el tiempo y la aventura.' },
+                        { name: 'Kizuna', sub: 'Vínculo', desc: 'Gestionas la información de quienes más amas en un entorno seguro y siempre disponible.' },
+                        { name: 'Kansha', sub: 'Gratitud', desc: 'Diseñamos la interfaz para que quien ayuda lo haga con facilidad. La gratitud permite un ciclo eterno de ayuda al prójimo.' },
+                        { name: 'Kenshin', sub: 'Dedicación', desc: 'Desde Chile hacia el mundo, cada placa es grabada con precisión láser para resistir el tiempo y la aventura.' },
                     ].map((pilar, index) => (
                         <motion.div
                             key={index}
