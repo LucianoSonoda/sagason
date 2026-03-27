@@ -249,14 +249,13 @@ function S4KCarousel() {
                                     aria-hidden="true"
                                     style={{
                                         position: 'absolute',
-                                        right: '-2%',
+                                        left: '50%',
                                         top: '50%',
-                                        transform: 'translateY(-50%)',
-                                        height: '130%',
+                                        transform: 'translate(-50%, -50%)',
+                                        height: '104%',
                                         width: 'auto',
                                         objectFit: 'contain',
                                         opacity: 0.35,
-                                        /* invert: negro→blanco, screen: fondo negro→transparente */
                                         filter: 'invert(1) sepia(0.6) saturate(2) hue-rotate(5deg) brightness(1.2)',
                                         mixBlendMode: 'screen',
                                         pointerEvents: 'none',
