@@ -86,28 +86,54 @@ export function Home() {
             <section className="filosofia-4k-section container" style={{ marginBottom: 'var(--spacing-xl)', textAlign: 'center' }}>
                 <div className="section-header">
                     <p className="section-subtitle">NUESTRA ESENCIA</p>
-                    <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON 4K</span></h2>
+                    <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON S4K</span></h2>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
-                    {['Kaeru : El Regreso', 'Kizuna : El Vínculo', 'Kansha : La Gratitud', 'Kenshin : La Dedicación'].map((pilar, index) => {
-                        const name = pilar.split(' : ')[0];
-                        return (
-                            <motion.button 
-                                key={index}
-                                className="glass-panel"
-                                style={{ padding: '20px', border: '1px solid var(--color-primary)', background: 'rgba(14, 165, 233, 0.05)', cursor: 'pointer', color: 'var(--color-text)', borderRadius: '12px' }}
-                                whileHover={{ scale: 1.05, backgroundColor: 'rgba(14, 165, 233, 0.2)' }}
-                                onClick={() => {
-                                    window.dataLayer = window.dataLayer || [];
-                                    window.dataLayer.push({ event: 'pilar_4k_click', pilar: name });
-                                }}
-                            >
-                                <h3 style={{ margin: '0 0 10px 0', color: 'var(--color-primary)' }}>{name}</h3>
-                                <p style={{ margin: 0, fontSize: '14px', opacity: 0.9 }}>{pilar.split(' : ')[1]}</p>
-                            </motion.button>
-                        );
-                    })}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+                    {[
+                        { name: 'Kaeru', sub: 'Regresar', desc: 'Nuestra promesa fundamental. Al escanear el tag, activas un puente digital inmediato que reduce la incertidumbre del extravío.' },
+                        { name: 'Kizuna', sub: 'Vínculo', desc: 'Gestionas la información de quienes más amas (como Kiara o Perla) en un entorno seguro y siempre disponible.' },
+                        { name: 'Kansha', sub: 'Gratitud', desc: 'Diseñamos la interfaz para que quien ayuda lo haga con facilidad. Un rescatista agradecido es un reencuentro más rápido.' },
+                        { name: 'Kenshin', sub: 'Dedicación', desc: 'Desde Peñalolén al mundo, cada placa es grabada con precisión láser para resistir el tiempo y la aventura.' },
+                    ].map((pilar, index) => (
+                        <motion.div
+                            key={index}
+                            className="glass-panel"
+                            style={{ padding: '24px', border: '1px solid rgba(14, 165, 233, 0.3)', background: 'rgba(14, 165, 233, 0.04)', borderRadius: '16px', textAlign: 'left' }}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            whileHover={{ scale: 1.03, borderColor: 'var(--color-primary)' }}
+                            onClick={() => {
+                                window.dataLayer = window.dataLayer || [];
+                                window.dataLayer.push({ event: 'pilar_s4k_click', pilar: pilar.name });
+                            }}
+                        >
+                            <div style={{ marginBottom: '10px' }}>
+                                <span style={{ fontSize: '22px', fontWeight: '800', color: 'var(--color-primary)', letterSpacing: '1px' }}>{pilar.name}</span>
+                                <span style={{ fontSize: '13px', color: 'var(--color-text)', opacity: 0.6, marginLeft: '8px', fontStyle: 'italic' }}>— {pilar.sub}</span>
+                            </div>
+                            <p style={{ margin: 0, fontSize: '14px', lineHeight: '1.7', opacity: 0.85 }}>{pilar.desc}</p>
+                        </motion.div>
+                    ))}
                 </div>
+                <motion.blockquote
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, delay: 0.4 }}
+                    style={{
+                        maxWidth: '620px', margin: '0 auto', padding: '24px 32px',
+                        borderLeft: '4px solid var(--color-primary)',
+                        background: 'rgba(14, 165, 233, 0.06)',
+                        borderRadius: '0 12px 12px 0',
+                        textAlign: 'left', fontStyle: 'italic',
+                        fontSize: '1rem', lineHeight: '1.7',
+                        color: 'var(--color-text)', opacity: 0.9,
+                    }}
+                >
+                    "No proteges un objeto, cuidas el silencio de tu hogar. Asegura el regreso de quien no sabe pedir ayuda."
+                </motion.blockquote>
             </section>
 
             {/* Services Overview */}
