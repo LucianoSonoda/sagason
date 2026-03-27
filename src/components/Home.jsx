@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Image, PenTool, Truck, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../styles/Home.css';
+import imgKanji_Kaeru from '../assets/kanji_kaeru.png';
+import imgKanji_Kizuna from '../assets/kanji_kizuna.png';
+import imgKanji_Kansha from '../assets/kanji_kansha.png';
+import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
 
 function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth);
@@ -69,30 +73,7 @@ export function Home() {
                 </motion.div>
             </section>
 
-            {/* SAGASON S4K Section */}
-            <section className="tag-promo-section container">
-                <motion.div 
-                    className="glass-panel tag-promo-card"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                >
-                    <div className="tag-promo-content">
-                        <span className="promo-badge">NUEVO SISTEMA</span>
-                        <h2 className="promo-title">SAGASON <span style={{ color: 'var(--color-primary)' }}>S4K</span></h2>
-                        <p className="promo-text" style={{ marginBottom: '10px' }}>Protección inteligente para lo que más quieres. Placas metálicas con QR dinámico para mascotas, personas y equipos.</p>
-                        <p style={{ color: 'var(--color-primary)', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '25px' }}>¡PRÓXIMO LANZAMIENTO!</p>
-                        <div className="promo-ctas">
-                            <a href="/como-funciona.html" className="btn btn-outline">¿Cómo funciona?</a>
-                            <a href="/tecnologia.html" className="btn btn-outline">Nuestra Tecnología</a>
-                            <a href="/dashboard.html" className="btn btn-primary-small">Panel de Control</a>
-                        </div>
-                    </div>
-                </motion.div>
-            </section>
-
-            {/* Filosofía SAGASON S4K - Carrusel */}
+            {/* SAGASON 4K — Sección unificada */}
             <S4KCarousel />
 
             {/* Services Overview - Carrusel */}
@@ -186,10 +167,10 @@ function ServicesCarousel() {
 
 
 const PILARES = [
-    { name: 'Kaeru', sub: 'Regresar', desc: 'Nuestra promesa fundamental. Al escanear el tag, activas un puente digital inmediato que reduce la incertidumbre del extravío.' },
-    { name: 'Kizuna', sub: 'Vínculo', desc: 'Gestionas la información de quienes más amas en un entorno seguro y siempre disponible.' },
-    { name: 'Kansha', sub: 'Gratitud', desc: 'Diseñamos la interfaz para que quien ayuda lo haga con facilidad. La gratitud permite un ciclo eterno de ayuda al prójimo.' },
-    { name: 'Kenshin', sub: 'Dedicación', desc: 'Desde Chile hacia el mundo, cada placa es grabada con precisión láser para resistir el tiempo y la aventura.' },
+    { name: 'Kaeru', sub: 'Regresar', desc: 'Nuestra promesa fundamental. Al escanear el tag, activas un puente digital inmediato que reduce la incertidumbre del extravío.', kanji: imgKanji_Kaeru },
+    { name: 'Kizuna', sub: 'Vínculo', desc: 'Gestionas la información de quienes más amas en un entorno seguro y siempre disponible.', kanji: imgKanji_Kizuna },
+    { name: 'Kansha', sub: 'Gratitud', desc: 'Diseñamos la interfaz para que quien ayuda lo haga con facilidad. La gratitud permite un ciclo eterno de ayuda al prójimo.', kanji: imgKanji_Kansha },
+    { name: 'Kenshin', sub: 'Dedicación', desc: 'Desde Chile hacia el mundo, cada placa es grabada con precisión láser para resistir el tiempo y la aventura.', kanji: imgKanji_Kenshin },
 ];
 
 function S4KCarousel() {
@@ -227,12 +208,14 @@ function S4KCarousel() {
 
     return (
         <section className="filosofia-4k-section container" style={{ marginBottom: 'var(--spacing-xl)', textAlign: 'center' }}>
+            {/* Encabezado unificado */}
             <div className="section-header">
+                <span className="promo-badge" style={{ display: 'inline-block', marginBottom: '10px' }}>SISTEMA DE PROTECCIÓN</span>
                 <p className="section-subtitle">NUESTRA ESENCIA</p>
-                <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON S4K</span></h2>
+                <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON 4K</span></h2>
             </div>
 
-            <div style={{ position: 'relative', maxWidth: isMobile ? '100%' : '560px', margin: '0 auto 36px auto', padding: isMobile ? '0 40px' : '0' }}
+            <div style={{ position: 'relative', maxWidth: isMobile ? '100%' : '600px', margin: '0 auto 36px auto', padding: isMobile ? '0 40px' : '0' }}
                 onMouseEnter={() => setPaused(true)}
                 onMouseLeave={() => setPaused(false)}
             >
@@ -250,17 +233,29 @@ function S4KCarousel() {
                             exit="exit"
                             transition={{ duration: 0.35, ease: 'easeInOut' }}
                             style={{
-                                padding: isMobile ? '24px 20px' : '36px 40px', textAlign: 'left',
+                                display: 'flex', alignItems: 'center', gap: '20px',
+                                padding: isMobile ? '24px 16px' : '32px 36px',
                                 border: '1px solid rgba(14, 165, 233, 0.35)',
                                 background: 'rgba(14, 165, 233, 0.05)',
-                                borderRadius: '16px', minHeight: isMobile ? '140px' : '160px',
+                                borderRadius: '16px', minHeight: isMobile ? '130px' : '155px',
+                                textAlign: 'left',
                             }}
                         >
-                            <div style={{ marginBottom: '10px' }}>
-                                <span style={{ fontSize: isMobile ? '20px' : '26px', fontWeight: '800', color: 'var(--color-primary)', letterSpacing: '1px', wordBreak: 'break-word' }}>{pilar.name}</span>
-                                <span style={{ fontSize: '13px', color: 'var(--color-text)', opacity: 0.55, marginLeft: '8px', fontStyle: 'italic' }}>— {pilar.sub}</span>
+                            {/* Texto izquierda */}
+                            <div style={{ flex: 1 }}>
+                                <div style={{ marginBottom: '10px' }}>
+                                    <span style={{ fontSize: isMobile ? '18px' : '24px', fontWeight: '800', color: 'var(--color-primary)', letterSpacing: '1px' }}>{pilar.name}</span>
+                                    <span style={{ fontSize: '12px', color: 'var(--color-text)', opacity: 0.55, marginLeft: '8px', fontStyle: 'italic' }}>— {pilar.sub}</span>
+                                </div>
+                                <p style={{ margin: 0, fontSize: isMobile ? '13px' : '14.5px', lineHeight: '1.7', opacity: 0.88 }}>{pilar.desc}</p>
                             </div>
-                            <p style={{ margin: 0, fontSize: isMobile ? '13px' : '15px', lineHeight: '1.75', opacity: 0.88 }}>{pilar.desc}</p>
+                            {/* Kanji derecha */}
+                            {pilar.kanji && (
+                                <div style={{ flexShrink: 0, width: isMobile ? '64px' : '90px', opacity: 0.18 }}>
+                                    <img src={pilar.kanji} alt={pilar.name}
+                                        style={{ width: '100%', filter: 'invert(1)', display: 'block' }} />
+                                </div>
+                            )}
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -275,6 +270,13 @@ function S4KCarousel() {
                         }} />
                     ))}
                 </div>
+            </div>
+
+            {/* CTA links */}
+            <div className="promo-ctas" style={{ justifyContent: 'center', marginBottom: '32px' }}>
+                <a href="/como-funciona.html" className="btn btn-outline">¿Cómo funciona?</a>
+                <a href="/tecnologia.html" className="btn btn-outline">Nuestra Tecnología</a>
+                <a href="/dashboard.html" className="btn btn-primary-small">Panel de Control</a>
             </div>
 
             <motion.blockquote
