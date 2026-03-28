@@ -23,6 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
+# Google Drive / Windows system files
+desktop.ini
+Thumbs.db
+
 # wrangler files
 .wrangler
 .dev.vars*
