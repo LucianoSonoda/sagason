@@ -389,31 +389,52 @@
     }
 
     async function downloadAllQRs() {
-        if(generatedBatch.length === 0) return;
+        if(generatedBatch.length === 0) {
+            alert("No hay códigos para descargar. Debes generar al menos uno primero.");
+            return;
+        }
         
-        // Usar JSZip para descargar todos en un solo archivo
-        const zip = new JSZip();
-        
-        let clavesTexto = "=== CÓDIGOS DE ACTIVACIÓN LOTE ===\\n\\n";
+        try {
+            // Usar JSZip para descargar todos en un solo archivo
+            const zip = new JSZip();
+            let clavesTexto = "=== CÓDIGOS DE ACTIVACIÓN LOTE ===\r\n\r\n";
 
-        generatedBatch.forEach(item => {
-            // Obtener el base64 de la imagen generada
-            const img = document.querySelector(`#${item.qrElementId} img`);
-            if(img && img.src) {
-                const base64Data = img.src.split(',')[1];
-                zip.file(item.filename, base64Data, {base64: true});
-                clavesTexto += `Archivo: ${item.filename}\\nID Placa: ${item.tagId}\\nPIN Activación: ${item.pin}\\n\\n-------------------\\n\\n`;
-            }
-        });
+            generatedBatch.forEach(item => {
+                let base64Data = null;
+                
+                // Prioridad 1: Intentar extraer del canvas
+                const canvas = document.querySelector(`#${item.qrElementId} canvas`);
+                if(canvas) {
+                    base64Data = canvas.toDataURL("image/png").split(',')[1];
+                } else {
+                    // Prioridad 2: Intentar extraer del img (si no soporta canvas)
+                    const img = document.querySelector(`#${item.qrElementId} img`);
+                    if(img && img.src && img.src.includes('base64,')) {
+                        base64Data = img.src.split(',')[1];
+                    }
+                }
 
-        // Agregamos el archivo de texto con las claves de seguridad
-        zip.file("CLAVES_DE_ACTIVACION.txt", clavesTexto);
+                if (base64Data) {
+                    zip.file(item.filename, base64Data, {base64: true});
+                    clavesTexto += `Archivo: ${item.filename}\r\nID Placa: ${item.tagId}\r\nPIN Activación: ${item.pin}\r\n\r\n-------------------\r\n\r\n`;
+                }
+            });
 
-        const content = await zip.generateAsync({type:"blob"});
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(content);
-        link.download = `${document.getElementById('admin-nick').value || 'RAKA'}_Lote_QRs.zip`;
-        link.click();
+            // Agregamos el archivo de texto con las claves de seguridad
+            zip.file("CLAVES_DE_ACTIVACION.txt", clavesTexto);
+
+            const content = await zip.generateAsync({type:"blob"});
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(content);
+            link.download = `${document.getElementById('admin-nick').value || 'RAKA'}_Lote_QRs.zip`;
+            document.body.appendChild(link); // Firefox requiere que el elemento esté en el DOM para clickear
+            link.click();
+            document.body.removeChild(link); // Limpieza
+
+        } catch(e) {
+            alert("Ocurrió un error al intentar crear el .zip: " + e.message);
+            console.error("Error comprimiendo archivo:", e);
+        }
     }
 
     async function registerTag() {
