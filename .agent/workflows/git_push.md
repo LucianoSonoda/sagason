@@ -1,26 +1,63 @@
 ---
-description: Cómo hacer git push en el proyecto Sagason (Google Drive)
+description: Cómo hacer deploy del proyecto Sagason (Google Drive + GitHub Pages)
 ---
 
-# Git Push en Sagason (Google Drive)
+# Deploy de Sagason
 
-El proyecto vive dentro de Google Drive, lo que genera archivos `desktop.ini` que **bloquean el git push**. Seguir estos pasos siempre:
+## Flujo Normal (GitHub Actions activo)
+
+Desde que se configuró GitHub Actions, el deploy es completamente automático.
+Solo necesitas hacer push a `main` y GitHub se encarga del build y deploy.
 
 // turbo-all
 
-## 1. Eliminar desktop.ini del tracking de git (si está trackeado)
-```
-git rm --cached desktop.ini 2>$null; git rm --cached -r --ignore-unmatch **/desktop.ini 2>$null
-```
-
-## 2. Eliminar el archivo físico si existe
-```
-Remove-Item -Force desktop.ini -ErrorAction SilentlyContinue
-```
-
-## 3. Hacer el commit y push
+## 1. Hacer commit y push a main
 ```
 git add -A && git commit -m "<mensaje>" && git push
 ```
 
-> **Nota:** `desktop.ini` ya está en `.gitignore`, así que en el futuro no debería re-aparecer. Si vuelve a aparecer, repetir pasos 1 y 2.
+GitHub Actions hará automáticamente:
+- `npm install`
+- `npm run build`
+- Deploy del `dist/` a la rama `gh-pages`
+
+El sitio en `sagason.cl` se actualiza en ~2 minutos.
+
+---
+
+## ⚠️ Si vuelve a aparecer `desktop.ini`
+
+El archivo `desktop.ini` ya está en `.gitignore`, pero Google Drive puede regenerarlo.
+Si aparece y bloquea el push:
+
+```
+# Eliminar del tracking y del disco
+git rm --cached desktop.ini 2>$null
+Remove-Item -Force desktop.ini -ErrorAction SilentlyContinue
+git add -A && git commit -m "chore: remove desktop.ini" && git push
+```
+
+---
+
+## ⚠️ Si GitHub Actions falla (fallback manual)
+
+Si por alguna razón Actions falla, puedes hacer el deploy manualmente:
+
+```
+# 1. Build
+npm run build
+
+# 2. Clonar gh-pages en carpeta temporal
+git clone --branch gh-pages --single-branch https://github.com/lucianosonoda/sagason.git .gh-pages-tmp
+
+# 3. Copiar dist y pushear
+Remove-Item .gh-pages-tmp\* -Recurse -Force -Exclude ".git"
+Copy-Item dist\* .gh-pages-tmp -Recurse -Force
+cd .gh-pages-tmp
+git add -A && git commit -m "deploy manual" && git push
+cd ..
+Remove-Item .gh-pages-tmp -Recurse -Force
+```
+
+> **NOTA:** `npm run deploy` despliega a Cloudflare Workers, NO a sagason.cl.
+> `sagason.cl` siempre usa GitHub Pages (rama `gh-pages`).
