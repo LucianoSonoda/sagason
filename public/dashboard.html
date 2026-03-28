@@ -395,9 +395,8 @@
         }
         
         try {
-            // Usar JSZip para descargar todos en un solo archivo
             const zip = new JSZip();
-            let clavesTexto = "=== CÓDIGOS DE ACTIVACIÓN LOTE ===\r\n\r\n";
+            let clavesTexto = `=== CÓDIGOS DE ACTIVACIÓN LOTE ===\n\n`;
 
             generatedBatch.forEach(item => {
                 let base64Data = null;
