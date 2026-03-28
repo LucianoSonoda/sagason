@@ -28,7 +28,7 @@ export function Footer() {
                 </div>
             </div>
             <div className="footer-bottom">
-                &copy; {new Date().getFullYear()} Sagason. Hecho con ❤️ en Chile 🇨🇱.
+                &copy; {new Date().getFullYear()} Sagason. Hecho con 4K desde Chile para el Mundo.
             </div>
         </footer>
     );
