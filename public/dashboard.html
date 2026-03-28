@@ -378,6 +378,10 @@
                         filename: `${nickname}_${data.tagId}.png`,
                         qrElementId: qrId
                     });
+                } else {
+                    const errText = await res.text();
+                    alert(`Error generando etiqueta ${i+1}: ${errText}`);
+                    throw new Error(errText);
                 }
             } catch(e) {
                 console.error("Error creando en lote", e);
