@@ -149,7 +149,7 @@
             const advPrice = 15000 * (1 - (discountPct / 100));
             const advText = discountPct > 0 ? `PROMO -${discountPct}% ($${advPrice.toLocaleString('es-CL')})` : `($15.000)`;
 
-            const limit = tier === "Advanced" ? 150 : (tier === "Basic" ? 50 : 12);
+            const limit = tier === "Advanced" ? 60 : (tier === "Basic" ? 30 : 12);
             const progress = Math.min(100, Math.round((t.scan_count || 0) / limit * 100));
 
             let expireText = "";
