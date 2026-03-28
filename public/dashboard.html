@@ -77,7 +77,7 @@
     <!-- FÁBRICA -->
     <div class="content-section" id="section-admin">
         <div class="admin-box">
-            <h3 style="margin:0 0 10px 0; font-size:16px;">Generador RAKA</h3>
+            <h3 style="margin:0 0 10px 0; font-size:16px;">Generador SAGASON 4K</h3>
             <label>Referencia Archivo (Ej. Lote_01):</label>
             <input type="text" id="admin-nick" placeholder="Ej: Lote_01">
             <label>Cantidad a Generar:</label>
@@ -322,7 +322,7 @@
 
     async function adminCreateBatch() {
         const btn = document.getElementById('btn-admin-generate');
-        const nickBase = document.getElementById('admin-nick').value || "RAKA_Tag";
+        const nickBase = document.getElementById('admin-nick').value || "SAGASON4K_Tag";
         const amount = parseInt(document.getElementById('admin-amount').value) || 1;
         
         btn.innerText = "Generando...";
@@ -426,7 +426,7 @@
             const content = await zip.generateAsync({type:"blob"});
             const link = document.createElement("a");
             link.href = URL.createObjectURL(content);
-            link.download = `${document.getElementById('admin-nick').value || 'RAKA'}_Lote_QRs.zip`;
+            link.download = `${document.getElementById('admin-nick').value || 'SAGASON4K'}_Lote_QRs.zip`;
             document.body.appendChild(link); // Firefox requiere que el elemento esté en el DOM para clickear
             link.click();
             document.body.removeChild(link); // Limpieza
