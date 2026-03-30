@@ -5,6 +5,7 @@ import { Home } from './components/Home';
 import { Gallery } from './components/Gallery';
 import { CustomForm } from './components/CustomForm';
 import { Warranty } from './components/Warranty';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import './App.css';
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
         )}
       </main>
       <Footer />
+      <WhatsAppButton />
     </>
   );
 }
