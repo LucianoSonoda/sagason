@@ -289,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const plateId          = params.get('id')   || params.get('uid') || 'ID_NO_ESPECIFICADO';
     const destinationEmail = params.get('mail') || params.get('email') || '';
+    const secureToken      = params.get('token') || '';
 
     const ENDPOINT = "https://alerta-sos-sagason.brluson.workers.dev";
 
@@ -309,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    token: secureToken,
                     plateId, destinationEmail, lat, lon,
                     timestamp: new Date().toISOString()
                 })
@@ -378,6 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     type: 'contact',
+                    token: secureToken,
                     plateId,
                     destinationEmail,
                     helperName:  name  || 'No indicado',

@@ -37,3 +37,6 @@ test_upload.js
 !.dev.vars.example
 .env*
 !.env.example
+
+# Documentación Privada
+docs/

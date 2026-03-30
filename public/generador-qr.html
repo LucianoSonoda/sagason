@@ -110,9 +110,10 @@
 
     <script>
         const baseUrl = "https://sagason.cl/sos.html"; // <- URL oficial de la página SOS
+        const API_ENDPOINT = "https://alerta-sos-sagason.brluson.workers.dev";
         let currentQR = null;
 
-        function generarQR() {
+        async function generarQR() {
             const plateId = document.getElementById('plateId').value.trim();
             const clientEmail = document.getElementById('clientEmail').value.trim();
             
@@ -125,24 +126,43 @@
                 return;
             }
 
-            // Construir la URL con id= y mail= para que la alerta llegue al correo correcto
-            const urlFinal = `${baseUrl}?id=${encodeURIComponent(plateId)}&mail=${encodeURIComponent(clientEmail)}`;
+            document.getElementById('resultado').style.display = 'none';
 
-            document.getElementById('urlReal').innerText = urlFinal;
-            document.getElementById('resultado').style.display = 'block';
-            
-            // Limpiar QR anterior si existe
-            document.getElementById('qrcode').innerHTML = "";
+            try {
+                // Solicitar token encriptado al backend
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'encrypt', tagId: plateId, email: clientEmail })
+                });
+                
+                if (!response.ok) throw new Error("Error en servidor");
+                const data = await response.json();
+                
+                if (!data.token) throw new Error("No se recibió el token");
 
-            // Generar la versión gráfica
-            currentQR = new QRCode(document.getElementById("qrcode"), {
-                text: urlFinal,
-                width: 300,
-                height: 300,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
+                // Construir la URL con el nuevo token seguro
+                const urlFinal = `${baseUrl}?token=${encodeURIComponent(data.token)}`;
+
+                document.getElementById('urlReal').innerText = urlFinal;
+                document.getElementById('resultado').style.display = 'block';
+                
+                // Limpiar QR anterior si existe
+                document.getElementById('qrcode').innerHTML = "";
+
+                // Generar la versión gráfica
+                currentQR = new QRCode(document.getElementById("qrcode"), {
+                    text: urlFinal,
+                    width: 300,
+                    height: 300,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            } catch (error) {
+                console.error(error);
+                alert("Error al intentar generar el QR encriptado.");
+            }
         }
 
         function descargarQR() {

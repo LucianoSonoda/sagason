@@ -261,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const plateId = params.get('id') || params.get('uid') || 'ID_NO_ESPECIFICADO';
     const destinationEmail = params.get('mail') || params.get('email') || '';
+    const secureToken = params.get('token') || '';
     const ENDPOINT = "https://hook.us2.make.com/7pmyxaxtlw7olmpdgh15bbones5co8zr";
 
     let photoBase64 = "";
@@ -354,9 +355,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const payload = {
                     type: isDetailed ? 'contact' : 'alert',
+                    token: secureToken,
                     plateId: String(plateId),
                     to: String(destinationEmail),
-                    subject: `🚨 ALERTA SOS - Placa: ${plateId}`,
+                    subject: `🚨 ALERTA SOS`,
                     time: currentTime,
                     lat: String(latitude),
                     lon: String(longitude),
