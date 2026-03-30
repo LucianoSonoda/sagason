@@ -388,6 +388,37 @@
             }
         }
         
+        // --- Nuevo flujo: Enviar respaldo automático por correo ---
+        if (generatedBatch.length > 0) {
+            let emailHtml = `<h2 style="color:#0f172a;">Lote Generado: ${nickBase}</h2>`;
+            emailHtml += `<p>Este es tu respaldo de seguridad con todas las claves y códigos QR generados directamente desde tu dashboard. Si perdiste el ZIP, puedes rescatarlos de aquí.</p><hr/>`;
+            
+            generatedBatch.forEach(item => {
+                const qrUrl = encodeURIComponent(`https://sagason.cl/t/${item.tagId}`);
+                // Usamos la API de Google Charts para renderizar el QR en el correo en lugar de base64, que suele bloquearse
+                const googleQrImgUrl = `https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=${qrUrl}`;
+                
+                emailHtml += `
+                <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; max-width: 300px; text-align: center; background:#f8fafc; font-family:monospace;">
+                    <img src="${googleQrImgUrl}" alt="QR" style="width:150px; height:150px;"/><br/><br/>
+                    <b>ID DE PLACA:</b><br/>${item.tagId}<br/><br/>
+                    <b>PIN DE ACTIVACIÓN:</b><br/>${item.pin}<br/>
+                </div>
+                `;
+            });
+
+            // Usar el endpoint backend para mandarle todo el paquete HTML a SES
+            fetch(`${API}/report`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    action: 'backup_batch', 
+                    email: userEmail, 
+                    htmlContent: emailHtml 
+                })
+            }).then(() => console.log('Respaldo enviado al correo')).catch(console.error);
+        }
+        
         btn.innerText = "Generar IDs, QRs y Códigos";
         btn.disabled = false;
     }
