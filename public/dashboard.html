@@ -348,16 +348,6 @@
                 if (res.ok) {
                     const data = await res.json();
                     
-                    // -- Nuevo Flujo: Pedir el token encriptado para el QR --
-                    const encryptRes = await fetch("https://s4k.sagason.cl/report", {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ action: 'encrypt', tagId: data.tagId })
-                    });
-                    const encryptData = await encryptRes.json();
-                    const secureToken = encryptData.token;
-                    // ----------------------------------------------------
-                    
                     // Contenedor visual del QR + Info
                     const itemDiv = document.createElement('div');
                     itemDiv.style.border = "1px solid #e2e8f0";
@@ -375,9 +365,9 @@
                     `;
                     container.appendChild(itemDiv);
 
-                    // Generar QR dentro del div (usando token seguro cifrado en base64)
+                    // Generar QR dentro del div
                     const qrcode = new QRCode(document.getElementById(qrId), { 
-                        text: `https://sagason.cl/ayuda.html?token=${encodeURIComponent(secureToken)}`, 
+                        text: `https://sagason.cl/t/${data.tagId}`, 
                         width: 150, 
                         height: 150 
                     });

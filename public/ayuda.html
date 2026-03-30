@@ -77,32 +77,14 @@
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     let tagId = urlParams.get('id');
-    const secureToken = urlParams.get('token');
     let coords = null;
     let customThanksMsg = "";
 
     async function init() {
-        if (!tagId && !secureToken) { document.getElementById('loading-screen').innerHTML = "ID no válido."; return; }
+        if (!tagId) { document.getElementById('loading-screen').innerHTML = "ID no válido."; return; }
         
         try {
-            // Paso 1: Si hay token seguro, decodificar el ID real usando el backend
-            if (secureToken) {
-                const decrRes = await fetch('https://s4k.sagason.cl/report', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'decrypt', token: secureToken })
-                });
-                
-                if (decrRes.ok) {
-                    const decrData = await decrRes.json();
-                    tagId = decrData.tagId;
-                } else {
-                    document.getElementById('loading-screen').innerHTML = "Código QR inválido o expirado.";
-                    return;
-                }
-            }
-
-            // Paso 2: Flujo normal con el tagId desencriptado (o el tagId legacy si escaneó uno antiguo)
+            // Flujo normal con el tagId
             const response = await fetch(`https://s4k.sagason.cl/scan?id=${tagId}`);
             const data = await response.json();
             if (response.ok) {
@@ -136,7 +118,6 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     tagId, 
-                    token: secureToken, // Envia el token también por seguridad si está presente 
                     name: document.getElementById('informant-name').value || "Anónimo", 
                     phone: document.getElementById('informant-phone').value || "No provisto", 
                     message: document.getElementById('informant-msg').value || "Sin descripción adicional", 
