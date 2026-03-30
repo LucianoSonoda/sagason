@@ -320,6 +320,32 @@
         return Math.random().toString(36).substring(2, 8).toUpperCase();
     }
 
+    // Logica centralizada para generar el archivo Zip
+    async function createZipObject(batchName) {
+        if(generatedBatch.length === 0) return null;
+        const zip = new JSZip();
+        let clavesTexto = `=== CÓDIGOS DE ACTIVACIÓN LOTE ===\n\n`;
+
+        generatedBatch.forEach(item => {
+            let base64Data = null;
+            // Extracción nativa o fallback
+            const canvas = document.querySelector(`#${item.qrElementId} canvas`);
+            if(canvas) { base64Data = canvas.toDataURL("image/png").split(',')[1]; } 
+            else {
+                const img = document.querySelector(`#${item.qrElementId} img`);
+                if(img && img.src && img.src.includes('base64,')) base64Data = img.src.split(',')[1];
+            }
+
+            if (base64Data) {
+                zip.file(item.filename, base64Data, {base64: true});
+                clavesTexto += `Archivo: ${item.filename}\r\nID Placa: ${item.tagId}\r\nPIN Activación: ${item.pin}\r\n\r\n-------------------\r\n\r\n`;
+            }
+        });
+
+        zip.file("CLAVES_DE_ACTIVACION.txt", clavesTexto);
+        return zip;
+    }
+
     async function adminCreateBatch() {
         const btn = document.getElementById('btn-admin-generate');
         const nickBase = document.getElementById('admin-nick').value || "SAGASON4K_Tag";
@@ -348,7 +374,6 @@
                 if (res.ok) {
                     const data = await res.json();
                     
-                    // Contenedor visual del QR + Info
                     const itemDiv = document.createElement('div');
                     itemDiv.style.border = "1px solid #e2e8f0";
                     itemDiv.style.padding = "10px";
@@ -388,35 +413,48 @@
             }
         }
         
-        // --- Nuevo flujo: Enviar respaldo automático por correo ---
+        // --- Flujo: Enviar respaldo automático con ZIP ADJUNTO ---
         if (generatedBatch.length > 0) {
-            let emailHtml = `<h2 style="color:#0f172a;">Lote Generado: ${nickBase}</h2>`;
-            emailHtml += `<p>Este es tu respaldo de seguridad con todas las claves y códigos QR generados directamente desde tu dashboard. Si perdiste el ZIP, puedes rescatarlos de aquí.</p><hr/>`;
-            
-            generatedBatch.forEach(item => {
-                const qrUrl = encodeURIComponent(`https://sagason.cl/t/${item.tagId}`);
-                // Usamos la API de Google Charts para renderizar el QR en el correo en lugar de base64, que suele bloquearse
-                const googleQrImgUrl = `https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=${qrUrl}`;
-                
-                emailHtml += `
-                <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; max-width: 300px; text-align: center; background:#f8fafc; font-family:monospace;">
-                    <img src="${googleQrImgUrl}" alt="QR" style="width:150px; height:150px;"/><br/><br/>
-                    <b>ID DE PLACA:</b><br/>${item.tagId}<br/><br/>
-                    <b>PIN DE ACTIVACIÓN:</b><br/>${item.pin}<br/>
-                </div>
-                `;
-            });
+            btn.innerText = "Empaquetando Backup...";
+            // Dar tiempo breve al proceso para pintar todos los canvas QR
+            await new Promise(r => setTimeout(r, 600)); 
 
-            // Usar el endpoint backend para mandarle todo el paquete HTML a SES
-            fetch(`${API}/report`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    action: 'backup_batch', 
-                    email: userEmail, 
-                    htmlContent: emailHtml 
-                })
-            }).then(() => console.log('Respaldo enviado al correo')).catch(console.error);
+            try {
+                const zipObj = await createZipObject(nickBase);
+                if (zipObj) {
+                    const zipBase64Str = await zipObj.generateAsync({type:"base64"});
+                    
+                    let emailHtml = `<h2 style="color:#0f172a;">Lote Generado: ${nickBase}</h2>`;
+                    emailHtml += `<p>Este es tu respaldo de seguridad. <b>El archivo .zip real está adjunto a este correo</b> conteniendo todas las imágenes, para descarga rápida sin usar la web.</p><hr/>`;
+                    
+                    generatedBatch.forEach(item => {
+                        const qrUrl = encodeURIComponent(`https://sagason.cl/t/${item.tagId}`);
+                        // Cambiamos al proveedor alternativo QRServer, que rinde mejor compatibilidad base64 en correos HTML
+                        const qrImgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrUrl}`;
+                        
+                        emailHtml += `
+                        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; max-width: 300px; text-align: center; background:#f8fafc; font-family:monospace;">
+                            <img src="${qrImgUrl}" alt="QR" style="width:150px; height:150px; border:1px solid #ccc; display:block; margin: 0 auto;"/><br/>
+                            <b>ID DE PLACA:</b><br/>${item.tagId}<br/><br/>
+                            <b>PIN DE ACTIVACIÓN:</b><br/>${item.pin}<br/>
+                        </div>
+                        `;
+                    });
+
+                    fetch(`${API}/report`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            action: 'backup_batch', 
+                            htmlContent: emailHtml,
+                            zipBase64: zipBase64Str,
+                            zipName: `${nickBase}_QRs_Sagason.zip`
+                        })
+                    }).then(() => console.log('✅ Respaldo ZIP enviado con éxito')).catch(console.error);
+                }
+            } catch (errZip) {
+                console.error("Fallo al crear adjunto ZIP", errZip);
+            }
         }
         
         btn.innerText = "Generar IDs, QRs y Códigos";
@@ -428,43 +466,16 @@
             alert("No hay códigos para descargar. Debes generar al menos uno primero.");
             return;
         }
-        
         try {
-            const zip = new JSZip();
-            let clavesTexto = `=== CÓDIGOS DE ACTIVACIÓN LOTE ===\n\n`;
-
-            generatedBatch.forEach(item => {
-                let base64Data = null;
-                
-                // Prioridad 1: Intentar extraer del canvas
-                const canvas = document.querySelector(`#${item.qrElementId} canvas`);
-                if(canvas) {
-                    base64Data = canvas.toDataURL("image/png").split(',')[1];
-                } else {
-                    // Prioridad 2: Intentar extraer del img (si no soporta canvas)
-                    const img = document.querySelector(`#${item.qrElementId} img`);
-                    if(img && img.src && img.src.includes('base64,')) {
-                        base64Data = img.src.split(',')[1];
-                    }
-                }
-
-                if (base64Data) {
-                    zip.file(item.filename, base64Data, {base64: true});
-                    clavesTexto += `Archivo: ${item.filename}\r\nID Placa: ${item.tagId}\r\nPIN Activación: ${item.pin}\r\n\r\n-------------------\r\n\r\n`;
-                }
-            });
-
-            // Agregamos el archivo de texto con las claves de seguridad
-            zip.file("CLAVES_DE_ACTIVACION.txt", clavesTexto);
-
+            const zip = await createZipObject();
+            if(!zip) return;
             const content = await zip.generateAsync({type:"blob"});
             const link = document.createElement("a");
             link.href = URL.createObjectURL(content);
             link.download = `${document.getElementById('admin-nick').value || 'SAGASON4K'}_Lote_QRs.zip`;
-            document.body.appendChild(link); // Firefox requiere que el elemento esté en el DOM para clickear
+            document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link); // Limpieza
-
+            document.body.removeChild(link);
         } catch(e) {
             alert("Ocurrió un error al intentar crear el .zip: " + e.message);
             console.error("Error comprimiendo archivo:", e);
