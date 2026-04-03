@@ -47,7 +47,7 @@ function App() {
   }, []);
 
   const isWarrantyPage = currentHash === '#warranty';
-  const isPrivacyPage = currentHash === '#privacidad';
+  const isPrivacyPage = currentHash === '#privacidad' || new URLSearchParams(window.location.search).has('confirm');
 
   return (
     <>
