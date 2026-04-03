@@ -65,6 +65,8 @@ export function CustomForm() {
         // --- Registro Silencioso en Base de Datos de Clientes (AWS) ---
         const emailInputForDb = form.querySelector('input[name="email"]');
         const nameInputForDb = form.querySelector('input[name="name"]');
+        const phoneInputForDb = form.querySelector('input[name="phone"]');
+        const messageInputForDb = form.querySelector('textarea[name="message"]');
         
         if (emailInputForDb && emailInputForDb.value) {
             try {
@@ -76,8 +78,11 @@ export function CustomForm() {
                     body: JSON.stringify({
                         email: emailInputForDb.value,
                         name: nameInputForDb ? nameInputForDb.value : 'Sin nombre',
+                        phone: phoneInputForDb ? phoneInputForDb.value : 'Sin teléfono',
+                        message: messageInputForDb ? messageInputForDb.value : '',
                         product: selections.product,
-                        category: selections.category
+                        category: selections.category,
+                        size: selections.size
                     })
                 }).catch(err => console.log("AWS Log Error:", err));
             } catch (err) {
@@ -350,7 +355,7 @@ export function CustomForm() {
                                     <h3 className="step-title">TUS DATOS Y DETALLES</h3>
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
 
-                                    <div className="fields-grid">
+                                    <div className="fields-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
                                         <div className="form-group">
                                             <label className="form-label" htmlFor="name">NOMBRE COMPLETO *</label>
                                             <input type="text" id="name" name="name" className="form-input" required />
@@ -359,6 +364,11 @@ export function CustomForm() {
                                         <div className="form-group">
                                             <label className="form-label" htmlFor="email">CORREO ELECTRÓNICO *</label>
                                             <input type="email" id="email" name="email" className="form-input" required />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label className="form-label" htmlFor="phone">TELÉFONO *</label>
+                                            <input type="tel" id="phone" name="phone" className="form-input" required />
                                         </div>
                                     </div>
 
