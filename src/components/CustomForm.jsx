@@ -61,8 +61,9 @@ export function CustomForm() {
         setIsSubmitting(true);
         setSubmitStatus(null);
         const form = e.target;
+        const orderId = `PED-${Date.now().toString(36).toUpperCase()}`;
         
-        // --- Registro Silencioso en Base de Datos de Clientes (AWS) ---
+        // --- Registro Silencioso en Base de Datos de Ordenes (AWS) ---
         const emailInputForDb = form.querySelector('input[name="email"]');
         const nameInputForDb = form.querySelector('input[name="name"]');
         const phoneInputForDb = form.querySelector('input[name="phone"]');
@@ -76,6 +77,7 @@ export function CustomForm() {
                     mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
+                        pedido_id: orderId,
                         email: emailInputForDb.value,
                         name: nameInputForDb ? nameInputForDb.value : 'Sin nombre',
                         phone: phoneInputForDb ? phoneInputForDb.value : 'Sin teléfono',
