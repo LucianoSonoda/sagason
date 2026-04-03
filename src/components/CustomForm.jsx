@@ -235,8 +235,7 @@ export function CustomForm() {
                 </div>
 
                 <div className="form-content-panel glass-panel">
-                    <iframe name="hidden_iframe" id="hidden_iframe" style={{ display: 'none' }}></iframe>
-                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit}>
+                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="_blank" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit}>
                         <input type="file" name="qr_code" ref={qrInputRef} style={{display: 'none'}} />
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                         <input type="hidden" name="_next" value={window.location.origin + "/success.html"} />
