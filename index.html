@@ -1,55 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- SEO Básico -->
-  <title>Sagason SpA | Sublimación, Personalización y Cuadros de Metal</title>
-  <meta name="description"
-    content="Especialistas en sublimación y personalización en Chile. Destaca con nuestros cuadros de metal, tazones, rompecabezas y más productos únicos. ¡Hazlo inolvidable!" />
-  <meta name="keywords"
-    content="sublimación, personalización, cuadros metal, cuadros de metal, sublimación en metal, regalos personalizados, tazones, placas, Sagason, Chile" />
-  <meta name="author" content="Sagason SpA" />
-  <link rel="canonical" href="https://sagason.cl/" />
-
-  <!-- Open Graph (Redes Sociales como Facebook, WhatsApp, LinkedIn) -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://sagason.cl/" />
-  <meta property="og:title" content="Sagason SpA | Sublimación, Personalización y Cuadros de Metal" />
-  <meta property="og:description"
-    content="Especialistas en sublimación y personalización en Chile. Destaca con nuestros cuadros de metal, tazones y rompecabezas." />
-  <meta property="og:image" content="https://sagason.cl/logo-completo.jpg" />
-
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://sagason.cl/" />
-  <meta name="twitter:title" content="Sagason SpA | Sublimación, Personalización y Cuadros de Metal" />
-  <meta name="twitter:description"
-    content="Especialistas en sublimación y personalización en Chile. Destaca con nuestros cuadros de metal, tazones y rompecabezas." />
-  <meta name="twitter:image" content="https://sagason.cl/logo-completo.jpg" />
-
-  <!-- Google Tag Manager -->
-  <script>(function (w, d, s, l, i) {
-      w[l] = w[l] || []; w[l].push({
-        'gtm.start':
-          new Date().getTime(), event: 'gtm.js'
-      }); var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-MNHG3VVZ');</script>
-  <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagason SpA | Protección S4K</title>
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id=GTM-XXXXXXX'+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MNHG3VVZ" height="0" width="0"
-      style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
-</body>
+    <header>
+        <nav>
+            <div class="logo">SAGASON 4K</div>
+        </nav>
+    </header>
 
+    <main>
+        <section id="hero">
+            <h1>Protección Multidimensional</h1>
+            <p>Ingeniería aplicada al vínculo más importante: el tuyo.</p>
+        </section>
+
+        <section id="waitlist">
+            <div class="card">
+                <h2>🌱 Fondo Social (Kansha)</h2>
+                <p>Inscríbete para recibir noticias sobre nuestra primera entrega de placas gratuitas.</p>
+                <form id="s4k-form">
+                    <input type="email" id="email" placeholder="tu@email.com" required>
+                    <button type="submit" id="submit-btn">Avisarme al abrir</button>
+                </form>
+                <div id="status-msg"></div>
+            </div>
+        </section>
+
+        <section id="pilares">
+            <div class="grid">
+                <div class="pilar"><h3>Kaeru</h3><p>Regreso rápido.</p></div>
+                <div class="pilar"><h3>Kizuna</h3><p>Vínculo eterno.</p></div>
+                <div class="pilar"><h3>Kansha</h3><p>Gratitud social.</p></div>
+                <div class="pilar"><h3>Kenshin</h3><p>Dedicación técnica.</p></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Sagason SpA - Peñalolén, Chile</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
 </html>
