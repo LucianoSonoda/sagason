@@ -254,14 +254,14 @@
 /* Regular Form Fields Inside Step 4 */
 .fields-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
 }
 
 @media (max-width: 768px) {
     .fields-grid {
         grid-template-columns: 1fr;
-        gap: 0;
+        gap: 1rem;
     }
 
     .products-grid {

@@ -341,7 +341,7 @@ export function CustomForm() {
                                     <h3 className="step-title">TUS DATOS Y DETALLES</h3>
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
 
-                                    <div className="fields-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
+                                    <div className="fields-grid">
                                         <div className="form-group">
                                             <label className="form-label" htmlFor="name">NOMBRE COMPLETO *</label>
                                             <input type="text" id="name" name="name" className="form-input" required />
