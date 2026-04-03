@@ -129,10 +129,18 @@ export function CustomForm() {
                             }
                         }
                         form.submit();
+                        setTimeout(() => {
+                            setSubmitStatus('success');
+                            setIsSubmitting(false);
+                        }, 1000);
                     } catch (err) {
                         console.error("Error al adjuntar archivo QR", err);
                         // Si falla la asignación de archivo (browsers antiguos), enviamos igual sin el QR adjunto
                         form.submit();
+                        setTimeout(() => {
+                            setSubmitStatus('success');
+                            setIsSubmitting(false);
+                        }, 1000);
                     }
                 }, 'image/png');
                 
@@ -144,6 +152,10 @@ export function CustomForm() {
             }
         } else {
             form.submit();
+            setTimeout(() => {
+                setSubmitStatus('success');
+                setIsSubmitting(false);
+            }, 1000);
         }
     };
 
@@ -177,30 +189,7 @@ export function CustomForm() {
         { id: 4, name: 'Detalles' }
     ];
 
-    useEffect(() => {
-        const handleMessage = (event) => {
-            if (event.data === "formSubmitSuccess") {
-                setSubmitStatus('success');
-                setIsSubmitting(false);
-            }
-        };
-
-        window.addEventListener("message", handleMessage);
-
-        // Timeout to assume FormSubmit threw a 500 error if it doesn't return
-        let timeoutId;
-        if (isSubmitting && submitStatus !== 'success') {
-            timeoutId = setTimeout(() => {
-                setSubmitStatus('error');
-                setIsSubmitting(false);
-            }, 40000); // 40 seconds timeout
-        }
-
-        return () => {
-            window.removeEventListener("message", handleMessage);
-            if (timeoutId) clearTimeout(timeoutId);
-        };
-    }, [isSubmitting, submitStatus]);
+    /* (useEffect timeout removed to prevent false error messages) */
 
     if (submitStatus === 'success') {
         return (
@@ -245,7 +234,7 @@ export function CustomForm() {
                     <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="_blank" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit}>
                         <input type="file" name="qr_code" ref={qrInputRef} style={{display: 'none'}} />
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
-                        <input type="hidden" name="_next" value={window.location.origin + "/success.html"} />
+                        <input type="hidden" name="_next" value={window.location.origin} />
                         <input type="hidden" name="_captcha" value="false" />
                         <input type="hidden" name="_cc" value="brluson@gmail.com,brclflo@gmail.com,gabrielssonoda@gmail.com" />
 
