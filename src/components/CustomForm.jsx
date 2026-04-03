@@ -61,6 +61,30 @@ export function CustomForm() {
         setIsSubmitting(true);
         setSubmitStatus(null);
         const form = e.target;
+        
+        // --- Registro Silencioso en Base de Datos de Clientes (AWS) ---
+        const emailInputForDb = form.querySelector('input[name="email"]');
+        const nameInputForDb = form.querySelector('input[name="name"]');
+        
+        if (emailInputForDb && emailInputForDb.value) {
+            try {
+                // Hacemos el llamado a tu futura API de AWS sin esperar respuesta (para no frenar el formulario)
+                fetch('https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod/customers', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: emailInputForDb.value,
+                        name: nameInputForDb ? nameInputForDb.value : 'Sin nombre',
+                        product: selections.product,
+                        category: selections.category
+                    })
+                }).catch(err => console.log("AWS Log Error:", err));
+            } catch (err) {
+                console.error("DB Save Error:", err);
+            }
+        }
+        // ----------------------------------------------------------------
 
         if (['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) {
             try {
