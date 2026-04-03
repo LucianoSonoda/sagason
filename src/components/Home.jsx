@@ -176,6 +176,7 @@ const PILARES = [
 function S4KCarousel() {
     const [[current, direction], setCurrent] = useState([0, 0]);
     const [paused, setPaused] = useState(false);
+    const [isWaitlistOpen, setWaitlistOpen] = useState(false);
     const intervalRef = useRef(null);
     const isMobile = useWindowWidth() < 640;
 
@@ -210,7 +211,7 @@ function S4KCarousel() {
         <section className="filosofia-4k-section container" style={{ marginBottom: 'var(--spacing-xl)', textAlign: 'center' }}>
             {/* Encabezado unificado */}
             <div className="section-header">
-                <span className="promo-badge" style={{ display: 'inline-block', marginBottom: '10px' }}>SISTEMA DE PROTECCIÓN</span>
+                <span className="promo-badge" style={{ display: 'inline-block', marginBottom: '10px' }}>CREAR LAZO INVISIBLE</span>
                 <p className="section-subtitle">NUESTRA ESENCIA</p>
                 <h2 className="section-title">FILOSOFÍA <span style={{ color: 'var(--color-primary)' }}>SAGASON 4K</span></h2>
             </div>
@@ -289,11 +290,14 @@ function S4KCarousel() {
             </div>
 
             {/* CTA links */}
-            <div className="promo-ctas" style={{ justifyContent: 'center', marginBottom: '32px' }}>
+            <div className="promo-ctas" style={{ justifyContent: 'center', marginBottom: '32px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                 <a href="/como-funciona.html" className="btn btn-outline">¿Cómo funciona?</a>
                 <a href="/tecnologia.html" className="btn btn-outline">Nuestra Tecnología</a>
                 <a href="/dashboard.html" className="btn btn-primary-small">Panel de Control</a>
+                <button onClick={() => setWaitlistOpen(true)} className="btn btn-primary-small" style={{ cursor: 'pointer' }}>Entrar al Waitlist</button>
             </div>
+
+            <WaitlistModal isOpen={isWaitlistOpen} onClose={() => setWaitlistOpen(false)} />
 
             <motion.blockquote
                 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
@@ -325,4 +329,87 @@ function arrowStyle(side) {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         cursor: 'pointer', transition: 'background 0.2s ease',
     };
+}
+
+function WaitlistModal({ isOpen, onClose }) {
+    const [email, setEmail] = useState('');
+    const [status, setStatus] = useState('idle');
+    const [message, setMessage] = useState('');
+
+    if (!isOpen) return null;
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setStatus('loading');
+        try {
+            const res = await fetch('https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod/waitlist', {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            if (res.ok) {
+                setStatus('success');
+                setMessage('¡Kansha! Registro exitoso.');
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ event: 'social_waitlist_signup', pilar: 'Kansha' });
+                setTimeout(() => { onClose(); setStatus('idle'); setEmail(''); setMessage(''); }, 3000);
+            } else {
+                throw new Error('Error en el servidor');
+            }
+        } catch (err) {
+            setStatus('error');
+            setMessage('Error de conexión. Intenta de nuevo.');
+        }
+    };
+
+    return (
+        <AnimatePresence>
+            <div style={{
+                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+                backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', zIndex: 9999, backdropFilter: 'blur(4px)'
+            }}>
+                <motion.div 
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }} 
+                    animate={{ opacity: 1, y: 0, scale: 1 }} 
+                    exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                    style={{
+                        background: '#1a1a1a', padding: '32px', borderRadius: '16px',
+                        maxWidth: '420px', width: '90%', border: '1px solid rgba(14, 165, 233, 0.3)',
+                        textAlign: 'center', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.6)'
+                    }}
+                >
+                    <button onClick={onClose} style={{
+                        position: 'absolute', top: '16px', right: '16px', background: 'transparent',
+                        border: 'none', color: '#fff', fontSize: '28px', cursor: 'pointer', opacity: 0.7
+                    }}>&times;</button>
+                    <h2 style={{ marginBottom: '8px', color: 'var(--color-primary)', fontSize: '1.5rem', fontWeight: 'bold' }}>🌱 Fondo Social</h2>
+                    <p style={{ fontSize: '14px', marginBottom: '24px', color: '#ccc', lineHeight: '1.5' }}>
+                        Inscríbete para recibir noticias sobre nuestra primera entrega de placas gratuitas.
+                    </p>
+                    
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <input 
+                            type="email" placeholder="tu@email.com" required value={email}
+                            onChange={(e) => setEmail(e.target.value)} disabled={status === 'loading'}
+                            style={{
+                                padding: '14px', borderRadius: '8px', border: '1px solid #333',
+                                background: '#0a0a0a', color: '#fff', outline: 'none', width: '100%',
+                                boxSizing: 'border-box'
+                            }}
+                        />
+                        <button type="submit" disabled={status === 'loading'} className="btn btn-primary" style={{ width: '100%', padding: '14px', border: 'none', cursor: 'pointer' }}>
+                            {status === 'loading' ? 'Procesando...' : 'Avisarme al abrir'}
+                        </button>
+                        {message && (
+                            <p style={{ color: status === 'success' ? '#2ecc71' : '#e74c3c', fontSize: '14px', margin: 0 }}>
+                                {message}
+                            </p>
+                        )}
+                    </form>
+                </motion.div>
+            </div>
+        </AnimatePresence>
+    );
 }
