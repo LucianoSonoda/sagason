@@ -93,6 +93,25 @@ export function CustomForm() {
         }
         // ----------------------------------------------------------------
 
+        const submitToFormSubmit = () => {
+            const formData = new FormData(form);
+            fetch("https://formsubmit.co/ajax/ventas@sagason.cl", {
+                method: "POST",
+                headers: { 'Accept': 'application/json' },
+                body: formData
+            })
+            .then(res => res.ok ? res.json() : Promise.reject(res))
+            .then(() => {
+                setSubmitStatus('success');
+                setIsSubmitting(false);
+            })
+            .catch(err => {
+                console.error("FormSubmit Error:", err);
+                setSubmitStatus('error');
+                setIsSubmitting(false);
+            });
+        };
+
         if (['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) {
             try {
                 const uniqueId = `SAG-${Date.now().toString(36).toUpperCase()}`;
@@ -128,19 +147,11 @@ export function CustomForm() {
                                 qrInputRef.current.files = dt.files;
                             }
                         }
-                        form.submit();
-                        setTimeout(() => {
-                            setSubmitStatus('success');
-                            setIsSubmitting(false);
-                        }, 1000);
+                        submitToFormSubmit();
                     } catch (err) {
                         console.error("Error al adjuntar archivo QR", err);
-                        // Si falla la asignación de archivo (browsers antiguos), enviamos igual sin el QR adjunto
-                        form.submit();
-                        setTimeout(() => {
-                            setSubmitStatus('success');
-                            setIsSubmitting(false);
-                        }, 1000);
+                        // Si falla la asignación de archivo, enviamos igual
+                        submitToFormSubmit();
                     }
                 }, 'image/png');
                 
@@ -151,11 +162,7 @@ export function CustomForm() {
                 setSubmitStatus('error');
             }
         } else {
-            form.submit();
-            setTimeout(() => {
-                setSubmitStatus('success');
-                setIsSubmitting(false);
-            }, 1000);
+            submitToFormSubmit();
         }
     };
 
@@ -231,7 +238,7 @@ export function CustomForm() {
                 </div>
 
                 <div className="form-content-panel glass-panel">
-                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="_blank" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit}>
+                    <form onSubmit={handleFormSubmit} className="custom-form">
                         <input type="file" name="qr_code" ref={qrInputRef} style={{display: 'none'}} />
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                         <input type="hidden" name="_captcha" value="false" />
