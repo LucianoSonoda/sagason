@@ -341,12 +341,26 @@ function WaitlistModal({ isOpen, onClose }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus('loading');
-        try {
+            // Obtener localización aproximada amablemente por IP (sin alertar con permisos GPS al usuario)
+            let geoData = { city: "Desconocida", country_name: "Desconocido" };
+            try {
+                const geoResponse = await fetch('https://ipapi.co/json/');
+                if (geoResponse.ok) {
+                    geoData = await geoResponse.json();
+                }
+            } catch (err) {
+                console.log("No se pudo obtener localización: ", err);
+            }
+
+            const locationStr = `${geoData.city}, ${geoData.country_name}`;
+
+            try {
+
             const res = await fetch('https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod/waitlist', {
                 method: 'POST',
                 mode: 'cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ email: email, location: locationStr })
             });
             if (res.ok) {
                 setStatus('success');
