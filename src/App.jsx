@@ -5,6 +5,7 @@ import { Home } from './components/Home';
 import { Gallery } from './components/Gallery';
 import { CustomForm } from './components/CustomForm';
 import { Warranty } from './components/Warranty';
+import { Privacy } from './components/Privacy';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import './App.css';
 
@@ -46,6 +47,7 @@ function App() {
   }, []);
 
   const isWarrantyPage = currentHash === '#warranty';
+  const isPrivacyPage = currentHash === '#privacidad';
 
   return (
     <>
@@ -53,6 +55,8 @@ function App() {
       <main style={{ minHeight: '80vh' }}>
         {isWarrantyPage ? (
           <Warranty />
+        ) : isPrivacyPage ? (
+          <Privacy />
         ) : (
           <>
             <Home />

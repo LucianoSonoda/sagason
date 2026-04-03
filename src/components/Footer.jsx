@@ -18,6 +18,7 @@ export function Footer() {
                     <a href="#gallery" className="footer-link">Catálogo</a>
                     <a href="#custom" className="footer-link">Personalizar</a>
                     <a href="#warranty" className="footer-link">Garantía y Políticas</a>
+                    <a href="#privacidad" className="footer-link">Privacidad y Datos</a>
                 </div>
 
                 <div className="footer-links-col contact-col">
