@@ -93,23 +93,12 @@ export function CustomForm() {
         }
         // ----------------------------------------------------------------
 
-        const submitToFormSubmit = () => {
-            const formData = new FormData(form);
-            fetch("https://formsubmit.co/ajax/ventas@sagason.cl", {
-                method: "POST",
-                headers: { 'Accept': 'application/json' },
-                body: formData
-            })
-            .then(res => res.ok ? res.json() : Promise.reject(res))
-            .then(() => {
+        const sendNativeForm = () => {
+            form.submit();
+            setTimeout(() => {
                 setSubmitStatus('success');
                 setIsSubmitting(false);
-            })
-            .catch(err => {
-                console.error("FormSubmit Error:", err);
-                setSubmitStatus('error');
-                setIsSubmitting(false);
-            });
+            }, 1000);
         };
 
         if (['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) {
@@ -147,11 +136,10 @@ export function CustomForm() {
                                 qrInputRef.current.files = dt.files;
                             }
                         }
-                        submitToFormSubmit();
+                        sendNativeForm();
                     } catch (err) {
                         console.error("Error al adjuntar archivo QR", err);
-                        // Si falla la asignación de archivo, enviamos igual
-                        submitToFormSubmit();
+                        sendNativeForm();
                     }
                 }, 'image/png');
                 
@@ -162,7 +150,7 @@ export function CustomForm() {
                 setSubmitStatus('error');
             }
         } else {
-            submitToFormSubmit();
+            sendNativeForm();
         }
     };
 
@@ -238,7 +226,8 @@ export function CustomForm() {
                 </div>
 
                 <div className="form-content-panel glass-panel">
-                    <form onSubmit={handleFormSubmit} className="custom-form">
+                    <iframe name="hidden_iframe" style={{display: "none"}}></iframe>
+                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit} className="custom-form">
                         <input type="file" name="qr_code" ref={qrInputRef} style={{display: 'none'}} />
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                         <input type="hidden" name="_captcha" value="false" />
