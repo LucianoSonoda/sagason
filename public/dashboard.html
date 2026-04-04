@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sagason - Dashboard</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- qrcodejs removido: ahora se usa qrserver.com SVG API (vectorial) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155; --success: #10b981; }
@@ -328,21 +328,18 @@
         const zip = new JSZip();
         let clavesTexto = `=== CÓDIGOS DE ACTIVACIÓN LOTE ===\n\n`;
 
-        generatedBatch.forEach(item => {
-            let base64Data = null;
-            // Extracción nativa o fallback
-            const canvas = document.querySelector(`#${item.qrElementId} canvas`);
-            if(canvas) { base64Data = canvas.toDataURL("image/png").split(',')[1]; } 
-            else {
-                const img = document.querySelector(`#${item.qrElementId} img`);
-                if(img && img.src && img.src.includes('base64,')) base64Data = img.src.split(',')[1];
-            }
-
-            if (base64Data) {
-                zip.file(item.filename, base64Data, {base64: true});
-                clavesTexto += `Archivo: ${item.filename}\r\nID Placa: ${item.tagId}\r\nPIN Activación: ${item.pin}\r\n\r\n-------------------\r\n\r\n`;
-            }
-        });
+        // Fetch todos los SVGs en paralelo
+        await Promise.all(generatedBatch.map(async item => {
+            try {
+                const svgUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent('https://sagason.cl/t/' + item.tagId)}&size=300x300&format=svg&margin=6`;
+                const res = await fetch(svgUrl);
+                if (res.ok) {
+                    const svgText = await res.text();
+                    zip.file(item.filename, svgText);
+                    clavesTexto += `Archivo: ${item.filename}\r\nID Placa: ${item.tagId}\r\nPIN Activación: ${item.pin}\r\n\r\n-------------------\r\n\r\n`;
+                }
+            } catch(e) { console.warn('Error descargando SVG para', item.tagId, e); }
+        }));
 
         zip.file("CLAVES_DE_ACTIVACION.txt", clavesTexto);
         return zip;
@@ -377,33 +374,23 @@
                     const data = await res.json();
                     
                     const itemDiv = document.createElement('div');
-                    itemDiv.style.border = "1px solid #e2e8f0";
-                    itemDiv.style.padding = "10px";
-                    itemDiv.style.borderRadius = "8px";
-                    itemDiv.style.background = "#f8fafc";
+                    itemDiv.style.cssText = 'border:1px solid #e2e8f0; padding:10px; border-radius:8px; background:#f8fafc; text-align:center;';
                     
-                    const qrId = `qr-${Date.now()}-${i}`;
+                    const svgPreviewUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent('https://sagason.cl/t/' + data.tagId)}&size=150x150&format=svg&margin=4`;
+                    
                     itemDiv.innerHTML = `
-                        <div id="${qrId}" style="margin-bottom:8px; display:flex; justify-content:center;"></div>
-                        <div style="font-size:11px; font-family:monospace; line-height:1.4;">
+                        <img src="${svgPreviewUrl}" width="150" height="150" style="display:block; margin:0 auto 8px auto;" alt="QR ${data.tagId}">
+                        <div style="font-size:11px; font-family:monospace; line-height:1.4; color:#333;">
                             <strong>ID:</strong> ${data.tagId}<br>
                             <strong>PIN:</strong> ${activationPIN}
                         </div>
                     `;
                     container.appendChild(itemDiv);
 
-                    // Generar QR dentro del div
-                    const qrcode = new QRCode(document.getElementById(qrId), { 
-                        text: `https://sagason.cl/t/${data.tagId}`, 
-                        width: 150, 
-                        height: 150 
-                    });
-
                     generatedBatch.push({
                         tagId: data.tagId,
                         pin: activationPIN,
-                        filename: `${nickname}_${data.tagId}.png`,
-                        qrElementId: qrId
+                        filename: `${nickname}_${data.tagId}.svg`
                     });
                 } else {
                     const errText = await res.text();
