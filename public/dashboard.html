@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sagason - Dashboard</title>
-    <!-- qrcodejs removido: ahora se usa qrserver.com SVG API (vectorial) -->
+    <!-- qrcode-generator: genera SVG vectorial real (rect por módulo) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155; --success: #10b981; }
@@ -323,23 +324,35 @@
     }
 
     // Logica centralizada para generar el archivo Zip
+    // Genera un SVG vectorial real: cada módulo QR = un <rect> independiente
+    function generateQRSvg(text) {
+        const qr = qrcode(0, 'M');
+        qr.addData(text);
+        qr.make();
+        const n = qr.getModuleCount();
+        const cell = 4; // tamaño de cada módulo en unidades SVG
+        const margin = 8;
+        const size = n * cell + margin * 2;
+        let rects = '';
+        for (let row = 0; row < n; row++) {
+            for (let col = 0; col < n; col++) {
+                if (qr.isDark(row, col)) {
+                    rects += `<rect x="${col*cell+margin}" y="${row*cell+margin}" width="${cell}" height="${cell}" fill="#000"/>`;
+                }
+            }
+        }
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges"><rect width="${size}" height="${size}" fill="#fff"/>${rects}</svg>`;
+    }
+
     async function createZipObject(batchName) {
         if(generatedBatch.length === 0) return null;
         const zip = new JSZip();
         let clavesTexto = `=== CÓDIGOS DE ACTIVACIÓN LOTE ===\n\n`;
 
-        // Fetch todos los SVGs en paralelo
-        await Promise.all(generatedBatch.map(async item => {
-            try {
-                const svgUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent('https://sagason.cl/t/' + item.tagId)}&size=300x300&format=svg&margin=6`;
-                const res = await fetch(svgUrl);
-                if (res.ok) {
-                    const svgText = await res.text();
-                    zip.file(item.filename, svgText);
-                    clavesTexto += `Archivo: ${item.filename}\r\nID Placa: ${item.tagId}\r\nPIN Activación: ${item.pin}\r\n\r\n-------------------\r\n\r\n`;
-                }
-            } catch(e) { console.warn('Error descargando SVG para', item.tagId, e); }
-        }));
+        generatedBatch.forEach(item => {
+            zip.file(item.filename, item.svgString);
+            clavesTexto += `Archivo: ${item.filename}\r\nID Placa: ${item.tagId}\r\nPIN Activación: ${item.pin}\r\n\r\n-------------------\r\n\r\n`;
+        });
 
         zip.file("CLAVES_DE_ACTIVACION.txt", clavesTexto);
         return zip;
@@ -373,13 +386,12 @@
                 if (res.ok) {
                     const data = await res.json();
                     
+                    const svgString = generateQRSvg(`https://sagason.cl/t/${data.tagId}`);
+
                     const itemDiv = document.createElement('div');
                     itemDiv.style.cssText = 'border:1px solid #e2e8f0; padding:10px; border-radius:8px; background:#f8fafc; text-align:center;';
-                    
-                    const svgPreviewUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent('https://sagason.cl/t/' + data.tagId)}&size=150x150&format=svg&margin=4`;
-                    
                     itemDiv.innerHTML = `
-                        <img src="${svgPreviewUrl}" width="150" height="150" style="display:block; margin:0 auto 8px auto;" alt="QR ${data.tagId}">
+                        <div style="width:150px; height:150px; margin:0 auto 8px auto;">${svgString}</div>
                         <div style="font-size:11px; font-family:monospace; line-height:1.4; color:#333;">
                             <strong>ID:</strong> ${data.tagId}<br>
                             <strong>PIN:</strong> ${activationPIN}
@@ -390,7 +402,8 @@
                     generatedBatch.push({
                         tagId: data.tagId,
                         pin: activationPIN,
-                        filename: `${nickname}_${data.tagId}.svg`
+                        filename: `${nickname}_${data.tagId}.svg`,
+                        svgString: svgString
                     });
                 } else {
                     const errText = await res.text();
