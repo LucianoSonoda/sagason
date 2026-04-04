@@ -3,63 +3,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sagason - ¿Cómo funciona?</title>
+    <title>Sagason — ¿Cómo funciona?</title>
     <style>
-        :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --text-dim: #94a3b8; --border: #334155; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
-        header { background: rgba(15, 23, 42, 0.95); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        .btn-close { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 6px 12px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 12px; }
-        .container { max-width: 480px; margin: 0 auto; padding: 20px 15px 100px 15px; }
-        .step { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; margin-bottom: 25px; position: relative; }
-        .step-num { position: absolute; top: -15px; left: 20px; background: var(--primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.4); }
-        h2 { color: var(--primary); font-size: 20px; margin-top: 10px; }
-        p { font-size: 15px; color: var(--text-dim); }
-        .img-placeholder { background: #0f172a; border-radius: 12px; padding: 20px; text-align: center; margin: 15px 0; border: 1px dashed var(--border); color: var(--primary); font-size: 13px; }
-        .btn-cta { display: block; text-align: center; background: var(--primary); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-top: 30px; }
+        :root {
+            --primary: #0ea5e9;
+            --primary-glow: rgba(14,165,233,0.35);
+            --bg: #0f172a;
+            --card: #1e293b;
+            --card2: #162032;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: #334155;
+            --success: #10b981;
+            --warn: #f59e0b;
+            --warn-bg: rgba(245,158,11,0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* ── Header ─────────────────────────── */
+        header {
+            background: rgba(15,23,42,0.97);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .btn-close {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: background .2s;
+        }
+        .btn-close:hover { background: rgba(255,255,255,.06); }
+
+        /* ── Layout ─────────────────────────── */
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 28px 16px 100px;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -.02em;
+            margin-bottom: 6px;
+        }
+        .page-sub {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 36px;
+        }
+
+        /* ── Step cards ─────────────────────── */
+        .step {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 22px 20px 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .step-num {
+            position: absolute;
+            top: -14px;
+            left: 18px;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 0 0 4px var(--bg), 0 4px 14px var(--primary-glow);
+        }
+
+        .step h2 {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.65;
+        }
+
+        .step p strong { color: var(--text); }
+
+        /* ── Info chips inside steps ─────────── */
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .chip {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+        .chip.blue  { border-color: var(--primary); color: var(--primary); background: rgba(14,165,233,.08); }
+        .chip.green { border-color: var(--success);  color: var(--success);  background: rgba(16,185,129,.08); }
+        .chip.yellow{ border-color: var(--warn);     color: var(--warn);     background: var(--warn-bg); }
+
+        /* ── Plan table ─────────────────────── */
+        .plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            font-size: 13px;
+        }
+        .plan-table th {
+            background: var(--card2);
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: .06em;
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .plan-table td {
+            padding: 9px 10px;
+            border-bottom: 1px solid rgba(51,65,85,.5);
+            color: var(--text-dim);
+            vertical-align: middle;
+        }
+        .plan-table td:first-child { font-weight: 700; color: var(--text); }
+        .plan-table tr:last-child td { border-bottom: none; }
+        .badge-plan {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-free  { background:rgba(148,163,184,.12); color:#94a3b8; }
+        .badge-basic { background:rgba(14,165,233,.15);  color:var(--primary); }
+        .badge-adv   { background:rgba(16,185,129,.15);  color:var(--success); }
+
+        /* ── Warning box ────────────────────── */
+        .warn-box {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            background: var(--warn-bg);
+            border: 1px solid rgba(245,158,11,.3);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 14px;
+        }
+        .warn-box .icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+        .warn-box p { font-size: 13px; color: var(--warn); line-height: 1.5; }
+        .warn-box p strong { color: #fcd34d; }
+
+        /* ── Info box ─────────────────────── */
+        .info-box {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            background: rgba(14,165,233,.07);
+            border: 1px solid rgba(14,165,233,.2);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 14px;
+        }
+        .info-box .icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+        .info-box p { font-size: 13px; color: #7dd3fc; line-height: 1.5; }
+        .info-box p strong { color: #bae6fd; }
+
+        /* ── Divider ────────────────────────── */
+        .divider {
+            text-align: center;
+            font-size: 11px;
+            color: #334155;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin: 6px 0 26px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+
+        /* ── CTA button ─────────────────────── */
+        .btn-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            margin-top: 10px;
+            transition: all .2s;
+            box-shadow: 0 4px 16px var(--primary-glow);
+        }
+        .btn-cta:hover { background: #0284c7; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
 <header>
-    <a href="https://sagason.cl" style="display:flex; align-items:center;"><img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'"></a>
+    <a href="https://sagason.cl" style="display:flex; align-items:center;">
+        <img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'" alt="Sagason">
+    </a>
     <a href="https://sagason.cl" class="btn-close">Cerrar</a>
 </header>
 
 <div class="container">
-    <h1 style="text-align:center; font-size:24px;">Guía de Inicio</h1>
-    <p style="text-align:center; margin-bottom:40px;">Configura tu protección en menos de 2 minutos.</p>
+
+    <h1 class="page-title">Guía de Inicio</h1>
+    <p class="page-sub">Activa y configura tu protección Sagason en minutos.</p>
 
     <!-- PASO 1 -->
     <div class="step">
         <div class="step-num">1</div>
-        <h2>Adquiere tu Tag</h2>
-        <p>Solicita tu placa física Sagason a través de nuestros canales oficiales. Cada tag viene con un <b>ID Único</b> grabado que es intransferible.</p>
-        <div class="img-placeholder">📸 Imagina aquí el ID grabado en el metal</div>
+        <h2>Acceder al Sitio</h2>
+        <p>Ingresa a <strong>sagason.cl</strong> desde el navegador de tu teléfono o computador.</p>
+        <div class="chip-row">
+            <span class="chip blue">🌐 sagason.cl</span>
+        </div>
     </div>
 
     <!-- PASO 2 -->
     <div class="step">
         <div class="step-num">2</div>
-        <h2>Crea tu Cuenta</h2>
-        <p>Ingresa a nuestro portal y haz clic en <b>"Entrar con Google"</b>. No necesitas recordar nuevas contraseñas; usamos la seguridad de Google para proteger tu acceso.</p>
+        <h2>Entrar al Panel de Control</h2>
+        <p>En la página principal, presiona el botón <strong>"Panel de Control"</strong> para acceder a tu cuenta.</p>
+        <div class="chip-row">
+            <span class="chip blue">📱 Botón "Panel de Control"</span>
+        </div>
     </div>
 
     <!-- PASO 3 -->
     <div class="step">
         <div class="step-num">3</div>
-        <h2>Activa tu Producto</h2>
-        <p>Dentro de tu panel, ve a la pestaña <b>"Activar Nueva"</b>. Escribe el ID de tu placa y asígnale un nombre (ej: "Mi Perro Bobby").</p>
-        <div class="img-placeholder">⌨️ Ingresa el ID > Click en Activar</div>
+        <h2>Iniciar Sesión con Google</h2>
+        <p>Realiza tu login con tu <strong>cuenta de Google</strong>. No necesitas recordar contraseñas adicionales — usamos la seguridad de Google para proteger tu acceso.</p>
+        <div class="chip-row">
+            <span class="chip blue">🔵 Sign in with Google</span>
+        </div>
     </div>
+
+    <div class="divider">Activar tu Placa</div>
 
     <!-- PASO 4 -->
     <div class="step">
         <div class="step-num">4</div>
-        <h2>Configura Alertas</h2>
-        <p>Haz clic sobre tu placa activada para definir quién recibirá los avisos. Puedes cambiar los correos y teléfonos en cualquier momento sin cambiar el QR físico.</p>
+        <h2>Vincular tu Placa</h2>
+        <p>En tu panel, ve a la pestaña <strong>"Activar Nueva"</strong> e ingresa los siguientes datos:</p>
+        <div class="chip-row">
+            <span class="chip blue">🔖 ID de la Placa (enviado junto a ella)</span>
+            <span class="chip blue">🔑 PIN de Activación (recibido por correo)</span>
+            <span class="chip blue">🏷️ Nombre identificador (ej: Mi Perro Bobby)</span>
+            <span class="chip blue">📂 Categoría: Mascota, Persona o Equipo</span>
+        </div>
+        <div class="info-box">
+            <span class="icon">💡</span>
+            <p>El ID de la placa tiene el formato <strong>XXXX-XXXX-XXXX-XXXX</strong> y viene grabado físicamente en el tag.</p>
+        </div>
     </div>
 
-    <a href="https://sagason.cl/dashboard" class="btn-cta">Ir a mi Panel de Control</a>
+    <!-- PASO 5 -->
+    <div class="step">
+        <div class="step-num">5</div>
+        <h2>Administrar tus Placas</h2>
+        <p>Una vez activado el tag, puedes gestionarlo en la pestaña <strong>"Mis Placas"</strong>. Desde allí puedes editar el nombre, categoría, correos de notificación, teléfonos de contacto y el mensaje de agradecimiento que verá quien encuentre la placa.</p>
+        <div class="chip-row">
+            <span class="chip blue">📋 Mis Placas</span>
+            <span class="chip green">✏️ Editable en cualquier momento</span>
+        </div>
+    </div>
+
+    <div class="divider">Planes y Escaneos</div>
+
+    <!-- PASO 6 -->
+    <div class="step">
+        <div class="step-num">6</div>
+        <h2>Plan Inicial: Free</h2>
+        <p>Todos los usuarios comienzan en el <strong>Plan Gratis (Free)</strong>, con un límite de <strong>5 escaneos anuales</strong>. Si necesitas más capacidad, puedes mejorar tu plan en cualquier momento.</p>
+
+        <table class="plan-table">
+            <thead>
+                <tr>
+                    <th>Plan</th>
+                    <th>Escaneos / año</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge-plan badge-free">Free</span></td>
+                    <td>5</td>
+                    <td>Gratis</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-plan badge-basic">Basic</span></td>
+                    <td>30</td>
+                    <td>$7.000 / año</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-plan badge-adv">Advanced</span></td>
+                    <td>60</td>
+                    <td>$15.000 / año</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PASO 7 -->
+    <div class="step">
+        <div class="step-num">7</div>
+        <h2>Datos de Contacto</h2>
+        <p>Tu <strong>correo principal</strong> será por defecto el que utilizaste al registrarte. Sin embargo, puedes modificar tus datos de contacto (correos y teléfonos) en cualquier momento desde el panel, sin afectar el QR físico.</p>
+
+        <div class="warn-box">
+            <span class="icon">⚠️</span>
+            <p><strong>El tag no puede ser reemplazado ni transferido.</strong> Una vez vinculado a tu cuenta, no es posible asociarlo a otro usuario. Cuida bien tu ID y PIN de activación.</p>
+        </div>
+    </div>
+
+    <!-- PASO 8 -->
+    <div class="step">
+        <div class="step-num">8</div>
+        <h2>Consejos y Planes Avanzados</h2>
+        <p>Si necesitas más escaneos o funciones adicionales, evalúa los planes <strong>Basic (30 escaneos)</strong> o <strong>Advanced (60 escaneos)</strong> disponibles directamente en tu panel.</p>
+
+        <div class="info-box" style="margin-top:12px;">
+            <span class="icon">🧪</span>
+            <p><strong>¿Quieres probar sin gastar escaneos?</strong> Desactiva las alertas momentáneamente desde tu panel y luego pincha el enlace <strong>"Probar Link Escaneo"</strong>, o escanea el QR con la cámara de tu teléfono. Recuerda reactivar las alertas después.</p>
+        </div>
+    </div>
+
+    <a href="https://sagason.cl/dashboard" class="btn-cta">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Ir a mi Panel de Control
+    </a>
+
 </div>
 </body>
 </html>
