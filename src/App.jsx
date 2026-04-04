@@ -7,6 +7,7 @@ import { CustomForm } from './components/CustomForm';
 import { Warranty } from './components/Warranty';
 import { Privacy } from './components/Privacy';
 import { WhatsAppButton } from './components/WhatsAppButton';
+import { MusicPlayer } from './components/MusicPlayer';
 import './App.css';
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
       </main>
       <Footer />
       <WhatsAppButton />
+      <MusicPlayer />
     </>
   );
 }
