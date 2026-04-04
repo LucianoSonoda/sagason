@@ -39,7 +39,14 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            gap: 12px;
         }
+        .page-nav { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
+        .page-nav a { color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 500; padding: 5px 11px; border-radius: 6px; transition: all .18s; white-space: nowrap; }
+        .page-nav a:hover { color: #f8fafc; background: rgba(255,255,255,.06); }
+        .page-nav a.nav-cta { background: var(--primary); color: white; font-weight: 600; }
+        .page-nav a.nav-cta:hover { background: #0284c7; }
+        @media (max-width: 420px) { .page-nav a { font-size: 11px; padding: 4px 7px; } }
         .btn-close {
             background: transparent;
             border: 1px solid var(--border);
@@ -243,9 +250,13 @@
 <body>
 
 <header>
-    <a href="https://sagason.cl" style="display:flex; align-items:center;">
+    <a href="https://sagason.cl" style="display:flex; align-items:center; flex-shrink:0;">
         <img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'" alt="Sagason">
     </a>
+    <nav class="page-nav">
+        <a href="https://sagason.cl/tecnologia.html">Tecnología</a>
+        <a href="https://sagason.cl/dashboard" class="nav-cta">Panel de Control</a>
+    </nav>
     <a href="https://sagason.cl" class="btn-close">Cerrar</a>
 </header>
 

@@ -7,8 +7,14 @@
     <style>
         :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --text-dim: #94a3b8; --border: #334155; --success: #10b981; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        header { background: rgba(15, 23, 42, 0.95); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; }
-        .btn-close { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 6px 12px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 12px; }
+        header { background: rgba(15, 23, 42, 0.95); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .page-nav { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
+        .page-nav a { color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 500; padding: 5px 11px; border-radius: 6px; transition: all .18s; white-space: nowrap; }
+        .page-nav a:hover { color: #f8fafc; background: rgba(255,255,255,.06); }
+        .page-nav a.nav-cta { background: var(--primary); color: white; font-weight: 600; }
+        .page-nav a.nav-cta:hover { background: #0284c7; }
+        .btn-close { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 6px 12px; border-radius: 8px; cursor: pointer; text-decoration: none; font-size: 12px; flex-shrink: 0; }
+        @media (max-width: 420px) { .page-nav a { font-size: 11px; padding: 4px 7px; } }
         .container { max-width: 480px; margin: 0 auto; padding: 20px 15px 100px 15px; }
         .hero { text-align: center; padding: 40px 0; }
         .hero h1 { font-size: 32px; color: var(--primary); margin: 0; }
@@ -25,7 +31,11 @@
 <body>
 
 <header>
-    <a href="https://sagason.cl" style="display:flex; align-items:center;"><img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'"></a>
+    <a href="https://sagason.cl" style="display:flex; align-items:center; flex-shrink:0;"><img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'"></a>
+    <nav class="page-nav">
+        <a href="https://sagason.cl/como-funciona.html">¿Cómo funciona?</a>
+        <a href="https://sagason.cl/dashboard" class="nav-cta">Panel de Control</a>
+    </nav>
     <a href="https://sagason.cl" class="btn-close">Cerrar</a>
 </header>
 
