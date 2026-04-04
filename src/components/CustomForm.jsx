@@ -214,7 +214,7 @@ export function CustomForm() {
     return (
         <section id="custom" className="custom-section container">
             <div className="section-header">
-                <p className="section-subtitle">Completa el formulario en 4 simples pasos y te contactaremos con el diseño.</p>
+                <p className="section-subtitle">Completa el formulario en 4 simples pasos. <strong>Es una cotización gratuita</strong> — nuestro equipo te contactará con el precio y el diseño.</p>
             </div>
 
             <div className="form-wizard-container">
@@ -378,6 +378,12 @@ export function CustomForm() {
                                         </div>
                                     </div>
 
+                                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', backgroundColor: 'rgba(37, 99, 235, 0.08)', border: '1px solid rgba(37, 99, 235, 0.25)', borderRadius: '8px', padding: '12px 14px', marginBottom: '1.25rem' }}>
+                                        <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>💬</span>
+                                        <p style={{ margin: 0, fontSize: '0.82rem', color: '#93c5fd', lineHeight: '1.5' }}>
+                                            <strong style={{ color: '#bfdbfe' }}>Esto es una cotización sin costo.</strong> Nuestro equipo comercial evaluará tu solicitud y te informará el valor y los tiempos de producción a la brevedad.
+                                        </p>
+                                    </div>
                                     <div className="step-actions dual-actions">
                                         <button type="button" className="btn-prev" onClick={handlePrev} disabled={isSubmitting}>
                                             &larr; Volver
@@ -386,7 +392,7 @@ export function CustomForm() {
                                             {isSubmitting ? (
                                                 <span>Enviando...</span>
                                             ) : (
-                                                <><Send size={18} /> Enviar Solicitud</>
+                                                <><Send size={18} /> Enviar Cotización</>
                                             )}
                                         </button>
                                     </div>
