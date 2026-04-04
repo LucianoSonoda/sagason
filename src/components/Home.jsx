@@ -294,7 +294,7 @@ function S4KCarousel() {
                 <a href="/como-funciona.html" className="btn btn-outline">¿Cómo funciona?</a>
                 <a href="/tecnologia.html" className="btn btn-outline">Nuestra Tecnología</a>
                 <a href="/dashboard.html" className="btn btn-primary-small">Panel de Control</a>
-                <button onClick={() => setWaitlistOpen(true)} className="btn btn-primary-small" style={{ cursor: 'pointer' }}>Entrar al Waitlist</button>
+                <button onClick={() => setWaitlistOpen(true)} className="btn btn-primary-small" style={{ cursor: 'pointer' }}>Lista de Espera</button>
             </div>
 
             <WaitlistModal isOpen={isWaitlistOpen} onClose={() => setWaitlistOpen(false)} />
