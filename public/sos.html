@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Alerta de Emergencia Médica — Sagason</title>
+    <title>Alerta de Emergencia — Sagason</title>
     <style>
         :root {
             --bg-body: #121212;
@@ -51,6 +51,12 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         .hidden { display: none !important; }
@@ -67,6 +73,17 @@
             border: 2px solid var(--primary-color);
         }
         .icon-header svg { width: 32px; height: 32px; color: var(--primary-color); }
+
+        .icon-header.accent {
+            background-color: rgba(129, 140, 248, 0.15);
+            border-color: var(--accent-color);
+        }
+        .icon-header.accent svg { color: var(--accent-color); }
+
+        .icon-header.success-icon {
+            background-color: rgba(52, 211, 153, 0.15);
+            border-color: var(--success-color);
+        }
 
         h1 { font-size: 1.5rem; margin-bottom: 12px; letter-spacing: -0.025em; }
         p.description {
@@ -114,6 +131,33 @@
 
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        /* ---- Location toggle ---- */
+        .location-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(96,165,250,0.08);
+            border: 1px solid rgba(96,165,250,0.2);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.2s;
+            user-select: none;
+        }
+        .location-toggle:hover { background: rgba(96,165,250,0.14); }
+        .location-toggle input[type="checkbox"] {
+            width: 20px; height: 20px;
+            accent-color: var(--accent-color);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .location-toggle .toggle-text { flex: 1; }
+        .location-toggle .toggle-title { font-size: 0.9rem; font-weight: 600; color: var(--info-color); display: block; }
+        .location-toggle .toggle-sub   { font-size: 0.78rem; color: #6b7280; margin-top: 2px; display: block; }
+
+        /* ---- Form fields ---- */
         .form-field { text-align: left; margin-bottom: 16px; }
         .form-field label {
             display: block;
@@ -132,9 +176,10 @@
             border-radius: 8px;
             color: var(--text-main);
             font-size: 0.95rem;
+            font-family: inherit;
         }
         .form-field input:focus, .form-field textarea:focus { outline: none; border-color: var(--accent-color); }
-        
+
         .file-input-wrapper {
             background: #1a1a2e;
             border: 1px dashed #3a3a5c;
@@ -142,6 +187,7 @@
             border-radius: 8px;
             text-align: center;
             cursor: pointer;
+            transition: border-color 0.2s;
         }
         .file-input-wrapper:hover { border-color: var(--accent-color); }
         #helper-photo { display: none; }
@@ -155,15 +201,38 @@
             display: none;
         }
 
-        #status-message {
-            margin-top: 20px;
-            padding: 12px;
+        /* ---- Status messages ---- */
+        .status-bar {
+            padding: 10px 14px;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
+            margin-top: 16px;
             display: none;
         }
-        .status-info { background: rgba(96,165,250,0.1); color: var(--info-color); border: 1px solid var(--info-color); }
-        .status-error { background: rgba(248,113,113,0.1); color: var(--error-color); border: 1px solid var(--error-color); }
+        .status-bar.info    { background: rgba(96,165,250,0.1);  color: var(--info-color);    border: 1px solid rgba(96,165,250,0.25); display:block; }
+        .status-bar.success { background: rgba(52,211,153,0.1);  color: var(--success-color); border: 1px solid rgba(52,211,153,0.25); display:block; }
+        .status-bar.error   { background: rgba(248,113,113,0.1); color: var(--error-color);   border: 1px solid rgba(248,113,113,0.25); display:block; }
+
+        /* Scan badge */
+        .scan-badge {
+            font-size: 0.78rem;
+            color: #6b7280;
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .scan-badge .dot {
+            width: 7px; height: 7px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.75); }
+        }
 
         .spinner {
             animation: spin 1s linear infinite;
@@ -176,7 +245,7 @@
 
 <div class="container">
 
-    <!-- PASO 1: Selección de modo -->
+    <!-- CARD 1: Modo de ayuda (siempre visible al inicio) -->
     <div class="card" id="card-selection">
         <div class="icon-header">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -185,7 +254,7 @@
         </div>
         <h1>¿Cómo quieres ayudar?</h1>
         <p class="description">Has encontrado a alguien que necesita ayuda. Elige una opción para alertar a su familia:</p>
-        
+
         <div class="btn-group">
             <button id="btn-mode-fast" class="btn btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
@@ -196,18 +265,38 @@
                 Identificarme y dar detalles
             </button>
         </div>
+
+        <!-- Badge que muestra el envío silencioso de escaneo -->
+        <div class="scan-badge" id="scan-badge">
+            <span class="dot"></span>
+            <span id="scan-text">Registrando escaneo...</span>
+        </div>
     </div>
 
-    <!-- PASO 2: Formulario Detallado -->
+    <!-- CARD 2: Formulario detallado -->
     <div class="card hidden" id="card-form">
+        <div class="icon-header accent">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+        </div>
         <h1>Detalles de Ayuda</h1>
-        <p class="description" style="margin-bottom: 15px;">Tu información ayudará a la familia a encontrarlos más rápido.</p>
-        
+        <p class="description" style="margin-bottom: 18px;">Tu información ayudará a la familia a encontrarlos más rápido. Ningún campo es obligatorio.</p>
+
+        <!-- Toggle de ubicación -->
+        <label class="location-toggle" id="location-toggle-label">
+            <input type="checkbox" id="share-location" checked>
+            <div class="toggle-text">
+                <span class="toggle-title">📍 Compartir mi ubicación</span>
+                <span class="toggle-sub">Se enviará junto a tus datos para ayudar a localizar a la persona</span>
+            </div>
+        </label>
+
         <div class="form-field">
             <label>Nombre</label>
             <input type="text" id="helper-name" placeholder="Tu nombre" autocomplete="off">
         </div>
-        
+
         <div class="form-field">
             <label>Teléfono / WhatsApp</label>
             <input type="tel" id="helper-phone" placeholder="+56 9 xxxx xxxx" autocomplete="off">
@@ -229,189 +318,268 @@
 
         <div class="btn-group">
             <button id="btn-send-detailed" class="btn btn-primary">Enviar Alerta Completa</button>
-            <button id="btn-back" class="btn btn-ghost">Volver atrás</button>
+            <button id="btn-back" class="btn btn-ghost">← Volver atrás</button>
         </div>
+
+        <div class="status-bar" id="form-status"></div>
     </div>
 
-    <!-- PASO 3: Éxito -->
+    <!-- CARD 3: Éxito -->
     <div class="card hidden" id="card-success">
-        <div style="font-size: 3rem; margin-bottom: 15px;">🙏</div>
+        <div class="icon-header success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--success-color);">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+        </div>
         <h1 style="color: var(--success-color);">¡Alerta Enviada!</h1>
-        <p class="description" id="success-text">La ubicación y la información han sido enviadas a la familia. Muchas gracias por tu solidaridad.</p>
+        <p class="description" id="success-text">La familia ha sido notificada. Muchas gracias por tu solidaridad.</p>
         <button onclick="window.close()" class="btn btn-ghost">Cerrar página</button>
-        <div style="margin-top:20px; font-size:10px; opacity:0.3;">v1.1 - Direct Connect</div>
+        <div style="margin-top:20px; font-size:10px; opacity:0.25;">v2.0 — Sagason</div>
     </div>
-
-    <div id="status-message"></div>
 
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Referencias
-    const cardSelection = document.getElementById('card-selection');
-    const cardForm      = document.getElementById('card-form');
-    const cardSuccess   = document.getElementById('card-success');
-    const statusMsg     = document.getElementById('status-message');
-    const photoInput    = document.getElementById('helper-photo');
-    const photoPreview  = document.getElementById('photo-preview');
-    const fileLabel     = document.getElementById('file-label');
 
-    // Datos
-    const params = new URLSearchParams(window.location.search);
-    const plateId = params.get('id') || params.get('uid') || 'ID_NO_ESPECIFICADO';
+    // ── Refs ──────────────────────────────────────────────────────────────
+    const cardSelection  = document.getElementById('card-selection');
+    const cardForm       = document.getElementById('card-form');
+    const cardSuccess    = document.getElementById('card-success');
+    const formStatus     = document.getElementById('form-status');
+    const scanText       = document.getElementById('scan-text');
+    const scanBadge      = document.getElementById('scan-badge');
+    const photoInput     = document.getElementById('helper-photo');
+    const photoPreview   = document.getElementById('photo-preview');
+    const fileLabel      = document.getElementById('file-label');
+    const shareLocChk    = document.getElementById('share-location');
+
+    // ── Parámetros URL ────────────────────────────────────────────────────
+    const params           = new URLSearchParams(window.location.search);
+    const plateId          = params.get('id')   || params.get('uid') || 'ID_NO_ESPECIFICADO';
     const destinationEmail = params.get('mail') || params.get('email') || '';
-    const secureToken = params.get('token') || '';
-    const ENDPOINT = "https://hook.us2.make.com/7pmyxaxtlw7olmpdgh15bbones5co8zr";
+    const secureToken      = params.get('token') || '';
 
-    let photoBase64 = "";
+    // ── Endpoint ──────────────────────────────────────────────────────────
+    // sos-v2 usa el worker; sos.html original usa make.com — unificamos en make.com
+    const ENDPOINT_ALERT   = "https://hook.us2.make.com/7pmyxaxtlw7olmpdgh15bbones5co8zr";
+    const ENDPOINT_WORKER  = "https://alerta-sos-sagason.brluson.workers.dev";
 
-    // Función para comprimir imagen en el cliente
-    const compressImage = (file, maxWidth = 800, maxHeight = 800) => {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (event) => {
-                const img = new Image();
-                img.src = event.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
+    // ── Estado compartido ─────────────────────────────────────────────────
+    let cachedLat      = null;
+    let cachedLon      = null;
+    let photoBase64    = "";
+    let scanSent       = false;  // ¿ya se envió el escaneo silencioso?
 
-                    if (width > height) {
-                        if (width > maxWidth) {
-                            height *= maxWidth / width;
-                            width = maxWidth;
-                        }
-                    } else {
-                        if (height > maxHeight) {
-                            width *= maxHeight / height;
-                            height = maxHeight;
-                        }
-                    }
+    // ── Spinner HTML ──────────────────────────────────────────────────────
+    const spinnerHTML = `<svg class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:.25"></circle><path fill="currentColor" style="opacity:.75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>`;
 
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    // Comprimimos a JPEG con calidad 0.5 para que el string sea muy corto y compatible
-                    resolve(canvas.toDataURL('image/jpeg', 0.5));
-                };
+    // ── Compresión de imagen ──────────────────────────────────────────────
+    const compressImage = (file, maxW = 800, maxH = 800) => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (ev) => {
+            const img = new Image();
+            img.src = ev.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let w = img.width, h = img.height;
+                if (w > h) { if (w > maxW) { h *= maxW / w; w = maxW; } }
+                else       { if (h > maxH) { w *= maxH / h; h = maxH; } }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                resolve(canvas.toDataURL('image/jpeg', 0.5));
             };
-        });
-    };
+        };
+    });
 
-    // Manejo de imagen con compresión automática
     photoInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            // Límite generoso de 10MB para el archivo original, ya que lo comprimiremos
-            if (file.size > 10 * 1024 * 1024) { 
-                alert("La foto original es demasiado grande. Intenta con otra.");
-                photoInput.value = "";
-                return;
-            }
-            
-            fileLabel.innerText = "⏳ Procesando foto...";
-            try {
-                photoBase64 = await compressImage(file);
-                photoPreview.src = photoBase64;
-                photoPreview.style.display = 'block';
-                fileLabel.innerText = "✅ Foto lista y optimizada";
-            } catch (err) {
-                fileLabel.innerText = "❌ Error al procesar foto";
-                console.error(err);
-            }
+        if (!file) return;
+        if (file.size > 10 * 1024 * 1024) { alert("La foto es demasiado grande. Intenta con otra."); photoInput.value = ""; return; }
+        fileLabel.innerText = "⏳ Procesando foto...";
+        try {
+            photoBase64 = await compressImage(file);
+            photoPreview.src = photoBase64;
+            photoPreview.style.display = 'block';
+            fileLabel.innerText = "✅ Foto lista";
+        } catch (err) {
+            fileLabel.innerText = "❌ Error al procesar foto";
         }
     });
 
-    // Navegación
+    // ── PASO 0: Envío silencioso de escaneo al cargar ─────────────────────
+    // Intentamos obtener ubicación en segundo plano. Si el usuario ya la concedió
+    // antes, se obtiene inmediatamente y se envía el escaneo con coordenadas.
+    // Si no, se envía igual pero sin coordenadas.
+
+    function sendScanAlert(lat, lon) {
+        if (scanSent) return;
+        scanSent = true;
+        scanText.textContent = "Enviando alerta de escaneo...";
+
+        const now = new Date().toLocaleString('es-CL');
+        const payload = {
+            type: 'alert',
+            token: secureToken,
+            plateId: String(plateId),
+            to: String(destinationEmail),
+            subject: '🚨 ALERTA SOS',
+            time: now,
+            lat: lat ? String(lat) : 'No disponible',
+            lon: lon ? String(lon) : 'No disponible',
+            timestamp: now,
+            message: lat
+                ? `ALERTA RÁPIDA\nUBICACIÓN: https://www.google.com/maps?q=${lat},${lon}\nHORA: ${now}`
+                : `ALERTA RÁPIDA\nUBICACIÓN: No proporcionada\nHORA: ${now}`
+        };
+
+        // Cache lat/lon para reutilizarlos si el usuario luego comparte
+        if (lat) { cachedLat = lat; cachedLon = lon; }
+
+        fetch(ENDPOINT_ALERT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(r => {
+            scanBadge.querySelector('.dot').style.animation = 'none';
+            scanBadge.querySelector('.dot').style.background = r.ok ? '#34d399' : '#f87171';
+            scanText.textContent = r.ok ? "Escaneo registrado ✓" : "Escaneo enviado";
+        })
+        .catch(() => {
+            scanText.textContent = "Escaneo enviado";
+        });
+    }
+
+    // Intentar geolocalización silenciosa (sin bloquear UI)
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                cachedLat = pos.coords.latitude;
+                cachedLon = pos.coords.longitude;
+                sendScanAlert(cachedLat, cachedLon);
+            },
+            () => {
+                // Permiso denegado o no disponible → enviar sin coords
+                sendScanAlert(null, null);
+            },
+            { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
+        );
+    } else {
+        sendScanAlert(null, null);
+    }
+
+    // ── PASO 1: Selección de modo ─────────────────────────────────────────
+
+    document.getElementById('btn-mode-fast').addEventListener('click', () => {
+        // "Alerta Rápida" → ya está enviada silenciosamente, mostrar éxito
+        cardSelection.classList.add('hidden');
+        document.getElementById('success-text').textContent = 
+            'La alerta ha sido enviada a la familia de forma anónima. Muchas gracias por tu solidaridad.';
+        cardSuccess.classList.remove('hidden');
+    });
+
     document.getElementById('btn-mode-detailed').addEventListener('click', () => {
+        // "Dar detalles" → mostrar formulario
         cardSelection.classList.add('hidden');
         cardForm.classList.remove('hidden');
+        cardForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
-    
+
     document.getElementById('btn-back').addEventListener('click', () => {
         cardForm.classList.add('hidden');
         cardSelection.classList.remove('hidden');
+        setStatus(formStatus, '', '');
     });
 
-    // FUNCION MAESTRA DE ENVÍO
-    async function performSubmit(isDetailed = false) {
-        statusMsg.style.display = 'block';
-        statusMsg.className = 'status-info';
-        statusMsg.innerHTML = '<svg class="spinner" viewBox="0 0 24 24" style="display:inline; margin-right:8px;"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" style="opacity:0.25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" style="opacity:0.75"></path></svg> Obteniendo ubicación y enviando alerta...';
+    // ── PASO 2: Envío de formulario detallado ─────────────────────────────
 
-        // Bloquear botones
-        document.querySelectorAll('.btn').forEach(b => b.disabled = true);
+    function setStatus(el, msg, type) {
+        el.className = 'status-bar ' + type;
+        el.innerHTML = msg;
+        if (!msg) el.style.display = 'none';
+    }
 
-        // 1. Obtener ubicación
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            try {
-                const latitude = pos.coords.latitude;
-                const longitude = pos.coords.longitude;
-                const currentTime = new Date().toLocaleString();
+    async function performDetailedSend() {
+        const sendBtn = document.getElementById('btn-send-detailed');
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = spinnerHTML + ' Enviando...';
+        setStatus(formStatus, '', '');
 
-                const payload = {
-                    type: isDetailed ? 'contact' : 'alert',
-                    token: secureToken,
-                    plateId: String(plateId),
-                    to: String(destinationEmail),
-                    subject: `🚨 ALERTA SOS`,
-                    time: currentTime,
-                    lat: String(latitude),
-                    lon: String(longitude),
-                    timestamp: currentTime
-                };
+        const name    = document.getElementById('helper-name').value.trim();
+        const phone   = document.getElementById('helper-phone').value.trim();
+        const details = document.getElementById('helper-details').value.trim();
+        const wantsLocation = shareLocChk.checked;
 
-                if (isDetailed) {
-                    const name = String(document.getElementById('helper-name').value || 'No indicado');
-                    const phone = String(document.getElementById('helper-phone').value || 'No indicado');
-                    const details = String(document.getElementById('helper-details').value || 'Sin detalles');
+        const now = new Date().toLocaleString('es-CL');
 
-                    payload.helperName = name;
-                    payload.helperPhone = phone;
-                    payload.message = `DETALLES: ${details}\n\nUBICACIÓN: https://www.google.com/maps?q=${latitude},${longitude}\nHORA: ${currentTime}`;
-                    payload.photo = photoBase64; 
-                } else {
-                    payload.message = `ALERTA RÁPIDA\nUBICACIÓN: https://www.google.com/maps?q=${latitude},${longitude}\nHORA: ${currentTime}`;
-                }
+        // Obtener ubicación si el usuario lo habilitó
+        async function getLocationIfNeeded() {
+            return new Promise((resolve) => {
+                if (!wantsLocation) { resolve({ lat: null, lon: null }); return; }
+                if (cachedLat)      { resolve({ lat: cachedLat, lon: cachedLon }); return; }
+                if (!navigator.geolocation) { resolve({ lat: null, lon: null }); return; }
+                setStatus(formStatus, `${spinnerHTML} Obteniendo tu ubicación...`, 'info');
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        cachedLat = pos.coords.latitude;
+                        cachedLon = pos.coords.longitude;
+                        resolve({ lat: cachedLat, lon: cachedLon });
+                    },
+                    () => resolve({ lat: null, lon: null }),
+                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+                );
+            });
+        }
 
-                console.log("Enviando Payload Super-Compatible:", payload);
+        const { lat, lon } = await getLocationIfNeeded();
 
-                const res = await fetch(ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+        const locationLine = (lat && lon)
+            ? `UBICACIÓN: https://www.google.com/maps?q=${lat},${lon}`
+            : `UBICACIÓN: No compartida`;
 
-                if (res.ok) {
-                    cardSelection.classList.add('hidden');
-                    cardForm.classList.add('hidden');
-                    statusMsg.style.display = 'none';
-                    cardSuccess.classList.remove('hidden');
-                } else {
-                    throw new Error("Error en el servidor");
-                }
-            } catch (err) {
-                showError("Error al enviar: " + err.message);
+        const payload = {
+            type: 'contact',
+            token: secureToken,
+            plateId: String(plateId),
+            to: String(destinationEmail),
+            subject: '📋 DETALLES DE AYUDANTE — SAGASON',
+            time: now,
+            lat: lat ? String(lat) : 'No compartida',
+            lon: lon ? String(lon) : 'No compartida',
+            timestamp: now,
+            helperName: name   || 'No indicado',
+            helperPhone: phone || 'No indicado',
+            message: `DETALLES: ${details || 'Sin detalles'}\n${locationLine}\nHORA: ${now}`,
+            photo: photoBase64
+        };
+
+        try {
+            setStatus(formStatus, `${spinnerHTML} Enviando alerta completa...`, 'info');
+            const res = await fetch(ENDPOINT_ALERT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                cardForm.classList.add('hidden');
+                document.getElementById('success-text').textContent =
+                    'La familia ha recibido tu alerta y tus datos de contacto. ¡Tu ayuda puede marcar la diferencia!';
+                cardSuccess.classList.remove('hidden');
+            } else {
+                throw new Error(`Error ${res.status}`);
             }
-        }, (err) => {
-            showError("No pudimos obtener tu ubicación. Por favor, actívala para ayudar a la familia.");
-        }, { enableHighAccuracy: true, timeout: 10000 });
+        } catch (err) {
+            setStatus(formStatus, `❌ No se pudo enviar. Por favor llame al 131.<br><small>${err.message}</small>`, 'error');
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = 'Enviar Alerta Completa';
+        }
     }
 
-    function showError(msg) {
-        statusMsg.style.display = 'block';
-        statusMsg.className = 'status-error';
-        statusMsg.innerText = "❌ " + msg;
-        document.querySelectorAll('.btn').forEach(b => b.disabled = false);
-    }
+    document.getElementById('btn-send-detailed').addEventListener('click', performDetailedSend);
 
-    // Eventos de envío
-    document.getElementById('btn-mode-fast').addEventListener('click', () => performSubmit(false));
-    document.getElementById('btn-send-detailed').addEventListener('click', () => performSubmit(true));
 });
 </script>
 </body>
