@@ -161,6 +161,12 @@ export function CustomForm() {
         setSelections(prev => ({ ...prev, [field]: value }));
     };
 
+    // Auto-advance: marca la selección visualmente y avanza tras 280ms
+    const handleSelectAndAdvance = (field, value) => {
+        setSelections(prev => ({ ...prev, [field]: value }));
+        setTimeout(() => setStep(prev => prev + 1), 280);
+    };
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         setFileError('');
@@ -252,7 +258,7 @@ export function CustomForm() {
                                                 <div
                                                     key={p.id}
                                                     className={`option-card ${selections.product === p.title ? 'selected' : ''}`}
-                                                    onClick={() => handleSelect('product', p.title)}
+                                                    onClick={() => handleSelectAndAdvance('product', p.title)}
                                                 >
                                                     <Icon size={24} className="option-icon" />
                                                     <h4>{p.title}</h4>
@@ -260,11 +266,6 @@ export function CustomForm() {
                                                 </div>
                                             )
                                         })}
-                                    </div>
-                                    <div className="step-actions">
-                                        <button type="button" className="btn-next" disabled={!selections.product} onClick={handleNext}>
-                                            Siguiente &rarr;
-                                        </button>
                                     </div>
                                 </motion.div>
                             )}
@@ -288,18 +289,15 @@ export function CustomForm() {
                                                 <div
                                                     key={c}
                                                     className={`option-card simple-card ${selections.category === c ? 'selected' : ''}`}
-                                                    onClick={() => handleSelect('category', c)}
+                                                    onClick={() => handleSelectAndAdvance('category', c)}
                                                 >
                                                     <h4>{c}</h4>
                                                 </div>
                                             ))}
                                     </div>
-                                    <div className="step-actions dual-actions">
+                                    <div className="step-actions">
                                         <button type="button" className="btn-prev" onClick={handlePrev}>
                                             &larr; Volver
-                                        </button>
-                                        <button type="button" className="btn-next" disabled={!selections.category} onClick={handleNext}>
-                                            Siguiente &rarr;
                                         </button>
                                     </div>
                                 </motion.div>
@@ -318,18 +316,15 @@ export function CustomForm() {
                                             <div
                                                 key={s}
                                                 className={`option-card simple-card ${selections.size === s ? 'selected' : ''}`}
-                                                onClick={() => handleSelect('size', s)}
+                                                onClick={() => handleSelectAndAdvance('size', s)}
                                             >
                                                 <h4>{s.toUpperCase()}</h4>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="step-actions dual-actions">
+                                    <div className="step-actions">
                                         <button type="button" className="btn-prev" onClick={handlePrev}>
                                             &larr; Volver
-                                        </button>
-                                        <button type="button" className="btn-next" disabled={!selections.size} onClick={handleNext}>
-                                            Siguiente &rarr;
                                         </button>
                                     </div>
                                 </motion.div>
