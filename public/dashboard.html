@@ -10,7 +10,11 @@
     <style>
         :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155; --success: #10b981; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        header { background: rgba(15, 23, 42, 0.95); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        header { background: rgba(15, 23, 42, 0.95); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .dash-nav { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
+        .dash-nav a { color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 500; padding: 5px 11px; border-radius: 6px; transition: all .18s; white-space: nowrap; }
+        .dash-nav a:hover { color: #f8fafc; background: rgba(255,255,255,.06); }
+        @media (max-width: 420px) { .dash-nav a { font-size: 11px; padding: 4px 8px; } }
         .container { max-width: 480px; margin: 0 auto; padding: 20px 15px 100px 15px; }
         .tabs { display: flex; background: var(--card); padding: 4px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
         .tab-btn { flex: 1; padding: 10px; border: none; background: none; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 8px; font-size: 11px; }
@@ -38,8 +42,14 @@
 <body>
 
 <header>
-    <a href="https://sagason.cl" style="display:flex; align-items:center;"><img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'"></a>
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <a href="https://sagason.cl" style="display:flex; align-items:center; flex-shrink:0;"><img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'"></a>
+
+    <nav class="dash-nav">
+        <a href="https://sagason.cl/como-funciona.html">¿Cómo funciona?</a>
+        <a href="https://sagason.cl/tecnologia.html">Tecnología</a>
+    </nav>
+
+    <div style="display: flex; align-items: center; gap: 10px; flex-shrink:0;">
         <span style="color: #64748b; font-size: 11px; font-weight: bold;">v1.2 (Flow)</span>
         <button onclick="logout()" style="background:none; border:1px solid var(--border); color:white; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">Cerrar Sesión</button>
     </div>
