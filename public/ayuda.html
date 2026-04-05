@@ -429,8 +429,10 @@ document.addEventListener('DOMContentLoaded', () => {
             loadingScreen.classList.add('hidden');
             cardSelection.classList.remove('hidden');
 
-            // Badge: esperar 15s antes de confirmar
-            scanText.textContent = 'Preparando notificación...';
+            // Badge: mostrar notificado inmediatamente (el timer corre en segundo plano)
+            scanDot.style.animation = 'none';
+            scanDot.style.background = '#10b981';
+            scanText.textContent = 'Dueño notificado ✓';
 
             // ══════════════════════════════════════════════════════════════════
             // Lógica de notificación diferida
@@ -488,28 +490,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (scanEmailFired) return;
                 timeStarted = Date.now();
                 window._scanEmailTimer = setTimeout(fireScanEmail, timeRemaining);
-                // Retomar cuenta regresiva
+                // Cuenta regresiva silenciosa
                 let countdown = Math.ceil(timeRemaining / 1000);
                 window._scanCountInterval = setInterval(() => {
                     if (scanEmailFired) { clearInterval(window._scanCountInterval); return; }
                     countdown--;
                     if (countdown <= 0) { clearInterval(window._scanCountInterval); return; }
-                    scanText.textContent = `Notificando al dueño en ${countdown}s...`;
                 }, 1000);
-                scanText.textContent = `Notificando al dueño en ${countdown}s...`;
             };
 
             // Arrancar timer inicial
             window._scanEmailTimer = setTimeout(fireScanEmail, DELAY_TOTAL_MS);
             window.addEventListener('beforeunload', fireScanEmail);
 
-            // Cuenta regresiva inicial
+            // Cuenta regresiva inicial (silenciosa — no se muestra en el badge)
             let countdown = 15;
             window._scanCountInterval = setInterval(() => {
                 if (scanEmailFired) { clearInterval(window._scanCountInterval); return; }
                 countdown--;
                 if (countdown <= 0) { clearInterval(window._scanCountInterval); return; }
-                scanText.textContent = `Notificando al dueño en ${countdown}s...`;
             }, 1000);
 
         } catch (e) {
