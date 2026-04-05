@@ -438,14 +438,18 @@ document.addEventListener('DOMContentLoaded', () => {
             // → el frontend dispara el correo de "Escaneo en Tránsito"
             // Si presiona cualquier botón → se cancela (el /report enviado incluye la notificación)
             // ══════════════════════════════════════════════════════════════════
-            let scanEmailFired = false;
+            let scanEmailFired    = false;
+            const DELAY_TOTAL_MS  = 15000;
+            let   timeStarted     = Date.now();
+            let   timeRemaining   = DELAY_TOTAL_MS;
 
             function fireScanEmail() {
                 if (scanEmailFired) return;
                 scanEmailFired = true;
+                clearTimeout(window._scanEmailTimer);
+                clearInterval(window._scanCountInterval);
+                window.removeEventListener('beforeunload', fireScanEmail);
                 const payload = JSON.stringify({ tagId, action: 'scan_auto' });
-                // keepalive:true permite que el request se complete incluso si la página se cierra
-                // credentials:'omit' evita el CORS preflight que bloqueaba sendBeacon
                 fetch(`${API}/report`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -458,29 +462,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 scanText.textContent = 'Dueño notificado ✓';
             }
 
-            // Cancelar cuando el rescatista presiona un botón
+            // Cancelar DEFINITIVAMENTE (alerta rápida o formulario enviado)
             window._cancelScanEmail = function() {
                 if (scanEmailFired) return;
                 scanEmailFired = true;
                 clearTimeout(window._scanEmailTimer);
+                clearInterval(window._scanCountInterval);
                 window.removeEventListener('beforeunload', fireScanEmail);
                 scanDot.style.animation = 'none';
                 scanDot.style.background = '#6366f1';
                 scanText.textContent = 'Enviando su reporte...';
             };
 
-            // Timer de 15 segundos
-            window._scanEmailTimer = setTimeout(fireScanEmail, 15000);
+            // Pausar timer (el usuario abrió el formulario pero NO envió aún)
+            window._pauseScanEmail = function() {
+                if (scanEmailFired) return;
+                timeRemaining -= (Date.now() - timeStarted);
+                if (timeRemaining <= 0) { fireScanEmail(); return; }
+                clearTimeout(window._scanEmailTimer);
+                clearInterval(window._scanCountInterval);
+            };
 
-            // Fallback si cierra la página antes de los 15s
+            // Reanudar timer (el usuario volvió sin enviar)
+            window._resumeScanEmail = function() {
+                if (scanEmailFired) return;
+                timeStarted = Date.now();
+                window._scanEmailTimer = setTimeout(fireScanEmail, timeRemaining);
+                // Retomar cuenta regresiva
+                let countdown = Math.ceil(timeRemaining / 1000);
+                window._scanCountInterval = setInterval(() => {
+                    if (scanEmailFired) { clearInterval(window._scanCountInterval); return; }
+                    countdown--;
+                    if (countdown <= 0) { clearInterval(window._scanCountInterval); return; }
+                    scanText.textContent = `Notificando al dueño en ${countdown}s...`;
+                }, 1000);
+                scanText.textContent = `Notificando al dueño en ${countdown}s...`;
+            };
+
+            // Arrancar timer inicial
+            window._scanEmailTimer = setTimeout(fireScanEmail, DELAY_TOTAL_MS);
             window.addEventListener('beforeunload', fireScanEmail);
 
-            // Cuenta regresiva en el badge
+            // Cuenta regresiva inicial
             let countdown = 15;
-            const countInterval = setInterval(() => {
-                if (scanEmailFired) { clearInterval(countInterval); return; }
+            window._scanCountInterval = setInterval(() => {
+                if (scanEmailFired) { clearInterval(window._scanCountInterval); return; }
                 countdown--;
-                if (countdown <= 0) { clearInterval(countInterval); return; }
+                if (countdown <= 0) { clearInterval(window._scanCountInterval); return; }
                 scanText.textContent = `Notificando al dueño en ${countdown}s...`;
             }, 1000);
 
@@ -570,8 +598,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Pide GPS en paralelo → abre formulario con toggle pre-marcado
     // ════════════════════════════════════════════════════════════════════
     $('btn-mode-detailed').addEventListener('click', () => {
-        // Cancelar correo de escaneo diferido
-        if (window._cancelScanEmail) window._cancelScanEmail();
+        // Pausar (NO cancelar) el timer — si el usuario vuelve sin enviar, se retoma
+        if (window._pauseScanEmail) window._pauseScanEmail();
         cardSelection.classList.add('hidden');
         cardForm.classList.remove('hidden');
         cardForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -604,6 +632,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cardSelection.classList.remove('hidden');
         setStatus(formStatus, '', '');
         setStatus(locStatus, '', '');
+        // Reanudar el timer — el usuario no envió nada
+        if (window._resumeScanEmail) window._resumeScanEmail();
     });
 
     // ════════════════════════════════════════════════════════════════════
@@ -614,6 +644,8 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.disabled = true;
         btn.innerHTML = spinSVG + ' Enviando...';
         setStatus(formStatus, '', '');
+        // Cancelar definitivamente el correo de escaneo — el formulario reemplaza esa notificación
+        if (window._cancelScanEmail) window._cancelScanEmail();
 
         const name    = $('inf-name').value.trim();
         const phone   = $('inf-phone').value.trim();
