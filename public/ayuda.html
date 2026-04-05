@@ -429,10 +429,57 @@ document.addEventListener('DOMContentLoaded', () => {
             loadingScreen.classList.add('hidden');
             cardSelection.classList.remove('hidden');
 
-            // Actualizar badge — el escaneo ya fue notificado por /scan
-            scanDot.style.animation = 'none';
-            scanDot.style.background = '#10b981';
-            scanText.textContent = 'Dueño notificado ✓';
+            // Badge: esperar 15s antes de confirmar
+            scanText.textContent = 'Preparando notificación...';
+
+            // ══════════════════════════════════════════════════════════════════
+            // Lógica de notificación diferida
+            // Si el rescatista cierra la página o pasan 15s sin presionar nada
+            // → el frontend dispara el correo de "Escaneo en Tránsito"
+            // Si presiona cualquier botón → se cancela (el /report enviado incluye la notificación)
+            // ══════════════════════════════════════════════════════════════════
+            let scanEmailFired = false;
+
+            function fireScanEmail() {
+                if (scanEmailFired) return;
+                scanEmailFired = true;
+                const payload = JSON.stringify({ tagId, action: 'scan_auto' });
+                // sendBeacon funciona incluso cuando la página se está cerrando
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(`${API}/report`, new Blob([payload], { type: 'application/json' }));
+                } else {
+                    fetch(`${API}/report`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(() => {});
+                }
+                scanDot.style.animation = 'none';
+                scanDot.style.background = '#10b981';
+                scanText.textContent = 'Dueño notificado ✓';
+            }
+
+            // Cancelar cuando el rescatista presiona un botón
+            window._cancelScanEmail = function() {
+                if (scanEmailFired) return;
+                scanEmailFired = true;
+                clearTimeout(window._scanEmailTimer);
+                window.removeEventListener('beforeunload', fireScanEmail);
+                scanDot.style.animation = 'none';
+                scanDot.style.background = '#6366f1';
+                scanText.textContent = 'Enviando su reporte...';
+            };
+
+            // Timer de 15 segundos
+            window._scanEmailTimer = setTimeout(fireScanEmail, 15000);
+
+            // Fallback si cierra la página antes de los 15s
+            window.addEventListener('beforeunload', fireScanEmail);
+
+            // Cuenta regresiva en el badge
+            let countdown = 15;
+            const countInterval = setInterval(() => {
+                if (scanEmailFired) { clearInterval(countInterval); return; }
+                countdown--;
+                if (countdown <= 0) { clearInterval(countInterval); return; }
+                scanText.textContent = `Notificando al dueño en ${countdown}s...`;
+            }, 1000);
 
         } catch (e) {
             loadingScreen.innerHTML = '<div style="color:#f87171;">Error de red. Intenta recargar.</div>';
@@ -520,6 +567,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Pide GPS en paralelo → abre formulario con toggle pre-marcado
     // ════════════════════════════════════════════════════════════════════
     $('btn-mode-detailed').addEventListener('click', () => {
+        // Cancelar correo de escaneo diferido
+        if (window._cancelScanEmail) window._cancelScanEmail();
         cardSelection.classList.add('hidden');
         cardForm.classList.remove('hidden');
         cardForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
