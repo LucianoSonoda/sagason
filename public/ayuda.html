@@ -390,8 +390,24 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Obtener ubicación IP antes del /scan para enviarla junto al escaneo
+        let ipLat = null, ipLon = null;
         try {
-            const res  = await fetch(`${API}/scan?id=${tagId}`);
+            const ipRes  = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
+            const ipData = await ipRes.json();
+            if (ipData.latitude && ipData.longitude) {
+                ipLat = ipData.latitude;
+                ipLon = ipData.longitude;
+            }
+        } catch (_) { /* Sin IP, continuar */ }
+
+        // Construir URL con ubicación si está disponible
+        const lat = cachedCoords?.lat ?? ipLat;
+        const lon = cachedCoords?.lng ?? ipLon;
+        const locParam = (lat && lon) ? `&lat=${lat}&lng=${lon}` : '';
+
+        try {
+            const res  = await fetch(`${API}/scan?id=${tagId}${locParam}`);
             const data = await res.json();
 
             if (!res.ok) {
@@ -413,62 +429,13 @@ document.addEventListener('DOMContentLoaded', () => {
             loadingScreen.classList.add('hidden');
             cardSelection.classList.remove('hidden');
 
-            // Escaneo silencioso ya fue registrado por /scan. 
-            // Ahora intentamos obtener ubicación aproximada vía IP para el badge.
-            sendSilentScanAlert();
+            // Actualizar badge — el escaneo ya fue notificado por /scan
+            scanDot.style.animation = 'none';
+            scanDot.style.background = '#10b981';
+            scanText.textContent = 'Dueño notificado ✓';
 
         } catch (e) {
             loadingScreen.innerHTML = '<div style="color:#f87171;">Error de red. Intenta recargar.</div>';
-        }
-    }
-
-    // Envío silencioso: el endpoint /scan ya registra el escaneo.
-    // Aquí notificamos al dueño (notify_scan) con ubicación IP si está disponible.
-    async function sendSilentScanAlert() {
-        scanText.textContent = 'Notificando al dueño del escaneo...';
-
-        // Intentamos ubicación IP (sin permiso del navegador)
-        let ipLat = null, ipLon = null;
-        try {
-            const ipRes  = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
-            const ipData = await ipRes.json();
-            if (ipData.latitude && ipData.longitude) {
-                ipLat = ipData.latitude;
-                ipLon = ipData.longitude;
-            }
-        } catch (_) { /* IP sin coords, continuar */ }
-
-        // Si ya tenemos GPS en cache (si el user ya lo concedió antes) usamos ese
-        const lat = cachedCoords?.lat ?? ipLat;
-        const lon = cachedCoords?.lng ?? ipLon;
-
-        try {
-            const res2 = await fetch(`${API}/report`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    tagId,
-                    location: (lat && lon) ? { lat, lng: lon } : null
-                    // sin name/phone/message → isScanEvent = true en el Lambda
-                })
-            });
-
-            scanDot.style.animation = 'none';
-            if (res2.status === 403) {
-                scanDot.style.background = '#f87171';
-                scanText.textContent = 'Escaneo registrado';
-            } else if (!res2.ok) {
-                scanDot.style.background = '#f59e0b';
-                scanText.textContent = 'Error al notificar ⚠️';
-                console.error('[SilentScan] Error del servidor:', res2.status);
-            } else {
-                scanDot.style.background = '#10b981';
-                scanText.textContent = 'Dueño notificado ✓';
-            }
-        } catch (err) {
-            scanDot.style.animation = 'none';
-            scanText.textContent = 'Escaneo registrado';
-            console.error('[SilentScan] Error de red:', err);
         }
     }
 
