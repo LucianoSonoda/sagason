@@ -179,22 +179,23 @@
             let upgradeHTML = "";
             
             const btnStyle = "padding:8px 0; font-size:11px;";
+            const btnFlowDisabled = `flex:1; ${btnStyle} opacity:0.35; cursor:not-allowed; background:#334155; border:1px solid #475569; color:#64748b;`;
 
             if(tier === "Free") {
                 upgradeHTML = `
                     <div style="display:flex; gap:5px; margin-bottom:5px;">
-                        <button onclick="payRAKA('${t.tagId}', 'Basic', 7000, 'flow')" class="btn-upgrade" style="flex:1; ${btnStyle}">🚀 Basic ($7.000) Flow</button>
+                        <button disabled title="Pago por Flow temporalmente no disponible" class="btn-upgrade" style="${btnFlowDisabled}">🚀 Basic ($7.000) Flow</button>
                         <button onclick="payRAKA('${t.tagId}', 'Basic', 7000, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">🚀 Basic ($7.000) MP</button>
                     </div>
                     <div style="display:flex; gap:5px;">
-                        <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'flow')" class="btn-upgrade" style="flex:1; background:var(--success); ${btnStyle}">💎 Advanced ${advText} Flow</button>
+                        <button disabled title="Pago por Flow temporalmente no disponible" class="btn-upgrade" style="${btnFlowDisabled}">💎 Advanced ${advText} Flow</button>
                         <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">💎 Advanced ${advText} MP</button>
                     </div>
                 `;
             } else if(tier === "Basic") {
                 upgradeHTML = `
                     <div style="display:flex; gap:5px;">
-                        <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'flow')" class="btn-upgrade" style="flex:1; background:var(--success); ${btnStyle}">💎 Mejorar Advanced ${advText} Flow</button>
+                        <button disabled title="Pago por Flow temporalmente no disponible" class="btn-upgrade" style="${btnFlowDisabled}">💎 Mejorar Advanced ${advText} Flow</button>
                         <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">💎 Mejorar Advanced ${advText} MP</button>
                     </div>
                 `;
@@ -203,7 +204,7 @@
             if(progress >= 80 && tier === "Basic") {
                 upgradeHTML += `
                     <div style="display:flex; gap:5px; margin-top:5px;">
-                        <button onclick="payRAKA('${t.tagId}', 'Basic', 7000, 'flow')" class="btn-upgrade" style="flex:1; background:#ef4444; ${btnStyle}">⚠️ Renovar ($7.000) Flow</button>
+                        <button disabled title="Pago por Flow temporalmente no disponible" class="btn-upgrade" style="${btnFlowDisabled}">⚠️ Renovar ($7.000) Flow</button>
                         <button onclick="payRAKA('${t.tagId}', 'Basic', 7000, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">⚠️ Renovar ($7.000) MP</button>
                     </div>
                 `;
@@ -212,11 +213,12 @@
             if(progress >= 80 && tier === "Advanced") {
                 upgradeHTML += `
                     <div style="display:flex; gap:5px; margin-top:5px;">
-                        <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'flow')" class="btn-upgrade" style="flex:1; background:#ef4444; ${btnStyle}">⚠️ Renovar ${advText} Flow</button>
+                        <button disabled title="Pago por Flow temporalmente no disponible" class="btn-upgrade" style="${btnFlowDisabled}">⚠️ Renovar ${advText} Flow</button>
                         <button onclick="payRAKA('${t.tagId}', 'Advanced', ${advPrice}, 'mp')" class="btn-upgrade" style="flex:1; background:#009ee3; ${btnStyle}">⚠️ Renovar ${advText} MP</button>
                     </div>
                 `;
             }
+
 
             return `
             <div class="tag-item">
