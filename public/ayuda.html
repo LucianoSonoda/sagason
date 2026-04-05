@@ -444,12 +444,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (scanEmailFired) return;
                 scanEmailFired = true;
                 const payload = JSON.stringify({ tagId, action: 'scan_auto' });
-                // sendBeacon funciona incluso cuando la página se está cerrando
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(`${API}/report`, new Blob([payload], { type: 'application/json' }));
-                } else {
-                    fetch(`${API}/report`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload }).catch(() => {});
-                }
+                // keepalive:true permite que el request se complete incluso si la página se cierra
+                // credentials:'omit' evita el CORS preflight que bloqueaba sendBeacon
+                fetch(`${API}/report`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: payload,
+                    keepalive: true,
+                    credentials: 'omit'
+                }).catch(() => {});
                 scanDot.style.animation = 'none';
                 scanDot.style.background = '#10b981';
                 scanText.textContent = 'Dueño notificado ✓';
