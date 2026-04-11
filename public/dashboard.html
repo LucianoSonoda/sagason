@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sagason - Dashboard</title>
-    <!-- qrcode-generator: genera SVG vectorial real (rect por módulo) -->
+    <!-- qrcode-generator: genera QR; canvas2png para LP4 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
@@ -335,35 +335,66 @@
         return Math.random().toString(36).substring(2, 8).toUpperCase();
     }
 
-    // Logica centralizada para generar el archivo Zip
-    // Genera un SVG vectorial real: cada módulo QR = un <rect> independiente
-    function generateQRSvg(text) {
+    // Genera un PNG del QR usando canvas offscreen — compatible con LaserPecker LP4
+    function generateQRPng(text, pxPerCell = 8, margin = 4) {
         const qr = qrcode(0, 'M');
         qr.addData(text);
         qr.make();
         const n = qr.getModuleCount();
-        const cell = 4; // tamaño de cada módulo en unidades SVG
-        const margin = 8;
-        const size = n * cell + margin * 2;
-        let rects = '';
+        const size = n * pxPerCell + margin * 2 * pxPerCell;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, size, size);
+        ctx.fillStyle = '#000000';
         for (let row = 0; row < n; row++) {
             for (let col = 0; col < n; col++) {
                 if (qr.isDark(row, col)) {
-                    rects += `<rect x="${col*cell+margin}" y="${row*cell+margin}" width="${cell}" height="${cell}" fill="#000"/>`;
+                    ctx.fillRect(
+                        col * pxPerCell + margin * pxPerCell,
+                        row * pxPerCell + margin * pxPerCell,
+                        pxPerCell, pxPerCell
+                    );
                 }
             }
         }
-        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges"><rect width="${size}" height="${size}" fill="#fff"/>${rects}</svg>`;
+        // Devuelve dataURL y también un SVG simple para previsualización
+        return {
+            dataUrl: canvas.toDataURL('image/png'),
+            previewSvg: (() => {
+                const cell = 3;
+                const mg = 4;
+                const s = n * cell + mg * 2;
+                let r = '';
+                for (let row = 0; row < n; row++)
+                    for (let col = 0; col < n; col++)
+                        if (qr.isDark(row, col))
+                            r += `<rect x="${col*cell+mg}" y="${row*cell+mg}" width="${cell}" height="${cell}" fill="#000"/>`;
+                return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s} ${s}" shape-rendering="crispEdges"><rect width="${s}" height="${s}" fill="#fff"/>${r}</svg>`;
+            })()
+        };
+    }
+
+    // Convierte dataURL a Uint8Array para guardar en ZIP
+    function dataUrlToUint8Array(dataUrl) {
+        const base64 = dataUrl.split(',')[1];
+        const bin = atob(base64);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        return arr;
     }
 
     async function createZipObject(batchName) {
         if(generatedBatch.length === 0) return null;
         const zip = new JSZip();
-        let clavesTexto = `=== CÓDIGOS DE ACTIVACIÓN LOTE ===\n\n`;
+        let clavesTexto = `=== CÓDIGOS DE ACTIVACIÓN LOTE ===\r\n\r\n`;
 
         generatedBatch.forEach(item => {
-            zip.file(item.filename, item.svgString);
-            clavesTexto += `Archivo: ${item.filename}\r\nID Placa: ${item.tagId}\r\nPIN Activación: ${item.pin}\r\n\r\n-------------------\r\n\r\n`;
+            zip.file(item.filename, dataUrlToUint8Array(item.pngDataUrl));
+            const webUrl = `https://sagason.cl/t/${item.tagId}`;
+            clavesTexto += `Archivo: ${item.filename}\r\nID Placa: ${item.tagId}\r\nPIN Activación: ${item.pin}\r\nURL Web: ${webUrl}\r\n\r\n-------------------\r\n\r\n`;
         });
 
         zip.file("CLAVES_DE_ACTIVACION.txt", clavesTexto);
@@ -398,12 +429,12 @@
                 if (res.ok) {
                     const data = await res.json();
                     
-                    const svgString = generateQRSvg(`https://sagason.cl/t/${data.tagId}`);
+                    const qrResult = generateQRPng(`https://sagason.cl/t/${data.tagId}`);
 
                     const itemDiv = document.createElement('div');
                     itemDiv.style.cssText = 'border:1px solid #e2e8f0; padding:10px; border-radius:8px; background:#f8fafc; text-align:center;';
                     itemDiv.innerHTML = `
-                        <div style="width:150px; height:150px; margin:0 auto 8px auto;">${svgString}</div>
+                        <div style="width:150px; height:150px; margin:0 auto 8px auto;">${qrResult.previewSvg}</div>
                         <div style="font-size:11px; font-family:monospace; line-height:1.4; color:#333;">
                             <strong>ID:</strong> ${data.tagId}<br>
                             <strong>PIN:</strong> ${activationPIN}
@@ -414,8 +445,8 @@
                     generatedBatch.push({
                         tagId: data.tagId,
                         pin: activationPIN,
-                        filename: `${nickname}_${data.tagId}.svg`,
-                        svgString: svgString
+                        filename: `${nickname}_${data.tagId}.png`,
+                        pngDataUrl: qrResult.dataUrl
                     });
                 } else {
                     const errText = await res.text();
