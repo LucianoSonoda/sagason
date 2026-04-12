@@ -6,6 +6,7 @@ import imgKanji_Kaeru from '../assets/kanji_kaeru.png';
 import imgKanji_Kizuna from '../assets/kanji_kizuna.png';
 import imgKanji_Kansha from '../assets/kanji_kansha.png';
 import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
+import sagasonSymbol from '../../public/sagason-symbol.png';
 
 function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth);
@@ -73,12 +74,82 @@ export function Home() {
                 </motion.div>
             </section>
 
+            {/* Símbolo de confianza */}
+            <TrustSymbolSection />
+
             {/* SAGASON 4K — Sección unificada */}
             <S4KCarousel />
 
             {/* Services Overview - Carrusel */}
             <ServicesCarousel />
         </div>
+    );
+}
+
+function TrustSymbolSection() {
+    const isMobile = useWindowWidth() < 640;
+    return (
+        <motion.section
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            style={{
+                textAlign: 'center',
+                padding: isMobile ? '28px 16px 24px' : '36px 20px 30px',
+                margin: '0 auto 8px auto',
+                maxWidth: '560px',
+                background: 'linear-gradient(135deg, rgba(14,165,233,0.06) 0%, rgba(16,185,129,0.06) 100%)',
+                border: '1px solid rgba(14,165,233,0.2)',
+                borderRadius: '24px',
+            }}
+        >
+            {/* Símbolo con halo pulsante */}
+            <div style={{ position: 'relative', display: 'inline-block', marginBottom: '18px' }}>
+                <motion.div
+                    animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{
+                        position: 'absolute', inset: '-12px',
+                        borderRadius: '50%',
+                        background: 'radial-gradient(circle, rgba(14,165,233,0.22) 0%, transparent 70%)',
+                        pointerEvents: 'none',
+                    }}
+                />
+                <img
+                    src={sagasonSymbol}
+                    alt="Símbolo Sagason"
+                    style={{
+                        width: isMobile ? '100px' : '120px',
+                        height: isMobile ? '100px' : '120px',
+                        borderRadius: '50%',
+                        display: 'block',
+                        position: 'relative',
+                        zIndex: 1,
+                        filter: 'drop-shadow(0 0 18px rgba(14,165,233,0.45))',
+                    }}
+                />
+            </div>
+
+            <div style={{ fontSize: isMobile ? '16px' : '18px', fontWeight: 800, color: 'var(--color-text)', marginBottom: '8px', letterSpacing: '-0.02em' }}>
+                Al ver este símbolo, puedes{' '}
+                <span style={{ color: 'var(--color-primary)' }}>confiar</span>
+            </div>
+            <p style={{ fontSize: '13px', color: 'rgba(248,250,252,0.6)', lineHeight: 1.65, maxWidth: '380px', margin: '0 auto 16px' }}>
+                El símbolo Sagason identifica una placa segura y verificada.
+                Cuando lo veas, <strong style={{ color: 'rgba(248,250,252,0.85)' }}>escanear el QR es completamente seguro</strong> — solo muestra información de contacto para ayudar a quien lo necesita.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                {['✅ Sin datos personales expuestos', '✅ Sin instalación de apps', '✅ Solo abre una página web'].map(t => (
+                    <span key={t} style={{
+                        display: 'flex', alignItems: 'center', gap: '5px',
+                        background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)',
+                        borderRadius: '20px', padding: '5px 13px',
+                        fontSize: '12px', fontWeight: 600, color: '#10b981',
+                    }}>{t}</span>
+                ))}
+            </div>
+        </motion.section>
     );
 }
 
