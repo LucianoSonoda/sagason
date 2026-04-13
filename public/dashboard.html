@@ -362,58 +362,73 @@
             }
         }
 
-        // ── Candado central ─────────────────────────────────────────────
+        // ── Candado central (estilo referencia) ─────────────────────────
         const cx = size / 2;
         const cy = size / 2;
-        const r  = size * 0.13;   // radio del círculo blanco de fondo
+        const bgR = size * 0.145;   // radio del círculo blanco de fondo
 
         // Fondo blanco circular
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.arc(cx, cy, bgR, 0, Math.PI * 2);
         ctx.fill();
 
-        // Dibujar candado en negro
-        const lw = r * 0.42;   // ancho mitad cuerpo del candado
-        const lh = r * 0.44;   // alto cuerpo
-        const lx = cx - lw;
-        const ly = cy - r * 0.08;
-        const arcR = lw * 0.72; // radio del arco superior
-        const arcStroke = r * 0.16;
+        // ── Proporciones del candado (igual a la imagen de referencia) ──
+        const color = '#3d3d3d';    // gris oscuro como en la referencia
 
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = arcStroke;
-        ctx.lineCap = 'round';
+        const bodyW  = bgR * 1.08;  // ancho cuerpo
+        const bodyH  = bgR * 0.92;  // alto cuerpo (ligeramente más alto que ancho)
+        const bodyX  = cx - bodyW / 2;
+        const bodyY  = cy - bgR * 0.06;  // centrado ligeramente abajo
+        const bodyRR = bodyW * 0.14; // radio de esquinas
 
-        // Arco superior (shackle)
+        // ── Arco (shackle) — grueso, semioculto dentro del cuerpo ───────
+        const shR  = bodyW * 0.285;  // radio interior del arco
+        const shSt = bodyW * 0.21;   // grosor del trazo (grueso = referencia)
+        // el centro del arco está dentro del cuerpo para que "entre" en él
+        const shCY = bodyY + shSt * 0.25;
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth   = shSt;
+        ctx.lineCap     = 'round';
         ctx.beginPath();
-        ctx.arc(cx, ly, arcR, Math.PI, 0, false);
+        ctx.arc(cx, shCY, shR, Math.PI, 0, false);
         ctx.stroke();
 
-        // Cuerpo rectangular
-        ctx.fillStyle = '#000000';
-        const bodyW = lw * 2;
-        const bodyH = lh;
-        const bodyX = cx - lw;
-        const bodyY = ly + arcStroke * 0.3;
-        const rr = bodyW * 0.18;
+        // ── Cuerpo rectangular redondeado ───────────────────────────────
+        ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.moveTo(bodyX + rr, bodyY);
-        ctx.lineTo(bodyX + bodyW - rr, bodyY);
-        ctx.quadraticCurveTo(bodyX + bodyW, bodyY, bodyX + bodyW, bodyY + rr);
-        ctx.lineTo(bodyX + bodyW, bodyY + bodyH - rr);
-        ctx.quadraticCurveTo(bodyX + bodyW, bodyY + bodyH, bodyX + bodyW - rr, bodyY + bodyH);
-        ctx.lineTo(bodyX + rr, bodyY + bodyH);
-        ctx.quadraticCurveTo(bodyX, bodyY + bodyH, bodyX, bodyY + bodyH - rr);
-        ctx.lineTo(bodyX, bodyY + rr);
-        ctx.quadraticCurveTo(bodyX, bodyY, bodyX + rr, bodyY);
+        ctx.moveTo(bodyX + bodyRR, bodyY);
+        ctx.lineTo(bodyX + bodyW - bodyRR, bodyY);
+        ctx.quadraticCurveTo(bodyX + bodyW, bodyY, bodyX + bodyW, bodyY + bodyRR);
+        ctx.lineTo(bodyX + bodyW, bodyY + bodyH - bodyRR);
+        ctx.quadraticCurveTo(bodyX + bodyW, bodyY + bodyH, bodyX + bodyW - bodyRR, bodyY + bodyH);
+        ctx.lineTo(bodyX + bodyRR, bodyY + bodyH);
+        ctx.quadraticCurveTo(bodyX, bodyY + bodyH, bodyX, bodyY + bodyH - bodyRR);
+        ctx.lineTo(bodyX, bodyY + bodyRR);
+        ctx.quadraticCurveTo(bodyX, bodyY, bodyX + bodyRR, bodyY);
         ctx.closePath();
         ctx.fill();
 
-        // Hueco del ojo (círculo blanco pequeño)
+        // ── Ojo de cerradura: círculo + ranura rectangular ──────────────
+        const khCY  = bodyY + bodyH * 0.38;   // centro del círculo del ojo
+        const khR   = bodyW * 0.135;           // radio del círculo
+        const slotW = khR * 0.72;              // ancho de la ranura
+        const slotH = bodyH * 0.30;            // alto de la ranura
+
+        // Círculo superior del ojo
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(cx, bodyY + bodyH * 0.42, bodyW * 0.13, 0, Math.PI * 2);
+        ctx.arc(cx, khCY, khR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ranura rectangular hacia abajo
+        ctx.beginPath();
+        ctx.moveTo(cx - slotW / 2, khCY);
+        ctx.lineTo(cx + slotW / 2, khCY);
+        ctx.lineTo(cx + slotW / 2, khCY + slotH);
+        ctx.lineTo(cx - slotW / 2, khCY + slotH);
+        ctx.closePath();
         ctx.fill();
         // ────────────────────────────────────────────────────────────────
 
@@ -423,31 +438,42 @@
             previewSvg: (() => {
                 const cell = 3;
                 const mg = 4;
-                const s = n * cell + mg * 2;
+                const s   = n * cell + mg * 2;
                 const scx = s / 2, scy = s / 2;
-                const sr  = s * 0.13;
-                const slw = sr * 0.42, slh = sr * 0.44;
-                const sly = scy - sr * 0.08;
-                const saR = slw * 0.72;
-                const sSt = sr * 0.16;
-                const bW  = slw * 2, bH = slh;
-                const bX  = scx - slw, bY = sly + sSt * 0.3;
-                const brr = bW * 0.18;
+
+                // Mismas proporciones que el canvas
+                const sbgR  = s * 0.145;
+                const sbW   = sbgR * 1.08;
+                const sbH   = sbgR * 0.92;
+                const sbX   = scx - sbW / 2;
+                const sbY   = scy - sbgR * 0.06;
+                const sbrr  = sbW * 0.14;
+                const sshR  = sbW * 0.285;
+                const sshSt = sbW * 0.21;
+                const sshCY = sbY + sshSt * 0.25;
+                const skhCY = sbY + sbH * 0.38;
+                const skhR  = sbW * 0.135;
+                const sslW  = skhR * 0.72;
+                const sslH  = sbH * 0.30;
+                const clr   = '#3d3d3d';
+
                 let r = '';
                 for (let row = 0; row < n; row++)
                     for (let col = 0; col < n; col++)
                         if (qr.isDark(row, col))
                             r += `<rect x="${col*cell+mg}" y="${row*cell+mg}" width="${cell}" height="${cell}" fill="#000"/>`;
-                // Círculo blanco de fondo
-                r += `<circle cx="${scx}" cy="${scy}" r="${sr}" fill="#fff"/>`;
-                // Arco del candado
-                const ax1 = scx - saR, ay1 = sly;
-                const ax2 = scx + saR, ay2 = sly;
-                r += `<path d="M ${ax1} ${ay1} A ${saR} ${saR} 0 0 1 ${ax2} ${ay2}" stroke="#000" stroke-width="${sSt}" fill="none" stroke-linecap="round"/>`;
-                // Cuerpo
-                r += `<rect x="${bX}" y="${bY}" width="${bW}" height="${bH}" rx="${brr}" fill="#000"/>`;
-                // Ojo
-                r += `<circle cx="${scx}" cy="${bY + bH * 0.42}" r="${bW * 0.13}" fill="#fff"/>`;
+
+                // Fondo blanco circular
+                r += `<circle cx="${scx}" cy="${scy}" r="${sbgR}" fill="#fff"/>`;
+                // Arco grueso (shackle) semioculto
+                r += `<path d="M ${scx-sshR} ${sshCY} A ${sshR} ${sshR} 0 0 1 ${scx+sshR} ${sshCY}" stroke="${clr}" stroke-width="${sshSt}" fill="none" stroke-linecap="round"/>`;
+                // Cuerpo cuadrado
+                r += `<rect x="${sbX}" y="${sbY}" width="${sbW}" height="${sbH}" rx="${sbrr}" fill="${clr}"/>`;
+                // Ojo: círculo superior
+                r += `<circle cx="${scx}" cy="${skhCY}" r="${skhR}" fill="#fff"/>`;
+                // Ojo: ranura inferior
+                r += `<rect x="${scx - sslW/2}" y="${skhCY}" width="${sslW}" height="${sslH}" fill="#fff"/>`;
+
                 return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s} ${s}" shape-rendering="crispEdges"><rect width="${s}" height="${s}" fill="#fff"/>${r}</svg>`;
             })()
         };
