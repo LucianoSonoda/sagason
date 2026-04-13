@@ -336,8 +336,9 @@
     }
 
     // Genera un PNG del QR usando canvas offscreen — compatible con LaserPecker LP4
+    // Nivel H (30% tolerancia) permite dibujar un logo central sin romper la legibilidad
     function generateQRPng(text, pxPerCell = 8, margin = 4) {
-        const qr = qrcode(0, 'M');
+        const qr = qrcode(0, 'H');
         qr.addData(text);
         qr.make();
         const n = qr.getModuleCount();
@@ -360,6 +361,62 @@
                 }
             }
         }
+
+        // ── Candado central ─────────────────────────────────────────────
+        const cx = size / 2;
+        const cy = size / 2;
+        const r  = size * 0.13;   // radio del círculo blanco de fondo
+
+        // Fondo blanco circular
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Dibujar candado en negro
+        const lw = r * 0.42;   // ancho mitad cuerpo del candado
+        const lh = r * 0.44;   // alto cuerpo
+        const lx = cx - lw;
+        const ly = cy - r * 0.08;
+        const arcR = lw * 0.72; // radio del arco superior
+        const arcStroke = r * 0.16;
+
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = arcStroke;
+        ctx.lineCap = 'round';
+
+        // Arco superior (shackle)
+        ctx.beginPath();
+        ctx.arc(cx, ly, arcR, Math.PI, 0, false);
+        ctx.stroke();
+
+        // Cuerpo rectangular
+        ctx.fillStyle = '#000000';
+        const bodyW = lw * 2;
+        const bodyH = lh;
+        const bodyX = cx - lw;
+        const bodyY = ly + arcStroke * 0.3;
+        const rr = bodyW * 0.18;
+        ctx.beginPath();
+        ctx.moveTo(bodyX + rr, bodyY);
+        ctx.lineTo(bodyX + bodyW - rr, bodyY);
+        ctx.quadraticCurveTo(bodyX + bodyW, bodyY, bodyX + bodyW, bodyY + rr);
+        ctx.lineTo(bodyX + bodyW, bodyY + bodyH - rr);
+        ctx.quadraticCurveTo(bodyX + bodyW, bodyY + bodyH, bodyX + bodyW - rr, bodyY + bodyH);
+        ctx.lineTo(bodyX + rr, bodyY + bodyH);
+        ctx.quadraticCurveTo(bodyX, bodyY + bodyH, bodyX, bodyY + bodyH - rr);
+        ctx.lineTo(bodyX, bodyY + rr);
+        ctx.quadraticCurveTo(bodyX, bodyY, bodyX + rr, bodyY);
+        ctx.closePath();
+        ctx.fill();
+
+        // Hueco del ojo (círculo blanco pequeño)
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(cx, bodyY + bodyH * 0.42, bodyW * 0.13, 0, Math.PI * 2);
+        ctx.fill();
+        // ────────────────────────────────────────────────────────────────
+
         // Devuelve dataURL y también un SVG simple para previsualización
         return {
             dataUrl: canvas.toDataURL('image/png'),
@@ -367,11 +424,30 @@
                 const cell = 3;
                 const mg = 4;
                 const s = n * cell + mg * 2;
+                const scx = s / 2, scy = s / 2;
+                const sr  = s * 0.13;
+                const slw = sr * 0.42, slh = sr * 0.44;
+                const sly = scy - sr * 0.08;
+                const saR = slw * 0.72;
+                const sSt = sr * 0.16;
+                const bW  = slw * 2, bH = slh;
+                const bX  = scx - slw, bY = sly + sSt * 0.3;
+                const brr = bW * 0.18;
                 let r = '';
                 for (let row = 0; row < n; row++)
                     for (let col = 0; col < n; col++)
                         if (qr.isDark(row, col))
                             r += `<rect x="${col*cell+mg}" y="${row*cell+mg}" width="${cell}" height="${cell}" fill="#000"/>`;
+                // Círculo blanco de fondo
+                r += `<circle cx="${scx}" cy="${scy}" r="${sr}" fill="#fff"/>`;
+                // Arco del candado
+                const ax1 = scx - saR, ay1 = sly;
+                const ax2 = scx + saR, ay2 = sly;
+                r += `<path d="M ${ax1} ${ay1} A ${saR} ${saR} 0 0 1 ${ax2} ${ay2}" stroke="#000" stroke-width="${sSt}" fill="none" stroke-linecap="round"/>`;
+                // Cuerpo
+                r += `<rect x="${bX}" y="${bY}" width="${bW}" height="${bH}" rx="${brr}" fill="#000"/>`;
+                // Ojo
+                r += `<circle cx="${scx}" cy="${bY + bH * 0.42}" r="${bW * 0.13}" fill="#fff"/>`;
                 return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s} ${s}" shape-rendering="crispEdges"><rect width="${s}" height="${s}" fill="#fff"/>${r}</svg>`;
             })()
         };
