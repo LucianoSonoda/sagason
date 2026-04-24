@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import QRCode from 'qrcode';
-import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle, Printer } from 'lucide-react';
+import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle, Printer, Award } from 'lucide-react';
 import '../styles/CustomForm.css';
 
 const PRODUCTS = [
@@ -15,6 +15,7 @@ const PRODUCTS = [
     { id: 'tazones', icon: Coffee, title: 'TAZONES', desc: 'Tazones sublimados personalizados' },
     { id: 'tumblers', icon: CupSoda, title: 'TUMBLERS', desc: 'Tumbler / vaso térmico personalizado' },
     { id: 'impresion3d', icon: Printer, title: 'IMPRESIÓN 3D', desc: 'Piezas y modelos impresos en 3D' },
+    { id: 'insignias', icon: Award, title: 'INSIGNIAS', desc: 'Insignias circulares de acero inoxidable (10mm / 15mm)' },
     { id: 'otro', icon: Package, title: 'OTRO', desc: 'Otro producto personalizado — consúltanos' },
 ];
 
@@ -258,7 +259,13 @@ export function CustomForm() {
                                                 <div
                                                     key={p.id}
                                                     className={`option-card ${selections.product === p.title ? 'selected' : ''}`}
-                                                    onClick={() => handleSelectAndAdvance('product', p.title)}
+                                                    onClick={() => {
+                                                        if (p.id === 'insignias') {
+                                                            window.location.hash = '#insignia';
+                                                            return;
+                                                        }
+                                                        handleSelectAndAdvance('product', p.title);
+                                                    }}
                                                 >
                                                     <Icon size={24} className="option-icon" />
                                                     <h4>{p.title}</h4>
