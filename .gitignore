@@ -35,8 +35,8 @@ test_upload.js
 .wrangler
 .dev.vars*
 !.dev.vars.example
-.env*
-!.env.example
+# Permitimos rastrear .env porque Vite debe tener acceso en GitHub Actions 
+# (La llave de Google Places es pública en el frontend por diseño y se protege via Referers)
 
 # Documentación Privada
 docs/

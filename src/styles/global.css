@@ -61,3 +61,43 @@ button {
     box-shadow: var(--glass-shadow);
     border-radius: var(--radius-md);
 }
+
+/* Dynamic Map Background Styles */
+.dynamic-map-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0.8;
+    overflow: hidden;
+}
+
+@keyframes mapBreathing {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.06) translate(-1%, -1%); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(3.5); opacity: 0; }
+}
+
+.beacon-pulse {
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes rotateRing {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.rotating-ring {
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: rotateRing 15s linear infinite;
+}

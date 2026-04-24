@@ -8,6 +8,9 @@ import { Warranty } from './components/Warranty';
 import { Privacy } from './components/Privacy';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { MusicPlayer } from './components/MusicPlayer';
+import { BackgroundMap } from './components/BackgroundMap';
+import { DiscoverCity } from './components/DiscoverCity';
+import { InsigniaForm } from './components/InsigniaForm';
 import './App.css';
 
 function App() {
@@ -49,15 +52,22 @@ function App() {
 
   const isWarrantyPage = currentHash === '#warranty';
   const isPrivacyPage = currentHash === '#privacidad' || new URLSearchParams(window.location.search).has('confirm');
+  const isDiscoverPage = currentHash === '#aventuras';
+  const isInsigniaPage = currentHash.startsWith('#insignia');
 
   return (
     <>
+      <BackgroundMap />
       <Header />
       <main style={{ minHeight: '80vh' }}>
         {isWarrantyPage ? (
           <Warranty />
         ) : isPrivacyPage ? (
           <Privacy />
+        ) : isDiscoverPage ? (
+          <DiscoverCity />
+        ) : isInsigniaPage ? (
+          <InsigniaForm />
         ) : (
           <>
             <Home />

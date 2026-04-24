@@ -362,6 +362,7 @@ function S4KCarousel() {
 
             {/* CTA links */}
             <div className="promo-ctas" style={{ justifyContent: 'center', marginBottom: '32px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                <a href="#aventuras" className="btn btn-primary" style={{ border: '2px solid var(--color-primary)', boxShadow: '0 0 15px rgba(14, 165, 233, 0.4)', fontWeight: '800' }}>🗺️ Aventuras en Familia</a>
                 <a href="/como-funciona.html" className="btn btn-outline">¿Cómo funciona?</a>
                 <a href="/tecnologia.html" className="btn btn-outline">Nuestra Tecnología</a>
                 <a href="/dashboard.html" className="btn btn-primary-small">Panel de Control</a>
