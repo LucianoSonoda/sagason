@@ -22,10 +22,6 @@ export function LaserSticker() {
   const [error, setError] = useState(null);
   const [emailStatus, setEmailStatus] = useState('idle'); // 'idle' | 'sending' | 'sent' | 'error'
   
-  const formRef = useRef(null);
-  const fileInputRef = useRef(null);
-  const jsonInputRef = useRef(null);
-
   // Convierte un base64 a Archivo File para usar con FormSubmit
   const base64ToFile = (base64String, filename) => {
     const arr = base64String.split(',');
@@ -39,22 +35,22 @@ export function LaserSticker() {
     return new File([u8arr], filename, { type: mime });
   };
 
-  const sendEmailViaFormSubmit = (currentResults, currentImages, searchTarget, detailTarget) => {
+  const sendEmailViaFormSubmit = async (currentResults, currentImages, searchTarget, detailTarget) => {
     setEmailStatus('sending');
     const combinedPlace = detailTarget ? `${detailTarget} en ${searchTarget}` : searchTarget;
     
     try {
-        const dt = new DataTransfer();
+        const formData = new FormData();
+        formData.append("_subject", `SÍNTESIS VIRTUAL: ${combinedPlace}`);
+        formData.append("_captcha", "false");
+        formData.append("_template", "box");
+
         currentImages.forEach((base64, index) => {
             if (base64) {
                 const file = base64ToFile(base64, `opcion-${index + 1}.png`);
-                dt.items.add(file);
+                formData.append(`imagen_${index + 1}`, file);
             }
         });
-
-        if (fileInputRef.current) {
-            fileInputRef.current.files = dt.files;
-        }
 
         // Preparamos un string detallado con los resultados para que el correo sea legible
         let finalReport = `Reporte de Síntesis Heráldica para: ${combinedPlace}\n\n`;
@@ -65,16 +61,22 @@ export function LaserSticker() {
             finalReport += `Prompt: ${r.visual_prompt}\n\n`;
         });
 
-        jsonInputRef.current.value = finalReport;
+        formData.append("Resultados_Json", finalReport);
 
-        formRef.current.submit();
+        const response = await fetch("https://formsubmit.co/ajax/brluson@gmail.com", {
+            method: "POST",
+            body: formData
+        });
 
-        setTimeout(() => {
+        if (response.ok) {
             setEmailStatus('sent');
-        }, 1500);
+        } else {
+            console.error("Error en la respuesta de FormSubmit:", await response.text());
+            setEmailStatus('error');
+        }
 
     } catch(err) {
-        console.error("Error adjuntando a FormSubmit", err);
+        console.error("Error enviando a FormSubmit:", err);
         setEmailStatus('error');
     }
   };
@@ -129,15 +131,6 @@ export function LaserSticker() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#000', color: '#fff', fontFamily: 'monospace' }}>
-      {/* Hidden Invisible Form para FormSubmit */}
-      <iframe name="hidden_iframe_laser" style={{display: "none"}}></iframe>
-      <form ref={formRef} action="https://formsubmit.co/brluson@gmail.com" method="POST" target="hidden_iframe_laser" encType="multipart/form-data" style={{display: 'none'}}>
-          <input type="hidden" name="_subject" value={`SÍNTESIS VIRTUAL: ${place}`} />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="file" name="imagenes[]" ref={fileInputRef} multiple />
-          <textarea name="Resultados_Json" ref={jsonInputRef}></textarea>
-      </form>
-
       <header style={{ borderBottom: '1px solid #333', padding: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
           <h2 style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.3em', color: '#666' }}>Orquestación de Diseño Industrial</h2>
