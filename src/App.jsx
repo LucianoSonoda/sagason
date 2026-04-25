@@ -11,6 +11,7 @@ import { MusicPlayer } from './components/MusicPlayer';
 import { BackgroundMap } from './components/BackgroundMap';
 import { DiscoverCity } from './components/DiscoverCity';
 import { InsigniaForm } from './components/InsigniaForm';
+import { LaserLock } from './components/LaserLock';
 import './App.css';
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
   const isPrivacyPage = currentHash === '#privacidad' || new URLSearchParams(window.location.search).has('confirm');
   const isDiscoverPage = currentHash === '#aventuras';
   const isInsigniaPage = currentHash.startsWith('#insignia');
+  const isLaserStickerPage = currentHash === '#lasersticker';
 
   return (
     <>
@@ -68,6 +70,8 @@ function App() {
           <DiscoverCity />
         ) : isInsigniaPage ? (
           <InsigniaForm />
+        ) : isLaserStickerPage ? (
+          <LaserLock />
         ) : (
           <>
             <Home />
