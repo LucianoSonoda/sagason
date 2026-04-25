@@ -1,9 +1,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-// Inicializamos conectando con la variable inyectada a la build (o local)
-const ai = new GoogleGenAI({ 
-    apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' 
-});
+// Se inicializa lazily para prevenir crash si la llave no está puesta localmente
+let aiInstance = null;
+const getAI = () => {
+    if (!aiInstance) {
+        aiInstance = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || 'MISSING_KEY' });
+    }
+    return aiInstance;
+};
 
 const SYSTEM_INSTRUCTION = `Actúa como un sistema de orquestación de diseño industrial especializado en síntesis visual para grabado láser y stickers. Tu objetivo es procesar un lugar y un detalle específico para generar un prompt de imagen técnico para crear un icono 2D único.
 
@@ -28,7 +32,7 @@ export async function generateHeraldryConcepts(place, detail) {
   const finalPlace = place.trim() || "Lugares más comunes y comentados por visitantes (destinos turísticos globales)";
   const finalDetail = detail.trim() || "Hitos arquitectónicos icónicos";
   
-  const response = await ai.models.generateContent({
+  const response = await getAI().models.generateContent({
     model: "gemini-3-flash-preview",
     contents: `Lugar: ${finalPlace}. Detalle específico: ${finalDetail}. Genera 3 opciones distintas de diseño basadas estrictamente en la realidad física y documental de estos elementos. Si no tienes datos verídicos de la combinación lugar/detalle, reporta el error.`,
     config: {
@@ -57,7 +61,7 @@ export async function generateHeraldryConcepts(place, detail) {
 }
 
 export async function generateStickerImage(prompt) {
-  const response = await ai.models.generateContent({
+  const response = await getAI().models.generateContent({
     model: 'gemini-2.5-flash-image',
     contents: {
       parts: [{ text: prompt }],

@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { Search, Loader2, Scissors, History, ShieldCheck, Zap, Mail, RefreshCw } from 'lucide-react';
 import { generateHeraldryConcepts, generateStickerImage } from '../services/heraldryService';
 
@@ -127,8 +126,6 @@ export function LaserSticker() {
       default: return null;
     }
   };
-
-  const agentInfo = currentAgentInfo();
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#000', color: '#fff', fontFamily: 'monospace' }}>
