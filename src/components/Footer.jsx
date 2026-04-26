@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Instagram, Mail, MapPin, Star } from 'lucide-react';
 import QRCode from 'qrcode';
 import '../styles/Footer.css';
@@ -27,11 +28,11 @@ export function Footer() {
 
                 <div className="footer-links-col">
                     <h3 className="footer-title">Enlaces Rápidos</h3>
-                    <a href="#home" className="footer-link">Inicio</a>
-                    <a href="#gallery" className="footer-link">Catálogo</a>
-                    <a href="#custom" className="footer-link">Personalizar</a>
-                    <a href="#warranty" className="footer-link">Garantía y Políticas</a>
-                    <a href="#privacidad" className="footer-link">Privacidad y Datos</a>
+                    <Link to="/#home" className="footer-link">Inicio</Link>
+                    <Link to="/#gallery" className="footer-link">Catálogo</Link>
+                    <Link to="/#custom" className="footer-link">Personalizar</Link>
+                    <Link to="/warranty" className="footer-link">Garantía y Políticas</Link>
+                    <Link to="/privacidad" className="footer-link">Privacidad y Datos</Link>
                 </div>
 
                 <div className="footer-links-col contact-col">

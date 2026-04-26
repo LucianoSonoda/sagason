@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Trash2, MailCheck, AlertTriangle, CheckCircle, XCircle, Loader } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const API_BASE = 'https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod';
 
@@ -70,7 +71,7 @@ export function Privacy() {
                     <h2 style={{ color: '#34d399' }}>Datos Eliminados Definitivamente</h2>
                     <p>Tu perfil, historial de pedidos y todos los Tags SOS asociados a tu correo han sido <strong>borrados de forma irrecuperable</strong>.</p>
                     <p>Si tenías placas médicas de emergencia activas, estas han quedado desactivadas de manera inmediata.</p>
-                    <a href="#home" className="btn btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>Volver al inicio</a>
+                    <Link to="/#home" className="btn btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>Volver al inicio</Link>
                 </CenteredBox>
             </PrivacyShell>
         );

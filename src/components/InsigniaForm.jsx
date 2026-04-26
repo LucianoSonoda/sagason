@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, MapPin, Calendar, User, CheckCircle, Award } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import '../styles/CustomForm.css';
 
 export function InsigniaForm() {
@@ -88,7 +89,7 @@ export function InsigniaForm() {
                         <div style={{ color: 'var(--color-primary)', marginBottom: '1rem' }}><CheckCircle size={64} style={{ margin: '0 auto' }}/></div>
                         <h3>¡Misión Confimada!</h3>
                         <p style={{ marginTop: '1rem', marginBottom: '2rem' }}>Hemos recibido los datos de tu aventura en <strong>{selections.lugar}</strong>. Dentro de poco nuestro orfebre digital te contactará al mail ingresado para los detalles de producción.</p>
-                        <a href="#aventuras" className="btn btn-outline">Descubrir más lugares</a>
+                        <Link to="/aventuras" className="btn btn-outline">Descubrir más lugares</Link>
                     </div>
                 </div>
             </section>

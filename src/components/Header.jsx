@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 import logoChico from '../assets/logo-chico.png';
 
@@ -6,16 +7,16 @@ export function Header() {
     return (
         <header className="header glass-panel">
             <div className="header-content container">
-                <a href="#home" className="logo">
+                <Link to="/#home" className="logo">
                     <img src={logoChico} alt="SAGASON" className="header-logo-img" />
-                </a>
+                </Link>
                 <nav className="nav">
-                    <a href="#home">Inicio</a>
-                    <a href="#gallery">Catálogo</a>
-                    <a href="#custom">Personalizar</a>
-                    <a href="#contact">Contacto</a>
+                    <Link to="/#home">Inicio</Link>
+                    <Link to="/#gallery">Catálogo</Link>
+                    <Link to="/#custom">Personalizar</Link>
+                    <Link to="/#contact">Contacto</Link>
                 </nav>
-                <a href="#custom" className="btn-header">Pedir Ahora</a>
+                <Link to="/#custom" className="btn-header">Pedir Ahora</Link>
             </div>
         </header>
     );
