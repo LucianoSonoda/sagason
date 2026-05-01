@@ -52,7 +52,7 @@
 }
 
 .map-marker-glow {
-    filter: drop-shadow(0 0 10px var(--primary));
+    filter: drop-shadow(0 0 10px var(--color-primary));
 }
 
 .map-marker-pulse {
@@ -74,7 +74,7 @@
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    color: var(--primary);
+    color: var(--color-primary);
 }
 
 .map-footer-overlay {
@@ -94,4 +94,13 @@
     .map-header { flex-direction: column; }
     .map-visual-wrapper { border-radius: 20px; padding: 10px; }
     .stat-card { padding: 15px; }
+}
+
+.map-line-dash {
+    animation: dash-animation 20s linear infinite;
+}
+
+@keyframes dash-animation {
+    from { stroke-dashoffset: 100; }
+    to { stroke-dashoffset: 0; }
 }

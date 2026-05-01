@@ -29,6 +29,8 @@ Thumbs.db
 
 # Archivos backend privados (Lambda AWS - no deben ser publicos)
 Sagason*.js
+S4K_*.py
+keeps-decoder.py
 test_upload.js
 
 # wrangler files

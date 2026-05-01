@@ -13,14 +13,13 @@ import './GlobalStatsMap.css';
 const geoUrl = "https://raw.githubusercontent.com/lotusms/world-map-data/main/world.json";
 
 const COUNTRY_COORDS = {
+    "Brasil": [-51.9253, -14.235],
+    "Brazil": [-51.9253, -14.235],
+    "BR": [-51.9253, -14.235],
     "Chile": [-71.543, -35.6751],
+    "CL": [-71.543, -35.6751],
     "Argentina": [-63.6167, -38.4161],
-    "Perú": [-75.0152, -9.19],
-    "Colombia": [-74.2973, 4.5709],
-    "México": [-102.5528, 23.6345],
-    "España": [-3.7492, 40.4637],
-    "USA": [-95.7129, 37.0902],
-    "Canadá": [-106.3468, 56.1304],
+    "AR": [-63.6167, -38.4161],
     "Otros": [0, 20]
 };
 
@@ -108,10 +107,24 @@ export function GlobalStatsMap() {
                         }
                     </Geographies>
 
-                    {Object.entries(stats.countries || {}).map(([country, count]) => {
-                        const coords = COUNTRY_COORDS[country] || COUNTRY_COORDS["Otros"];
+                    {Object.entries(stats.countries || {}).map(([rawCountry, count]) => {
+                        const country = rawCountry.trim();
+                        // Normalización para asegurar coincidencia (sin tildes, lowercase)
+                        const norm = country.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        
+                        // Intentar match directo, luego normalizado
+                        let coords = COUNTRY_COORDS[country] || COUNTRY_COORDS["Otros"];
+                        
+                        // Búsqueda manual en keys si no hay match directo
+                        if (coords === COUNTRY_COORDS["Otros"]) {
+                            const matchKey = Object.keys(COUNTRY_COORDS).find(k => 
+                                k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === norm
+                            );
+                            if (matchKey) coords = COUNTRY_COORDS[matchKey];
+                        }
+                        
                         const radius = getRadius(count);
-                        const isChile = country === "Chile";
+                        const isChile = country === "Chile" || norm === "chile";
                         const chileCoords = COUNTRY_COORDS["Chile"];
 
                         return (
@@ -121,33 +134,26 @@ export function GlobalStatsMap() {
                                     <Line
                                         from={chileCoords}
                                         to={coords}
-                                        stroke="var(--primary)"
-                                        strokeWidth={1}
+                                        stroke="#0ea5e9"
+                                        strokeWidth={2}
                                         strokeLinecap="round"
-                                        style={{ pointerEvents: "none" }}
-                                    >
-                                        <motion.path
-                                            initial={{ pathLength: 0, opacity: 0 }}
-                                            animate={{ pathLength: 1, opacity: 0.3 }}
-                                            transition={{ duration: 2, delay: 0.5, ease: "easeInOut" }}
-                                            fill="none"
-                                            stroke="var(--primary)"
-                                            strokeWidth={1}
-                                        />
-                                    </Line>
+                                        strokeDasharray="4 4"
+                                        className="map-line-dash"
+                                        style={{ pointerEvents: "none", opacity: 0.6 }}
+                                    />
                                 )}
                                 
                                 <Marker coordinates={coords}>
                                     <motion.circle
                                         r={radius}
-                                        fill="var(--primary)"
+                                        fill="#0ea5e9"
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
                                         className="map-marker-glow"
                                     />
                                     <circle
                                         r={radius * 2.5}
-                                        fill="var(--primary)"
+                                        fill="#0ea5e9"
                                         opacity="0.1"
                                         className="map-marker-pulse"
                                     />
@@ -168,6 +174,12 @@ export function GlobalStatsMap() {
                             </React.Fragment>
                         );
                     })}
+                    <defs>
+                        <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.8" />
+                            <stop offset="100%" stopColor="#22c55e" stopOpacity="0.8" />
+                        </linearGradient>
+                    </defs>
                 </ComposableMap>
                 
                 {loading && (
