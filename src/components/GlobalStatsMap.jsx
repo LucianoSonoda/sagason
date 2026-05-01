@@ -172,18 +172,18 @@ export function GlobalStatsMap() {
         <section className="global-stats-section">
             {/* Restauramos las etiquetas originales en la parte superior como se solicitó */}
             <div className="stats-grid-overlay top">
-                <div className="stat-mini-card">
-                    <Users size={20} />
-                    <div className="stat-info">
-                        <span className="label">Tags Activos</span>
-                        <span className="value">{stats.total_active || 0}</span>
+                <div className="stat-pill glass-panel glow-card">
+                    <Users size={16} className="stat-icon" />
+                    <div className="stat-content">
+                        <span className="stat-value">{stats.total_active || 0}</span>
+                        <span className="stat-label">Tags Activos</span>
                     </div>
                 </div>
-                <div className="stat-mini-card highlight">
-                    <Award size={20} />
-                    <div className="stat-info">
-                        <span className="label">Donaciones</span>
-                        <span className="value">{stats.total_donated || 0}</span>
+                <div className="stat-pill glass-panel glow-card">
+                    <Award size={16} className="stat-icon" />
+                    <div className="stat-content">
+                        <span className="stat-value">{stats.total_donated || 0}</span>
+                        <span className="stat-label">Donaciones</span>
                     </div>
                 </div>
             </div>
