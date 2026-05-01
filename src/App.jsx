@@ -15,44 +15,27 @@ import { InsigniaForm } from './components/InsigniaForm';
 import { LaserLock } from './components/LaserLock';
 import './App.css';
 
-function ScrollToHashElement() {
-  const { hash, pathname } = useLocation();
+function ScrollToTop() {
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    if (hash) {
-      setTimeout(() => {
-        const element = document.getElementById(hash.substring(1));
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else if (pathname === '/') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [hash, pathname]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pathname]);
 
   return null;
-}
-
-function MainContent() {
-  return (
-    <>
-      <Home />
-      <Gallery />
-      <CustomForm />
-    </>
-  );
 }
 
 function App() {
   return (
     <BrowserRouter>
-      <ScrollToHashElement />
+      <ScrollToTop />
       <BackgroundMap />
       <Header />
       <main style={{ minHeight: '80vh' }}>
         <Routes>
-          <Route path="/" element={<MainContent />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/custom" element={<CustomForm />} />
           <Route path="/warranty" element={<Warranty />} />
           <Route path="/privacidad" element={<Privacy />} />
           <Route path="/aventuras" element={<DiscoverCity />} />

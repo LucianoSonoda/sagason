@@ -7,16 +7,16 @@ export function Header() {
     return (
         <header className="header glass-panel">
             <div className="header-content container">
-                <Link to="/#home" className="logo">
+                <Link to="/" className="logo">
                     <img src={logoChico} alt="SAGASON" className="header-logo-img" />
                 </Link>
                 <nav className="nav">
-                    <Link to="/#home">Inicio</Link>
-                    <Link to="/#gallery">Catálogo</Link>
-                    <Link to="/#custom">Personalizar</Link>
-                    <Link to="/#contact">Contacto</Link>
+                    <Link to="/">Inicio</Link>
+                    <Link to="/gallery">Catálogo</Link>
+                    <Link to="/custom">Personalizar</Link>
+                    <Link to="/" onClick={(e) => { e.preventDefault(); window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})}}>Contacto</Link>
                 </nav>
-                <Link to="/#custom" className="btn-header">Pedir Ahora</Link>
+                <Link to="/custom" className="btn-header">Pedir Ahora</Link>
             </div>
         </header>
     );
