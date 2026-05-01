@@ -4,8 +4,7 @@ import {
   ComposableMap, 
   Geographies, 
   Geography, 
-  Marker,
-  Line
+  Marker
 } from "react-simple-maps";
 import { Users, Shield, Award, Globe } from 'lucide-react';
 import './GlobalStatsMap.css';
@@ -39,7 +38,105 @@ const COUNTRY_COORDS = {
     "Panamá": [-80.7821, 8.538], "Panama": [-80.7821, 8.538], "PA": [-80.7821, 8.538],
     "Costa Rica": [-83.7534, 9.7489], "CR": [-83.7534, 9.7489],
     "Suiza": [8.2275, 46.8182], "Switzerland": [8.2275, 46.8182], "CH": [8.2275, 46.8182],
+    "República Centroafricana": [20.9394, 6.6111], "CAR": [20.9394, 6.6111],
     "Otros": [0, 20]
+};
+
+// Sub-componente para acceder a la proyección de forma segura
+const MapOverlay = ({ stats, getRadius }) => {
+    return (
+        <Geographies geography={geoUrl}>
+            {({ geographies, projection }) => (
+                <>
+                    {geographies.map((geo) => (
+                        <Geography
+                            key={geo.rsmKey}
+                            geography={geo}
+                            fill="#1e293b"
+                            stroke="#334155"
+                            strokeWidth={0.5}
+                            style={{
+                                default: { outline: "none" },
+                                hover: { fill: "#334155", outline: "none" },
+                                pressed: { outline: "none" },
+                            }}
+                        />
+                    ))}
+                    
+                    {Object.entries(stats.countries || {}).map(([rawCountry, count]) => {
+                        const country = rawCountry.trim();
+                        const norm = country.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        
+                        let coords = COUNTRY_COORDS[country] || COUNTRY_COORDS["Otros"];
+                        if (coords === COUNTRY_COORDS["Otros"]) {
+                            const matchKey = Object.keys(COUNTRY_COORDS).find(k => 
+                                k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === norm
+                            );
+                            if (matchKey) coords = COUNTRY_COORDS[matchKey];
+                        }
+                        
+                        const radius = getRadius(count);
+                        const isChile = country === "Chile" || norm === "chile";
+                        
+                        // Calculamos las posiciones X, Y en pantalla para evitar el wrap-around
+                        const [chileX, chileY] = projection(COUNTRY_COORDS["Chile"]);
+                        const [targetX, targetY] = projection(coords);
+
+                        return (
+                            <React.Fragment key={country}>
+                                {!isChile && (
+                                    <motion.line
+                                        x1={chileX}
+                                        y1={chileY}
+                                        x2={targetX}
+                                        y2={targetY}
+                                        stroke="#0ea5e9"
+                                        strokeWidth={2}
+                                        strokeLinecap="round"
+                                        strokeDasharray="4 4"
+                                        className="map-line-dash"
+                                        initial={{ pathLength: 0, opacity: 0 }}
+                                        animate={{ pathLength: 1, opacity: 0.5 }}
+                                        transition={{ duration: 1.5, ease: "easeOut" }}
+                                        style={{ pointerEvents: "none" }}
+                                    />
+                                )}
+                                
+                                <Marker coordinates={coords}>
+                                    <motion.circle
+                                        r={radius}
+                                        fill="#0ea5e9"
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        className="map-marker-glow"
+                                    />
+                                    <circle
+                                        r={radius * 2.5}
+                                        fill="#0ea5e9"
+                                        opacity="0.1"
+                                        className="map-marker-pulse"
+                                    />
+                                    <text
+                                        textAnchor="middle"
+                                        y={-radius - 5}
+                                        style={{ 
+                                            fontFamily: "Inter, sans-serif", 
+                                            fill: "white", 
+                                            fontSize: "10px",
+                                            fontWeight: "600",
+                                            textShadow: "0 2px 4px rgba(0,0,0,0.5)"
+                                        }}
+                                    >
+                                        {country}
+                                    </text>
+                                </Marker>
+                            </React.Fragment>
+                        );
+                    })}
+                </>
+            )}
+        </Geographies>
+    );
 };
 
 export function GlobalStatsMap() {
@@ -47,59 +144,32 @@ export function GlobalStatsMap() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const res = await fetch('https://s4k.sagason.cl/report', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_public_stats' })
-                });
-                const data = await res.json();
+        fetch('https://gmvj2qt2af.execute-api.us-east-1.amazonaws.com/prod/report')
+            .then(res => res.json())
+            .then(data => {
                 setStats(data);
                 setLoading(false);
-            } catch (err) {
-                console.error("Error fetching global stats:", err);
+            })
+            .catch(err => {
+                console.error("Error fetching map stats:", err);
                 setLoading(false);
-            }
-        };
-        fetchStats();
+            });
     }, []);
 
     const getRadius = (count) => {
-        if (!count) return 0;
-        return 3 + Math.sqrt(count) * 2;
+        if (count >= 100) return 8;
+        if (count >= 50) return 6;
+        return 4;
     };
 
     return (
-        <div className="global-map-container">
-            <div className="map-header">
-                <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="stat-card glass-panel"
-                >
-                    <div className="stat-icon-bg primary">
-                        <Users size={24} className="text-primary" />
-                    </div>
-                    <div className="stat-info">
-                        <span className="stat-num">{stats.total_active}</span>
-                        <span className="stat-label">Dispositivos Activos</span>
-                    </div>
-                </motion.div>
-                
-                <motion.div 
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="stat-card glass-panel"
-                >
-                    <div className="stat-icon-bg success">
-                        <Award size={24} className="text-success" />
-                    </div>
-                    <div className="stat-info">
-                        <span className="stat-num">{stats.total_donated}</span>
-                        <span className="stat-label">Impacto Social</span>
-                    </div>
-                </motion.div>
+        <section className="global-stats-section">
+            <div className="stats-header-overlay">
+                <div className="stats-badge">
+                    <Globe size={16} className="pulse-icon" />
+                    <span>RED GLOBAL SAGASON</span>
+                </div>
+                <h2>Impacto en Tiempo Real</h2>
             </div>
 
             <div className="map-visual-wrapper glass-panel">
@@ -107,25 +177,6 @@ export function GlobalStatsMap() {
                     projectionConfig={{ scale: 180 }}
                     style={{ width: "100%", height: "auto" }}
                 >
-                    <Geographies geography={geoUrl}>
-                        {({ geographies }) =>
-                            geographies.map((geo) => (
-                                <Geography
-                                    key={geo.rsmKey}
-                                    geography={geo}
-                                    fill="#1e293b"
-                                    stroke="#334155"
-                                    strokeWidth={0.5}
-                                    style={{
-                                        default: { outline: "none" },
-                                        hover: { fill: "#334155", outline: "none" },
-                                        pressed: { outline: "none" },
-                                    }}
-                                />
-                            ))
-                        }
-                    </Geographies>
-
                     <defs>
                         <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.8" />
@@ -133,93 +184,32 @@ export function GlobalStatsMap() {
                         </linearGradient>
                     </defs>
 
-                    {/* Render prop to access projection for straight lines */}
-                    {({ projection }) => {
-                        const chileCoords = COUNTRY_COORDS["Chile"];
-                        const [chileX, chileY] = projection(chileCoords);
-
-                        return Object.entries(stats.countries || {}).map(([rawCountry, count]) => {
-                            const country = rawCountry.trim();
-                            const norm = country.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                            
-                            let coords = COUNTRY_COORDS[country] || COUNTRY_COORDS["Otros"];
-                            if (coords === COUNTRY_COORDS["Otros"]) {
-                                const matchKey = Object.keys(COUNTRY_COORDS).find(k => 
-                                    k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === norm
-                                );
-                                if (matchKey) coords = COUNTRY_COORDS[matchKey];
-                            }
-                            
-                            const radius = getRadius(count);
-                            const isChile = country === "Chile" || norm === "chile";
-                            const [targetX, targetY] = projection(coords);
-
-                            return (
-                                <React.Fragment key={country}>
-                                    {!isChile && (
-                                        <motion.line
-                                            x1={chileX}
-                                            y1={chileY}
-                                            x2={targetX}
-                                            y2={targetY}
-                                            stroke="#0ea5e9"
-                                            strokeWidth={2}
-                                            strokeLinecap="round"
-                                            strokeDasharray="4 4"
-                                            className="map-line-dash"
-                                            initial={{ pathLength: 0, opacity: 0 }}
-                                            animate={{ pathLength: 1, opacity: 0.5 }}
-                                            transition={{ duration: 1.5, ease: "easeOut" }}
-                                            style={{ pointerEvents: "none" }}
-                                        />
-                                    )}
-                                    
-                                    <Marker coordinates={coords}>
-                                        <motion.circle
-                                            r={radius}
-                                            fill="#0ea5e9"
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: 1 }}
-                                            className="map-marker-glow"
-                                        />
-                                        <circle
-                                            r={radius * 2.5}
-                                            fill="#0ea5e9"
-                                            opacity="0.1"
-                                            className="map-marker-pulse"
-                                        />
-                                        <text
-                                            textAnchor="middle"
-                                            y={-radius - 5}
-                                            style={{ 
-                                                fontFamily: "Inter, sans-serif", 
-                                                fill: "white", 
-                                                fontSize: "10px",
-                                                fontWeight: "600",
-                                                textShadow: "0 2px 4px rgba(0,0,0,0.5)"
-                                            }}
-                                        >
-                                            {country}
-                                        </text>
-                                    </Marker>
-                                </React.Fragment>
-                            );
-                        });
-                    }}
+                    <MapOverlay stats={stats} getRadius={getRadius} />
                 </ComposableMap>
                 
                 {loading && (
                     <div className="map-loader">
-                        <Globe size={40} className="spin-slow" />
-                        <span>Sincronizando red 4K...</span>
+                        <div className="spinner"></div>
                     </div>
                 )}
+            </div>
 
-                <div className="map-footer-overlay">
-                    <Shield size={16} />
-                    <span>Red de Protección Global Sagason &copy; 2026</span>
+            <div className="stats-grid-overlay">
+                <div className="stat-mini-card">
+                    <Users size={20} />
+                    <div className="stat-info">
+                        <span className="label">Tags Activos</span>
+                        <span className="value">{stats.total_active || 0}</span>
+                    </div>
+                </div>
+                <div className="stat-mini-card highlight">
+                    <Award size={20} />
+                    <div className="stat-info">
+                        <span className="label">Donaciones</span>
+                        <span className="value">{stats.total_donated || 0}</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 }
