@@ -4,7 +4,8 @@ import {
   ComposableMap, 
   Geographies, 
   Geography, 
-  Marker 
+  Marker,
+  Line
 } from "react-simple-maps";
 import { Users, Shield, Award, Globe } from 'lucide-react';
 import './GlobalStatsMap.css';
@@ -110,35 +111,61 @@ export function GlobalStatsMap() {
                     {Object.entries(stats.countries || {}).map(([country, count]) => {
                         const coords = COUNTRY_COORDS[country] || COUNTRY_COORDS["Otros"];
                         const radius = getRadius(count);
+                        const isChile = country === "Chile";
+                        const chileCoords = COUNTRY_COORDS["Chile"];
+
                         return (
-                            <Marker key={country} coordinates={coords}>
-                                <motion.circle
-                                    r={radius}
-                                    fill="var(--primary)"
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="map-marker-glow"
-                                />
-                                <circle
-                                    r={radius * 2.5}
-                                    fill="var(--primary)"
-                                    opacity="0.1"
-                                    className="map-marker-pulse"
-                                />
-                                <text
-                                    textAnchor="middle"
-                                    y={-radius - 5}
-                                    style={{ 
-                                        fontFamily: "Inter, sans-serif", 
-                                        fill: "white", 
-                                        fontSize: "10px",
-                                        fontWeight: "600",
-                                        textShadow: "0 2px 4px rgba(0,0,0,0.5)"
-                                    }}
-                                >
-                                    {country}
-                                </text>
-                            </Marker>
+                            <React.Fragment key={country}>
+                                {/* Línea desde Chile a otros países */}
+                                {!isChile && (
+                                    <Line
+                                        from={chileCoords}
+                                        to={coords}
+                                        stroke="var(--primary)"
+                                        strokeWidth={1}
+                                        strokeLinecap="round"
+                                        style={{ pointerEvents: "none" }}
+                                    >
+                                        <motion.path
+                                            initial={{ pathLength: 0, opacity: 0 }}
+                                            animate={{ pathLength: 1, opacity: 0.3 }}
+                                            transition={{ duration: 2, delay: 0.5, ease: "easeInOut" }}
+                                            fill="none"
+                                            stroke="var(--primary)"
+                                            strokeWidth={1}
+                                        />
+                                    </Line>
+                                )}
+                                
+                                <Marker coordinates={coords}>
+                                    <motion.circle
+                                        r={radius}
+                                        fill="var(--primary)"
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        className="map-marker-glow"
+                                    />
+                                    <circle
+                                        r={radius * 2.5}
+                                        fill="var(--primary)"
+                                        opacity="0.1"
+                                        className="map-marker-pulse"
+                                    />
+                                    <text
+                                        textAnchor="middle"
+                                        y={-radius - 5}
+                                        style={{ 
+                                            fontFamily: "Inter, sans-serif", 
+                                            fill: "white", 
+                                            fontSize: "10px",
+                                            fontWeight: "600",
+                                            textShadow: "0 2px 4px rgba(0,0,0,0.5)"
+                                        }}
+                                    >
+                                        {country}
+                                    </text>
+                                </Marker>
+                            </React.Fragment>
                         );
                     })}
                 </ComposableMap>
