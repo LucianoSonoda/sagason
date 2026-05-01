@@ -133,7 +133,7 @@ export function BackgroundMap() {
         {/* Tourist Spots HUD - Displayed as a tech list panel at national scale */}
         {touristSpots.length > 0 && (
             <Marker coordinates={[location.lon, location.lat]}>
-              <text x={18} y={-45} style={{ fontFamily: "var(--font-main)", fill: "#60a5fa", fontSize: 9, fontWeight: "600", letterSpacing: "1px", textShadow: "0px 0px 4px rgba(0,0,0,0.9)" }}>
+              <text x={18} y={-45} style={{ fontFamily: "var(--font-main)", fill: "#f97316", fontSize: 9, fontWeight: "600", letterSpacing: "1px", textShadow: "0px 0px 4px rgba(0,0,0,0.9)" }}>
                 PUNTOS DE INTERÉS:
               </text>
               {touristSpots.map((spot, index) => (
@@ -143,11 +143,11 @@ export function BackgroundMap() {
                   y={-30 + (index * 12)}
                   style={{
                     fontFamily: "var(--font-main)",
-                    fill: "#e0f2fe",
+                    fill: "#fdba74",
                     fontSize: 8.5,
                     fontWeight: "500",
                     letterSpacing: "0.5px",
-                    opacity: 0.8,
+                    opacity: 0.9,
                     textShadow: "0px 0px 4px rgba(0,0,0,0.9)"
                   }}
                 >
@@ -159,17 +159,17 @@ export function BackgroundMap() {
 
         {/* Main User Location Beacon */}
         <Marker coordinates={[location.lon, location.lat]}>
-          <circle r={12} fill="none" stroke="var(--color-primary)" strokeWidth={2} className="beacon-pulse" />
-          <circle r={4} fill="#fff" />
+          <circle r={12} fill="none" stroke="#f97316" strokeWidth={2} className="beacon-pulse" />
+          <circle r={4} fill="#f97316" />
           <text
             textAnchor="end"
             x={-12}
             y={4}
             style={{ 
                 fontFamily: "var(--font-main)", 
-                fill: "#ffffff", 
-                fontSize: 14, 
-                fontWeight: "700",
+                fill: "#f97316", 
+                fontSize: 16, 
+                fontWeight: "800",
                 letterSpacing: "1px",
                 textShadow: "0px 0px 8px rgba(0,0,0,1)"
             }}
