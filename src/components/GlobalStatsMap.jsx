@@ -113,24 +113,18 @@ const MapOverlay = ({ stats, getRadius }) => {
                                         animate={{ scale: 1 }}
                                         className="map-marker-glow"
                                     />
-                                    <circle
-                                        r={radius * 2.5}
-                                        fill="#0ea5e9"
-                                        opacity="0.1"
-                                        className="map-marker-pulse"
-                                    />
                                     <text
                                         textAnchor="middle"
-                                        y={-radius - 5}
+                                        y={-radius - 8}
                                         style={{ 
                                             fontFamily: "Inter, sans-serif", 
                                             fill: "white", 
                                             fontSize: "10px",
-                                            fontWeight: "600",
+                                            fontWeight: "800",
                                             textShadow: "0 2px 4px rgba(0,0,0,0.5)"
                                         }}
                                     >
-                                        {country}
+                                        {country} • {count}
                                     </text>
                                 </Marker>
                             </React.Fragment>
