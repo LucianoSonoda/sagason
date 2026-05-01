@@ -7,7 +7,6 @@ import imgKanji_Kaeru from '../assets/kanji_kaeru.png';
 import imgKanji_Kizuna from '../assets/kanji_kizuna.png';
 import imgKanji_Kansha from '../assets/kanji_kansha.png';
 import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
-import sagasonSymbol from '../assets/sagason-symbol.png';
 
 function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth);
@@ -118,7 +117,7 @@ function TrustSymbolSection() {
                     }}
                 />
                 <img
-                    src={sagasonSymbol}
+                    src="/sagason-symbol.png"
                     alt="Símbolo Sagason"
                     style={{
                         width: isMobile ? '100px' : '120px',
