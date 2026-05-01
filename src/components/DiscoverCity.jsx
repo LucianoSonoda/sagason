@@ -61,18 +61,41 @@ export function DiscoverCity() {
                     ...(res2.places || [])
                 ];
 
-                // Filtrar 4+ estrellas y al menos 10 reviews
-                const validSpots = combined
-                    .filter(p => p.rating && p.rating >= 4.0 && p.userRatingCount > 10)
-                    .map(p => ({
-                        title: p.displayName?.text || "Lugar Destacado",
-                        rating: p.rating,
-                        reviews: p.userRatingCount,
-                        type: p.primaryType,
-                        address: p.shortFormattedAddress || ""
-                    }))
-                    // Eliminar duplicados
-                    .filter((v, i, a) => a.findIndex(t => t.title === v.title) === i);
+                // --- FALLBACK DATA: Si la API no devuelve nada o falla ---
+                const FALLBACK_PLACES = [
+                    { title: "Parque Bicentenario", rating: 4.8, type: "park", address: "Av. Bicentenario 3236, Vitacura" },
+                    { title: "Araucano Park", rating: 4.7, type: "park", address: "Pdte. Riesco 5877, Las Condes" },
+                    { title: "Mirador Interactive Museum", rating: 4.7, type: "museum", address: "Av. Punta Arenas 6711, La Granja" },
+                    { title: "Metropolitan Park (Cerro San Cristóbal)", rating: 4.8, type: "park", address: "Santiago" },
+                    { title: "Sky Costanera", rating: 4.6, type: "tourist_attraction", address: "Av. Andrés Bello 2425, Providencia" },
+                    { title: "Bahá'í Temple of South America", rating: 4.9, type: "tourist_attraction", address: "Peñalolén" },
+                    { title: "National Museum of Natural History", rating: 4.7, type: "museum", address: "Parque Quinta Normal" },
+                    { title: "Forestal Park", rating: 4.5, type: "park", address: "Santiago Centro" }
+                ];
+
+                const sourcePlaces = combined.length > 0 ? combined : [];
+                
+                let validSpots = [];
+                
+                if (sourcePlaces.length > 0) {
+                    validSpots = sourcePlaces
+                        .filter(p => p.rating && p.rating >= 4.0 && p.userRatingCount > 10)
+                        .map(p => ({
+                            title: p.displayName?.text || "Lugar Destacado",
+                            rating: p.rating,
+                            reviews: p.userRatingCount,
+                            type: p.primaryType,
+                            address: p.shortFormattedAddress || ""
+                        }));
+                }
+
+                // Mezclar con fallbacks si hay pocos resultados
+                if (validSpots.length < 5) {
+                    validSpots = [...validSpots, ...FALLBACK_PLACES];
+                }
+
+                // Eliminar duplicados por título
+                validSpots = validSpots.filter((v, i, a) => a.findIndex(t => t.title === v.title) === i);
 
                 // Sort por estrellas y tomar 30 exactos
                 const top30 = validSpots.sort((a,b) => b.rating - a.rating).slice(0, 30);
@@ -85,6 +108,15 @@ export function DiscoverCity() {
             })
             .catch(err => {
                 console.error("Failed to load adventures", err);
+                // Si falla la API por completo, usar fallbacks
+                const FALLBACK_PLACES = [
+                    { title: "Parque Bicentenario", rating: 4.8, type: "park", address: "Vitacura" },
+                    { title: "Araucano Park", rating: 4.7, type: "park", address: "Las Condes" },
+                    { title: "Mirador Interactive Museum", rating: 4.7, type: "museum", address: "La Granja" },
+                    { title: "Metropolitan Park", rating: 4.8, type: "park", address: "Santiago" },
+                    { title: "Sky Costanera", rating: 4.6, type: "tourist_attraction", address: "Providencia" }
+                ];
+                setPlaces(FALLBACK_PLACES);
                 setLoading(false);
             });
       })
