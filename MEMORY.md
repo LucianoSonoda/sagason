@@ -8,4 +8,5 @@ Estas reglas deben ser seguidas por cualquier asistente de IA que trabaje en est
 4. **Mejoras e Ideas**: Si tienes sugerencias de mejora (UX, rendimiento, seguridad, etc.), debes explicar el cambio propuesto y solicitar aprobación ANTES de implementarlo.
 5. **Responsividad Total**: Todos los cambios de diseño y código deben ser implementados pensando tanto en la versión de **PC** como en la versión **Móvil**, asegurando una experiencia óptima en ambos dispositivos.
 6. **Pensamiento Crítico y Utilidad**: Antes de implementar cualquier cambio, debo autoevaluarme de manera crítica: ¿Es esto realmente útil para el desarrollador y para el usuario final? Si considero que un cambio no aporta valor real o es contraproducente, debo cuestionarlo con el usuario antes de proceder.
-7. **Preservar Estilo**: Mantener la consistencia con el diseño "Sagason 4K" (glassmorphism, tipografía Bebas Neue/Space Grotesk) y los patrones de código existentes.
+7. **Optimización SEO**: Al crear nuevas páginas o funciones, evaluar y optimizar los textos y metadatos para maximizar la visibilidad en Google y otros motores de búsqueda.
+8. **Preservar Estilo**: Mantener la consistencia con el diseño "Sagason 4K" (glassmorphism, tipografía Bebas Neue/Space Grotesk) y los patrones de código existentes.
