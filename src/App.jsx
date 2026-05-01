@@ -15,6 +15,7 @@ import { InsigniaForm } from './components/InsigniaForm';
 import { LaserLock } from './components/LaserLock';
 import { HowItWorks } from './components/HowItWorks';
 import { Technology } from './components/Technology';
+import { Tags4K } from './pages/Tags4K';
 import './App.css';
 
 function ScrollToHashElement() {
@@ -58,6 +59,7 @@ function App() {
           <Route path="/tecnologia" element={<Technology />} />
           <Route path="/insignia/*" element={<InsigniaForm />} />
           <Route path="/lasersticker" element={<LaserLock />} />
+          <Route path="/tags-4k" element={<Tags4K />} />
         </Routes>
       </main>
       <Footer />

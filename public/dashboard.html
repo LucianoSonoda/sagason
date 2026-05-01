@@ -350,6 +350,18 @@
                 <option value="Personas">Persona</option>
                 <option value="Equipos">Equipo</option>
             </select>
+            <label>País:</label>
+            <select id="new-tag-country">
+                <option value="Chile" selected>Chile</option>
+                <option value="Argentina">Argentina</option>
+                <option value="Perú">Perú</option>
+                <option value="Colombia">Colombia</option>
+                <option value="México">México</option>
+                <option value="España">España</option>
+                <option value="USA">USA</option>
+                <option value="Canadá">Canadá</option>
+                <option value="Otros">Otros</option>
+            </select>
             <button class="btn-action" style="background:var(--primary); color:white;" onclick="registerTag()">Activar Ahora</button>
         </div>
     </div>
@@ -435,8 +447,19 @@
             <h3 style="margin:0 0 10px 0; font-size:16px;">Generador SAGASON 4K</h3>
             <label>Referencia Archivo (Ej. Lote_01):</label>
             <input type="text" id="admin-nick" placeholder="Ej: Lote_01">
-            <label>Cantidad a Generar:</label>
             <input type="number" id="admin-amount" value="1" min="1" max="100">
+            <label>País del Lote:</label>
+            <select id="admin-country">
+                <option value="Chile" selected>Chile</option>
+                <option value="Argentina">Argentina</option>
+                <option value="Perú">Perú</option>
+                <option value="Colombia">Colombia</option>
+                <option value="México">México</option>
+                <option value="España">España</option>
+                <option value="USA">USA</option>
+                <option value="Canadá">Canadá</option>
+                <option value="Otros">Otros</option>
+            </select>
             
             <div style="margin-top:15px; background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; border:1px solid var(--border);">
                 <label class="checkbox-row" style="margin-top:0 !important; cursor:pointer;">
@@ -632,6 +655,18 @@
                         <option value="Personas" ${t.category==='Personas'?'selected':''}>Persona</option>
                         <option value="Equipos" ${t.category==='Equipos'?'selected':''}>Equipo</option>
                     </select>
+                    <label>País:</label>
+                    <select id="country-${t.tagId}">
+                        <option value="Chile" ${t.country==='Chile' || !t.country ?'selected':''}>Chile</option>
+                        <option value="Argentina" ${t.country==='Argentina'?'selected':''}>Argentina</option>
+                        <option value="Perú" ${t.country==='Perú'?'selected':''}>Perú</option>
+                        <option value="Colombia" ${t.country==='Colombia'?'selected':''}>Colombia</option>
+                        <option value="México" ${t.country==='México'?'selected':''}>México</option>
+                        <option value="España" ${t.country==='España'?'selected':''}>España</option>
+                        <option value="USA" ${t.country==='USA'?'selected':''}>USA</option>
+                        <option value="Canadá" ${t.country==='Canadá'?'selected':''}>Canadá</option>
+                        <option value="Otros" ${t.country==='Otros'?'selected':''}>Otros</option>
+                    </select>
                     <label>Emails Notificación:</label>
                     <input type="email" id="e1-${t.tagId}" value="${t.email_1 || userEmail}">
                     <input type="email" id="e2-${t.tagId}" value="${t.email_2 || ''}" placeholder="Solo Advanced" ${isAdv?'':'disabled'}>
@@ -697,6 +732,7 @@
             email_1: document.getElementById(`e1-${tagId}`).value, email_2: document.getElementById(`e2-${tagId}`).value, email_3: document.getElementById(`e3-${tagId}`).value,
             phone_1: document.getElementById(`p1-${tagId}`).value, phone_2: document.getElementById(`p2-${tagId}`).value, phone_3: document.getElementById(`p3-${tagId}`).value,
             thanks_msg: document.getElementById(`msg-${tagId}`).value,
+            country: document.getElementById(`country-${tagId}`).value,
             notify_scan: document.getElementById(`ns-${tagId}`).checked,
             notify_form: document.getElementById(`nf-${tagId}`).checked
         };
@@ -901,6 +937,7 @@
         const amount = parseInt(document.getElementById('admin-amount').value) || 1;
         const isDonated = document.getElementById('admin-is-donated').checked;
         const donatedBy = document.getElementById('admin-donated-by').value;
+        const batchCountry = document.getElementById('admin-country').value;
         
         btn.innerText = "Generando...";
         btn.disabled = true;
@@ -924,7 +961,8 @@
                         nickname: nickname, 
                         activationCode: activationPIN,
                         donated: isDonated,
-                        donated_by: donatedBy
+                        donated_by: donatedBy,
+                        country: batchCountry
                     }) 
                 });
                 
@@ -1034,10 +1072,11 @@
         const pin = document.getElementById('new-tag-pin').value.trim();
         const nickname = document.getElementById('new-tag-nickname').value.trim();
         const category = document.getElementById('new-tag-category').value;
+        const country = document.getElementById('new-tag-country').value;
         const res = await fetch(`${API}/user-tags`, { 
             method: 'POST', 
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ ownerId, tagId, activationCode: pin, nickname, category, email_1: userEmail }) 
+            body: JSON.stringify({ ownerId, tagId, activationCode: pin, nickname, category, country, email_1: userEmail }) 
         });
         if (res.ok) { alert("¡Producto Vinculado!"); location.reload(); }
         else alert("ID No existe o ya está registrado.");
