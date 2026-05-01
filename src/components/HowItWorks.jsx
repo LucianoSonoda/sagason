@@ -41,6 +41,9 @@ export function HowItWorks() {
                         { num: 3, title: 'Iniciar Sesión', desc: 'Realiza tu login con tu cuenta de Google. Seguridad garantizada sin contraseñas extras.' },
                         { num: 4, title: 'Vincular tu Placa', desc: 'Ingresa el ID de la placa (XXXX-XXXX) y el PIN de activación recibido por correo.' },
                         { num: 5, title: 'Administrar', desc: 'Configura nombres, teléfonos de contacto y mensajes de agradecimiento en cualquier momento.' },
+                        { num: 6, title: 'Planes y Escaneos', desc: 'Comienzas con el Plan Free (5 escaneos/año). Puedes mejorar a Basic (30) o Advanced (60) en el panel.' },
+                        { num: 7, title: 'Datos de Contacto', desc: 'Modifica correos y teléfonos de notificación sin afectar el QR físico de tu placa.' },
+                        { num: 8, title: 'Mensaje de Rescate', desc: 'Configura un mensaje que el rescatista verá: ideal para alergias, tipo de sangre o medicamentos.' },
                     ].map(step => (
                         <motion.div 
                             key={step.num}

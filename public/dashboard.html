@@ -37,6 +37,19 @@
         .btn-upgrade { background: #3b82f6; color: white; font-size: 11px; padding: 10px; margin-top: 10px; width: 100%; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-upgrade:hover { opacity: 0.9; transform: translateY(-1px); }
         .admin-box { border: 1px dashed var(--primary); padding: 15px; border-radius: 12px; background: rgba(14, 165, 233, 0.05); }
+        .plan-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; position: relative; }
+        .plan-step-num { position: absolute; top: -15px; left: 15px; background: var(--primary); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; box-shadow: 0 0 15px var(--primary); }
+        .plan-title { color: var(--primary); margin: 5px 0 15px 0; font-size: 16px; font-weight: 700; }
+        .plan-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
+        .plan-table th { text-align: left; color: #94a3b8; padding: 8px; border-bottom: 1px solid var(--border); }
+        .plan-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .badge-free { background: rgba(148, 163, 184, 0.1); color: #94a3b8; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+        .badge-basic { background: rgba(14, 165, 233, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+        .badge-advanced { background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+        .info-box { background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.3); padding: 15px; border-radius: 10px; margin-top: 15px; display: flex; gap: 12px; }
+        .info-icon { font-size: 18px; }
+        .info-text { font-size: 12px; color: #d1d5db; line-height: 1.5; }
+        .tip-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); padding: 15px; border-radius: 10px; margin-top: 10px; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -59,6 +72,7 @@
     <div class="tabs">
         <button class="tab-btn active" id="btn-list" onclick="showTab('list')">Mis Placas</button>
         <button class="tab-btn" id="btn-activate" onclick="showTab('activate')">Activar Nueva</button>
+        <button class="tab-btn" id="btn-plans" onclick="showTab('plans')">Planes</button>
         <button class="tab-btn" id="btn-admin" onclick="showTab('admin')" style="display:none;">FÁBRICA</button>
     </div>
 
@@ -84,6 +98,55 @@
                 <option value="Equipos">Equipo</option>
             </select>
             <button class="btn-action" style="background:var(--primary); color:white;" onclick="registerTag()">Activar Ahora</button>
+        </div>
+    </div>
+
+    <!-- PLANES -->
+    <div class="content-section" id="section-plans">
+        <div class="plan-card">
+            <div class="plan-step-num">6</div>
+            <h3 class="plan-title">Plan Inicial: Free</h3>
+            <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
+                Todos los usuarios comienzan en el <b>Plan Gratis (Free)</b>, con un límite de <b>5 escaneos anuales</b>. Si necesitas más capacidad, puedes mejorar tu plan en cualquier momento.
+            </p>
+            <table class="plan-table">
+                <thead>
+                    <tr><th>PLAN</th><th>ESCANEOS / AÑO</th><th>VALOR</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="badge-free">Free</span></td><td>5</td><td>Gratis</td></tr>
+                    <tr><td><span class="badge-basic">Basic</span></td><td>30</td><td>$7.000 / año</td></tr>
+                    <tr><td><span class="badge-advanced">Advanced</span></td><td>60</td><td>$15.000 / año</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="plan-card">
+            <div class="plan-step-num">7</div>
+            <h3 class="plan-title">Datos de Contacto</h3>
+            <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
+                Tu <b>correo principal</b> será por defecto el que utilizaste al registrarte. Sin embargo, puedes modificar tus datos de contacto (correos y teléfonos) en cualquier momento desde el panel, sin afectar el QR físico.
+            </p>
+            <div class="info-box">
+                <div class="info-icon">⚠️</div>
+                <div class="info-text">
+                    <b>El tag no puede ser reemplazado ni transferido.</b> Una vez vinculado a tu cuenta, no es posible asociarlo a otro usuario. Cuida bien tu ID y PIN de activación.
+                </div>
+            </div>
+        </div>
+
+        <div class="plan-card">
+            <div class="plan-step-num">8</div>
+            <h3 class="plan-title">Consejos y Planes Avanzados</h3>
+            <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 15px;">
+                Si necesitas más escaneos o funciones adicionales, evalúa los planes <b>Basic (30 escaneos)</b> o <b>Advanced (60 escaneos)</b> disponibles directamente en tu panel.
+            </p>
+            <div class="tip-box" style="border-left: 4px solid var(--primary);">
+                🧪 <b>¿Quieres probar sin gastar escaneos?</b> Desactiva las alertas momentáneamente desde tu panel y luego pincha el enlace "Probar Link Escaneo". Recuerda reactivar las alertas después.
+            </div>
+            <div class="tip-box" style="border-left: 4px solid var(--success);">
+                💬 <b>Mensaje de Agradecimiento:</b> Configura un mensaje personal que el rescatista recibirá. Es ideal para incluir información crítica como <b>tipo sanguíneo, alergias o medicamentos</b>.
+            </div>
         </div>
     </div>
 
