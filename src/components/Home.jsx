@@ -28,7 +28,7 @@ export function Home() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await fetch('https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod/customers', {
+                const res = await fetch('https://s4k.sagason.cl/report', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'get_public_stats' })
