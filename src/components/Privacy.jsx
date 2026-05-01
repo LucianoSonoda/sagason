@@ -71,7 +71,7 @@ export function Privacy() {
                     <h2 style={{ color: '#34d399' }}>Datos Eliminados Definitivamente</h2>
                     <p>Tu perfil, historial de pedidos y todos los Tags SOS asociados a tu correo han sido <strong>borrados de forma irrecuperable</strong>.</p>
                     <p>Si tenías placas médicas de emergencia activas, estas han quedado desactivadas de manera inmediata.</p>
-                    <Link to="/#home" className="btn btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>Volver al inicio</Link>
+                    <Link to="/" className="btn btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>Volver al inicio</Link>
                 </CenteredBox>
             </PrivacyShell>
         );

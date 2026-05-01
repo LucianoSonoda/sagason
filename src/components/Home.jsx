@@ -7,7 +7,6 @@ import imgKanji_Kaeru from '../assets/kanji_kaeru.png';
 import imgKanji_Kizuna from '../assets/kanji_kizuna.png';
 import imgKanji_Kansha from '../assets/kanji_kansha.png';
 import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
-import sagasonSymbol from '../../public/sagason-symbol.png';
 
 function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth);
@@ -60,12 +59,12 @@ export function Home() {
                         Sublimación premium y personalización en Chile. Cuadros y placas de metal, tazones, rompecabezas y más. Calidad fotográfica para tus recuerdos, diseños o logos corporativos.
                     </motion.p>
                     <motion.div className="cta-group" variants={itemVariants}>
-                        <a href="#custom" className="btn btn-primary">
+                        <Link to="/custom" className="btn btn-primary">
                             Personalizar Ahora <ArrowRight size={20} style={{ marginLeft: '8px' }} />
-                        </a>
-                        <a href="#gallery" className="btn btn-secondary">
+                        </Link>
+                        <Link to="/gallery" className="btn btn-secondary">
                             Ver Catálogo
-                        </a>
+                        </Link>
                     </motion.div>
                     <motion.div className="trust-badges" variants={itemVariants}>
                         <span className="badge">100% Metal Premium</span>
@@ -118,7 +117,7 @@ function TrustSymbolSection() {
                     }}
                 />
                 <img
-                    src={sagasonSymbol}
+                    src="/sagason-symbol.png"
                     alt="Símbolo Sagason"
                     style={{
                         width: isMobile ? '100px' : '120px',
