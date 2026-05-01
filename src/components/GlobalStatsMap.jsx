@@ -6,7 +6,7 @@ import {
   Geography, 
   Marker
 } from "react-simple-maps";
-import { Users, Shield, Award, Globe } from 'lucide-react';
+import { Users, Award, Globe, Shield } from 'lucide-react';
 import './GlobalStatsMap.css';
 
 const geoUrl = "https://raw.githubusercontent.com/lotusms/world-map-data/main/world.json";
@@ -42,7 +42,6 @@ const COUNTRY_COORDS = {
     "Otros": [0, 20]
 };
 
-// Sub-componente para acceder a la proyección de forma segura
 const MapOverlay = ({ stats, getRadius }) => {
     return (
         <Geographies geography={geoUrl}>
@@ -78,9 +77,13 @@ const MapOverlay = ({ stats, getRadius }) => {
                         const radius = getRadius(count);
                         const isChile = country === "Chile" || norm === "chile";
                         
-                        // Calculamos las posiciones X, Y en pantalla para evitar el wrap-around
-                        const [chileX, chileY] = projection(COUNTRY_COORDS["Chile"]);
-                        const [targetX, targetY] = projection(coords);
+                        const chilePoint = projection(COUNTRY_COORDS["Chile"]);
+                        const targetPoint = projection(coords);
+
+                        if (!chilePoint || !targetPoint) return null;
+
+                        const [chileX, chileY] = chilePoint;
+                        const [targetX, targetY] = targetPoint;
 
                         return (
                             <React.Fragment key={country}>
@@ -144,16 +147,25 @@ export function GlobalStatsMap() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('https://gmvj2qt2af.execute-api.us-east-1.amazonaws.com/prod/report')
-            .then(res => res.json())
-            .then(data => {
-                setStats(data);
+        const fetchStats = async () => {
+            try {
+                // Usamos el endpoint oficial con el método POST esperado
+                const res = await fetch('https://s4k.sagason.cl/report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_public_stats' })
+                });
+                const data = await res.json();
+                if (data) {
+                    setStats(data);
+                }
                 setLoading(false);
-            })
-            .catch(err => {
+            } catch (err) {
                 console.error("Error fetching map stats:", err);
                 setLoading(false);
-            });
+            }
+        };
+        fetchStats();
     }, []);
 
     const getRadius = (count) => {
@@ -164,37 +176,8 @@ export function GlobalStatsMap() {
 
     return (
         <section className="global-stats-section">
-            <div className="stats-header-overlay">
-                <div className="stats-badge">
-                    <Globe size={16} className="pulse-icon" />
-                    <span>RED GLOBAL SAGASON</span>
-                </div>
-                <h2>Impacto en Tiempo Real</h2>
-            </div>
-
-            <div className="map-visual-wrapper glass-panel">
-                <ComposableMap 
-                    projectionConfig={{ scale: 180 }}
-                    style={{ width: "100%", height: "auto" }}
-                >
-                    <defs>
-                        <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.8" />
-                            <stop offset="100%" stopColor="#22c55e" stopOpacity="0.8" />
-                        </linearGradient>
-                    </defs>
-
-                    <MapOverlay stats={stats} getRadius={getRadius} />
-                </ComposableMap>
-                
-                {loading && (
-                    <div className="map-loader">
-                        <div className="spinner"></div>
-                    </div>
-                )}
-            </div>
-
-            <div className="stats-grid-overlay">
+            {/* Restauramos las etiquetas originales en la parte superior como se solicitó */}
+            <div className="stats-grid-overlay top">
                 <div className="stat-mini-card">
                     <Users size={20} />
                     <div className="stat-info">
@@ -209,6 +192,33 @@ export function GlobalStatsMap() {
                         <span className="value">{stats.total_donated || 0}</span>
                     </div>
                 </div>
+            </div>
+
+            <div className="map-visual-wrapper glass-panel">
+                <ComposableMap 
+                    projectionConfig={{ scale: 180 }}
+                    style={{ width: "100%", height: "auto" }}
+                >
+                    <defs>
+                        <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.8" />
+                            <stop offset="100%" stopColor="#22c55e" stopOpacity="0.8" />
+                        </linearGradient>
+                    </defs>
+                    <MapOverlay stats={stats} getRadius={getRadius} />
+                </ComposableMap>
+                
+                {loading && (
+                    <div className="map-loader">
+                        <div className="spinner"></div>
+                    </div>
+                )}
+            </div>
+
+            {/* Footer sutil */}
+            <div className="map-footer-overlay">
+                <Shield size={14} />
+                <span>RED DE PROTECCIÓN GLOBAL SAGASON &copy; 2026</span>
             </div>
         </section>
     );
