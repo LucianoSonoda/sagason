@@ -7,51 +7,291 @@
     <!-- qrcode-generator: genera QR; canvas2png para LP4 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155; --success: #10b981; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        header { background: rgba(15, 23, 42, 0.95); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-        .dash-nav { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
-        .dash-nav a { color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 500; padding: 5px 11px; border-radius: 6px; transition: all .18s; white-space: nowrap; }
-        .dash-nav a:hover { color: #f8fafc; background: rgba(255,255,255,.06); }
-        @media (max-width: 420px) { .dash-nav a { font-size: 11px; padding: 4px 8px; } }
-        .container { max-width: 480px; margin: 0 auto; padding: 20px 15px 100px 15px; }
-        .tabs { display: flex; background: var(--card); padding: 4px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: none; color: #94a3b8; font-weight: 600; cursor: pointer; border-radius: 8px; font-size: 11px; }
-        .tab-btn.active { background: var(--primary); color: white; }
-        .content-section { display: none; } .content-section.active { display: block; }
-        .tag-item { background: #0f172a; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-        .tag-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .tag-name { font-weight: 600; font-size: 15px; }
-        .tag-sub { font-size: 10px; color: #94a3b8; font-family: monospace; display: block; margin-top: 2px; }
-        .arrow { font-size: 10px; transition: 0.3s; color: var(--primary); }
+        :root { 
+            --primary: #0ea5e9; 
+            --primary-dark: #0284c7;
+            --accent: #f59e0b;
+            --bg: #0A0A0B; 
+            --surface: #121214;
+            --card: rgba(18, 18, 20, 0.7); 
+            --text: #E2E4E9; 
+            --muted: rgba(226, 228, 233, 0.6);
+            --border: rgba(255, 255, 255, 0.08); 
+            --success: #10b981; 
+            --font-main: 'Space Grotesk', sans-serif;
+            --font-display: 'Bebas Neue', sans-serif;
+        }
+        
+        body { 
+            font-family: var(--font-main); 
+            background: var(--bg); 
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.08) 0, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(30, 58, 138, 0.08) 0, transparent 50%);
+            color: var(--text); 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh;
+        }
+
+        header { 
+            background: rgba(10, 10, 11, 0.8); 
+            backdrop-filter: blur(16px);
+            padding: 15px 25px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+
+        .dash-nav { display: flex; align-items: center; gap: 15px; flex: 1; justify-content: center; }
+        .dash-nav a { 
+            color: var(--muted); 
+            text-decoration: none; 
+            font-size: 14px; 
+            font-weight: 500; 
+            transition: all 0.3s ease; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .dash-nav a:hover { color: white; }
+        
+        @media (max-width: 640px) { 
+            .dash-nav { display: none; } 
+        }
+
+        .container { max-width: 540px; margin: 0 auto; padding: 40px 20px 120px 20px; }
+        
+        .tabs { 
+            display: flex; 
+            background: var(--surface); 
+            padding: 6px; 
+            border-radius: 16px; 
+            margin-bottom: 30px; 
+            border: 1px solid var(--border); 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .tab-btn { 
+            flex: 1; 
+            padding: 12px; 
+            border: none; 
+            background: none; 
+            color: var(--muted); 
+            font-weight: 600; 
+            cursor: pointer; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-btn.active { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .content-section { display: none; } 
+        .content-section.active { 
+            display: block; 
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .tag-item { 
+            background: var(--card); 
+            backdrop-filter: blur(12px);
+            border: var(--border); 
+            border-radius: 20px; 
+            margin-bottom: 15px; 
+            overflow: hidden; 
+            transition: all 0.3s ease;
+        }
+        
+        .tag-item:hover {
+            border-color: rgba(14, 165, 233, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tag-header { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .tag-name { font-family: var(--font-display); font-size: 1.6rem; letter-spacing: 1px; color: white; text-transform: uppercase; }
+        .tag-sub { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; display: block; margin-top: 4px; }
+        
+        .arrow { font-size: 12px; transition: 0.3s; color: var(--primary); }
         .arrow.up { transform: rotate(180deg); }
-        .edit-panel { padding: 15px; background: #1e293b; border-top: 1px solid var(--border); display: none; }
-        label { display: block; margin-top: 12px; font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 11px; margin-top: 5px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 14px; box-sizing: border-box; }
-        input:disabled { opacity: 0.2; }
-        input[type="checkbox"] { width: auto; min-width: 16px; height: 16px; margin: 0; padding: 0; flex-shrink: 0; cursor: pointer; }
-        .checkbox-row { display: flex !important; align-items: center; gap: 10px; margin: 0 !important; cursor: pointer; font-size: 13px !important; text-transform: none !important; color: var(--text) !important; font-weight: 500 !important; line-height: 1.4; }
-        .btn-action { width: 100%; padding: 13px; margin-top: 20px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-save { background: #10b981; color: white; }
-        .btn-upgrade { background: #3b82f6; color: white; font-size: 11px; padding: 10px; margin-top: 10px; width: 100%; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-upgrade:hover { opacity: 0.9; transform: translateY(-1px); }
-        .admin-box { border: 1px dashed var(--primary); padding: 15px; border-radius: 12px; background: rgba(14, 165, 233, 0.05); }
-        .plan-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; position: relative; }
-        .plan-step-num { position: absolute; top: -15px; left: 15px; background: var(--primary); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; box-shadow: 0 0 15px var(--primary); }
-        .plan-title { color: var(--primary); margin: 5px 0 15px 0; font-size: 16px; font-weight: 700; }
-        .plan-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-        .plan-table th { text-align: left; color: #94a3b8; padding: 8px; border-bottom: 1px solid var(--border); }
-        .plan-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .badge-free { background: rgba(148, 163, 184, 0.1); color: #94a3b8; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-        .badge-basic { background: rgba(14, 165, 233, 0.1); color: var(--primary); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-        .badge-advanced { background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-        .info-box { background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.3); padding: 15px; border-radius: 10px; margin-top: 15px; display: flex; gap: 12px; }
-        .info-icon { font-size: 18px; }
-        .info-text { font-size: 12px; color: #d1d5db; line-height: 1.5; }
-        .tip-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); padding: 15px; border-radius: 10px; margin-top: 10px; font-size: 12px; }
-        .danger-box { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); padding: 20px; border-radius: 12px; margin-top: 20px; }
-        .danger-title { color: #ef4444; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        
+        .edit-panel { 
+            padding: 24px; 
+            background: rgba(0,0,0,0.2); 
+            border-top: 1px solid var(--border); 
+            display: none; 
+        }
+
+        label { 
+            display: block; 
+            margin-top: 18px; 
+            font-size: 11px; 
+            color: var(--muted); 
+            text-transform: uppercase; 
+            font-weight: 700; 
+            letter-spacing: 1px;
+        }
+
+        input, select, textarea { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 8px; 
+            background: var(--surface); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            color: white; 
+            font-size: 15px; 
+            box-sizing: border-box; 
+            font-family: var(--font-main);
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        input:disabled { opacity: 0.3; }
+        
+        .btn-action { 
+            width: 100%; 
+            padding: 16px; 
+            margin-top: 25px; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: var(--font-main);
+            transition: all 0.3s ease;
+        }
+
+        .btn-save { 
+            background: var(--success); 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-upgrade { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; 
+            font-size: 12px; 
+            padding: 12px; 
+            margin-top: 10px; 
+            width: 100%; 
+            border-radius: 12px; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+        }
+
+        .btn-upgrade:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4); }
+
+        .admin-box { 
+            border: 1px dashed var(--primary); 
+            padding: 20px; 
+            border-radius: 16px; 
+            background: rgba(14, 165, 233, 0.03); 
+        }
+
+        .plan-card { 
+            background: var(--card); 
+            backdrop-filter: blur(12px);
+            border: var(--border); 
+            border-radius: 20px; 
+            padding: 25px; 
+            margin-bottom: 25px; 
+            position: relative; 
+        }
+
+        .plan-step-num { 
+            position: absolute; 
+            top: -15px; 
+            left: 20px; 
+            background: var(--primary); 
+            color: white; 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 14px; 
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5); 
+        }
+
+        .plan-title { 
+            font-family: var(--font-display);
+            color: white; 
+            margin: 5px 0 15px 0; 
+            font-size: 1.8rem; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .plan-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+        .plan-table th { text-align: left; color: var(--muted); padding: 10px; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 1px; font-size: 11px; }
+        .plan-table td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+        .badge-free { background: rgba(148, 163, 184, 0.1); color: #94a3b8; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 10px; text-transform: uppercase; }
+        .badge-basic { background: rgba(14, 165, 233, 0.1); color: var(--primary); padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 10px; text-transform: uppercase; }
+        .badge-advanced { background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 10px; text-transform: uppercase; }
+
+        .info-box { background: rgba(245, 158, 11, 0.03); border: 1px solid rgba(245, 158, 11, 0.2); padding: 18px; border-radius: 12px; margin-top: 20px; display: flex; gap: 15px; }
+        .info-text { font-size: 13px; color: var(--text); opacity: 0.9; line-height: 1.6; }
+
+        .tip-box { background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.15); padding: 18px; border-radius: 12px; margin-top: 15px; font-size: 13px; line-height: 1.6; }
+        
+        .danger-box { 
+            background: rgba(239, 68, 68, 0.03); 
+            border: 1px solid rgba(239, 68, 68, 0.2); 
+            padding: 25px; 
+            border-radius: 20px; 
+            margin-top: 25px; 
+        }
+        
+        .danger-title { 
+            font-family: var(--font-display);
+            color: #ef4444; 
+            font-size: 1.8rem;
+            margin-bottom: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-transform: uppercase;
+        }
+        
+        .checkbox-row { 
+            display: flex !important; 
+            align-items: center; 
+            gap: 12px; 
+            margin: 0 !important; 
+            cursor: pointer; 
+            font-size: 14px !important; 
+            color: var(--text) !important; 
+            font-weight: 500 !important; 
+        }
     </style>
 </head>
 <body>
@@ -60,13 +300,13 @@
     <a href="https://sagason.cl" style="display:flex; align-items:center; flex-shrink:0;"><img src="logo-chico.png" height="28" onerror="this.src='https://sagason.cl/images/logo.png'"></a>
 
     <nav class="dash-nav">
-        <a href="https://sagason.cl/como-funciona.html">¿Cómo funciona?</a>
-        <a href="https://sagason.cl/tecnologia.html">Tecnología</a>
+        <a href="https://sagason.cl/aventuras">Aventuras</a>
+        <a href="https://sagason.cl/#gallery">Catálogo</a>
     </nav>
 
-    <div style="display: flex; align-items: center; gap: 10px; flex-shrink:0;">
-        <span style="color: #64748b; font-size: 11px; font-weight: bold;">v1.2 (Flow)</span>
-        <button onclick="logout()" style="background:none; border:1px solid var(--border); color:white; padding:5px 10px; border-radius:8px; font-size:11px; cursor:pointer;">Cerrar Sesión</button>
+    <div style="display: flex; align-items: center; gap: 15px; flex-shrink:0;">
+        <span style="color: var(--muted); font-size: 11px; font-weight: bold; font-family: 'IBM Plex Mono';">v1.2 (Flow)</span>
+        <button onclick="logout()" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 16px; border-radius:10px; font-size:12px; cursor:pointer; font-weight:600; transition:all 0.3s ease;">Cerrar Sesión</button>
     </div>
 </header>
 
@@ -86,8 +326,8 @@
 
     <!-- ACTIVACIÓN -->
     <div class="content-section" id="section-activate">
-        <div style="background:var(--card); padding:20px; border-radius:12px; border:1px solid var(--border);">
-            <h3 style="margin:0 0 15px 0; font-size:16px;">Vincular Placa</h3>
+        <div style="background:var(--card); backdrop-filter:blur(12px); padding:30px; border-radius:20px; border:1px solid var(--border);">
+            <h3 style="margin:0 0 20px 0; font-size:2rem; font-family:var(--font-display); text-transform:uppercase; letter-spacing:1px;">Vincular Placa</h3>
             <label>ID de la Placa:</label>
             <input type="text" id="new-tag-id" placeholder="xxxx-xxxx-xxxx-xxxx" style="text-transform:uppercase; font-family:monospace;">
             <label>Código de Activación (PIN):</label>
