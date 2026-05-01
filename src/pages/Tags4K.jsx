@@ -56,7 +56,7 @@ function FeatureCard({ icon, title, desc }) {
         >
             <div style={{ marginBottom: '15px' }}>{icon}</div>
             <h3 style={{ color: 'white', marginBottom: '10px', fontSize: '18px' }}>{title}</h3>
-            <p style={{ color: '#94a3b8', fontSize: '14px', line-height: '1.6' }}>{desc}</p>
+            <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: '1.6' }}>{desc}</p>
         </motion.div>
     );
 }
