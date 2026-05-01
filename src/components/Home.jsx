@@ -185,7 +185,7 @@ const SERVICIOS = [
     { icon: <Target size={32} />, title: 'Nitidez Extrema', desc: 'Acabados en 4K que capturan cada detalle con una fidelidad asombrosa sobre metal real.' },
     { icon: <Cpu size={32} />, title: 'Grabado Digital', desc: 'Procesos automatizados de alta precisión para resultados idénticos en cada pieza.' },
     { icon: <Shield size={32} />, title: 'Resistencia Total', desc: 'Nuestras placas soportan climas extremos, rayos UV y el paso de las décadas.' },
-    { icon: <Truck size={32} />, title: 'Logística Ágil', desc: 'Red de distribución nacional para entregas garantizadas en tiempo récord.' },
+    { icon: <Truck size={32} />, title: 'Logística Global', desc: 'Envíos a todo el mundo con entregas garantizadas (aplican tasas de transporte internacional).' },
 ];
 
 function ServicesCarousel() {
