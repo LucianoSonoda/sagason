@@ -95,6 +95,18 @@
             <input type="text" id="admin-nick" placeholder="Ej: Lote_01">
             <label>Cantidad a Generar:</label>
             <input type="number" id="admin-amount" value="1" min="1" max="100">
+            
+            <div style="margin-top:15px; background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; border:1px solid var(--border);">
+                <label class="checkbox-row" style="margin-top:0 !important; cursor:pointer;">
+                    <input type="checkbox" id="admin-is-donated" onchange="document.getElementById('donated-by-container').style.display = this.checked ? 'block' : 'none'">
+                    <span>Marcar lote como Donación</span>
+                </label>
+                <div id="donated-by-container" style="display:none; margin-top:10px;">
+                    <label style="margin-top:5px;">Donado por:</label>
+                    <input type="text" id="admin-donated-by" placeholder="Nombre del donante">
+                </div>
+            </div>
+
             <button class="btn-action" id="btn-admin-generate" style="background:var(--primary); color:white;" onclick="adminCreateBatch()">Generar IDs, QRs y Códigos</button>
             <div id="qr-result" style="margin-top:20px; padding:15px; background:white; border-radius:12px; text-align:center; display:none; color:#333;">
                 <div id="qrs-container" style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center; margin-bottom:15px;"></div>
@@ -510,6 +522,8 @@
         const btn = document.getElementById('btn-admin-generate');
         const nickBase = document.getElementById('admin-nick').value || "SAGASON4K_Tag";
         const amount = parseInt(document.getElementById('admin-amount').value) || 1;
+        const isDonated = document.getElementById('admin-is-donated').checked;
+        const donatedBy = document.getElementById('admin-donated-by').value;
         
         btn.innerText = "Generando...";
         btn.disabled = true;
@@ -528,7 +542,13 @@
                 const res = await fetch(`${API}/admin-create-tag`, { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ email: userEmail, nickname: nickname, activationCode: activationPIN }) 
+                    body: JSON.stringify({ 
+                        email: userEmail, 
+                        nickname: nickname, 
+                        activationCode: activationPIN,
+                        donated: isDonated,
+                        donated_by: donatedBy
+                    }) 
                 });
                 
                 if (res.ok) {

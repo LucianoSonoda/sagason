@@ -23,6 +23,8 @@ export function Header() {
 
     const navLinks = [
         { name: 'Inicio', href: '/#home' },
+        { name: '¿Cómo funciona?', href: '/como-funciona' },
+        { name: 'Tecnología', href: '/tecnologia' },
         { name: 'Catálogo', href: '/#gallery' },
         { name: 'Personalizar', href: '/#custom' },
         { name: 'Contacto', href: '/#contact' },

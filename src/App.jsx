@@ -13,6 +13,8 @@ import { BackgroundMap } from './components/BackgroundMap';
 import { DiscoverCity } from './components/DiscoverCity';
 import { InsigniaForm } from './components/InsigniaForm';
 import { LaserLock } from './components/LaserLock';
+import { HowItWorks } from './components/HowItWorks';
+import { Technology } from './components/Technology';
 import './App.css';
 
 function ScrollToHashElement() {
@@ -36,8 +38,6 @@ function MainContent() {
   return (
     <>
       <Home />
-      <Gallery />
-      <CustomForm />
     </>
   );
 }
@@ -54,6 +54,8 @@ function App() {
           <Route path="/warranty" element={<Warranty />} />
           <Route path="/privacidad" element={<Privacy />} />
           <Route path="/aventuras" element={<DiscoverCity />} />
+          <Route path="/como-funciona" element={<HowItWorks />} />
+          <Route path="/tecnologia" element={<Technology />} />
           <Route path="/insignia/*" element={<InsigniaForm />} />
           <Route path="/lasersticker" element={<LaserLock />} />
         </Routes>

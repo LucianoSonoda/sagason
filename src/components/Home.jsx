@@ -8,6 +8,9 @@ import imgKanji_Kizuna from '../assets/kanji_kizuna.png';
 import imgKanji_Kansha from '../assets/kanji_kansha.png';
 import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
 import sagasonSymbol from '/sagason-symbol.png';
+import { DiscoverCity } from './DiscoverCity';
+import { CustomForm } from './CustomForm';
+import { Gallery } from './Gallery';
 
 function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth);
@@ -95,6 +98,21 @@ export function Home() {
 
             {/* Services Overview - Carrusel */}
             <ServicesCarousel />
+
+            {/* Gallery Section */}
+            <div id="gallery">
+                <Gallery />
+            </div>
+
+            {/* Discover Section */}
+            <div id="aventuras">
+                <DiscoverCity />
+            </div>
+
+            {/* Customizer Section */}
+            <div id="custom">
+                <CustomForm />
+            </div>
         </div>
     );
 }
@@ -310,7 +328,9 @@ function S4KCarousel() {
 
             <div className="philosophy-ctas">
                 <Link to="/aventuras" className="btn btn-primary glow">🗺️ Aventuras</Link>
-                <Link to="/como-funciona.html" className="btn btn-glass">¿Cómo funciona?</Link>
+                <Link to="/como-funciona" className="btn btn-glass">¿Cómo funciona?</Link>
+                <Link to="/tecnologia" className="btn btn-glass">Tecnología</Link>
+                <a href="/dashboard.html" className="btn btn-glass">Panel de Control</a>
                 <button onClick={() => setWaitlistOpen(true)} className="btn btn-glass">Lista de Espera</button>
             </div>
 
