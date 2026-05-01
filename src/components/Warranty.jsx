@@ -57,8 +57,7 @@ export function Warranty() {
                     animate="visible"
                 >
                     <motion.h1 className="warranty-title" variants={itemVariants}>
-                        <Shield size={40} style={{ marginRight: '10px', color: 'white' }} />
-                        Políticas de Garantía y Condiciones de Venta
+                        Políticas de Garantía
                     </motion.h1>
                     <motion.p className="warranty-subtitle" variants={itemVariants}>
                         En Sagason SpA, nos comprometemos con la calidad técnica de cada producto personalizado.
@@ -233,9 +232,9 @@ export function Warranty() {
                     <motion.p variants={itemVariants}>
                         Contacta con nuestro equipo de ventas para más información
                     </motion.p>
-                    <motion.a href="mailto:ventas@sagason.cl" className="btn btn-primary" variants={itemVariants}>
-                        <Mail size={20} style={{ marginRight: '8px' }} />
-                        ventas@sagason.cl
+                    <motion.a href="mailto:ventas@sagason.cl" className="btn-primary" variants={itemVariants} style={{ padding: '15px 40px' }}>
+                        <Mail size={20} style={{ marginRight: '12px' }} />
+                        Enviar Correo
                     </motion.a>
                 </motion.div>
             </section>
