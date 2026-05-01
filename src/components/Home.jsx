@@ -78,6 +78,11 @@ export function Home() {
                         </div>
                         <div className="stat-divider"></div>
                         <div className="stat-item">
+                            <span className="stat-value">2+</span>
+                            <span className="stat-label">Placas Donadas</span>
+                        </div>
+                        <div className="stat-divider"></div>
+                        <div className="stat-item">
                             <span className="stat-value">4K</span>
                             <span className="stat-label">Resolución DPI</span>
                         </div>
