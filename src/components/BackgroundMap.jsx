@@ -25,15 +25,16 @@ export function BackgroundMap() {
 
         // 2. Google Places Local Caching & Fetching
         const today = new Date().toISOString().split('T')[0];
-        const currentCity = data.city || "unknown";
+        // Usar coordenadas redondeadas a 1 decimal (~11km) para una caché más fiable que el nombre de la ciudad
+        const locKey = `${lat.toFixed(1)},${lon.toFixed(1)}`;
         const cachedDate = localStorage.getItem("sagasonMapPlacesDate");
-        const cachedCity = localStorage.getItem("sagasonMapPlacesCity");
+        const cachedLoc = localStorage.getItem("sagasonMapPlacesLoc");
         const cachedData = localStorage.getItem("sagasonMapPlacesData");
 
         let fetchedSpotsPromise;
 
-        if (cachedDate === today && cachedCity === currentCity && cachedData) {
-          // Load valid spots from today's cache for THIS city
+        if (cachedDate === today && cachedLoc === locKey && cachedData) {
+          // Load valid spots from today's cache for THIS location
           fetchedSpotsPromise = Promise.resolve(JSON.parse(cachedData));
         } else {
           // Fetch from Google Places API (New)
@@ -72,7 +73,7 @@ export function BackgroundMap() {
                 }));
               
               localStorage.setItem("sagasonMapPlacesDate", today);
-              localStorage.setItem("sagasonMapPlacesCity", currentCity);
+              localStorage.setItem("sagasonMapPlacesLoc", locKey);
               localStorage.setItem("sagasonMapPlacesData", JSON.stringify(validSpots));
               
               return validSpots;
