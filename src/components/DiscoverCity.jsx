@@ -145,8 +145,8 @@ export function DiscoverCity() {
                 <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '800', lineHeight: 1.1, color: 'var(--color-primary)', textTransform: 'uppercase', marginBottom: '16px' }}>
                     Aventuras en <span style={{ color: '#fff' }}>Familia</span>
                 </h1>
-                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>
-                    Descubre los {places.length > 0 ? places.length : 'mejores'} rincones mejor valorados (4+ ⭐) en {userLocation.city} para disfrutar de forma segura y Premium.
+                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto' }}>
+                    Descubre los {places.length > 0 ? places.length : '24'} rincones mejor valorados (4+ ⭐) cercanos a Usted para disfrutar su visita a {userLocation.city} de forma segura y Premium.
                 </p>
             </div>
 
