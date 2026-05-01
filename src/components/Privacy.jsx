@@ -118,60 +118,17 @@ export function Privacy() {
                 </p>
             </div>
 
-            {/* Sección de borrado */}
-            <div style={{ backgroundColor: 'rgba(255, 77, 79, 0.05)', border: '1px solid rgba(255, 77, 79, 0.3)', borderRadius: '12px', padding: '2.5rem' }}>
-                <h2 style={{ fontFamily: 'var(--font-display)', color: '#ff4d4f', display: 'flex', alignItems: 'center', gap: '10px', marginTop: 0, fontSize: '1.5rem' }}>
-                    <Trash2 size={24} /> Derecho al Olvido (RGPD)
-                </h2>
-
-                <p style={{ color: '#ffcccc', opacity: 0.9, lineHeight: 1.7 }}>
-                    Puedes solicitar la eliminación completa de todos tus datos. <strong>⚠️ ADVERTENCIA:</strong> esta acción es <u>permanente e irreversible</u> y tendrá las siguientes consecuencias:
+            {/* Texto de políticas */}
+            <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2.5rem', lineHeight: 1.8 }}>
+                <p>
+                    Nuestra política de privacidad se rige por los más altos estándares de protección de datos personales. 
+                    Si deseas ejercer tus derechos de acceso, rectificación, cancelación u oposición (ARCO), 
+                    puedes hacerlo directamente desde tu <strong>Panel de Control</strong> tras iniciar sesión.
                 </p>
-                <ul style={{ color: 'var(--color-text)', lineHeight: 2, paddingLeft: '1.5rem' }}>
-                    <li>Tu perfil y datos de contacto serán borrados definitivamente.</li>
-                    <li>Tu historial completo de pedidos desaparecerá.</li>
-                    <li>Todos tus Tags y placas médicas SOS <strong>dejarán de funcionar de manera inmediata</strong>.</li>
-                </ul>
-
-                {requestStatus === 'idle' || requestStatus === 'error' ? (
-                    <form onSubmit={handleRequestDeletion} style={{ marginTop: '2rem' }}>
-                        <label htmlFor="del_email" style={{ display: 'block', fontWeight: 'bold', letterSpacing: '0.05em', marginBottom: '0.75rem', fontSize: '0.85rem' }}>
-                            INGRESA EL CORREO ASOCIADO A TU CUENTA:
-                        </label>
-                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                            <input
-                                type="email"
-                                id="del_email"
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                placeholder="tu@correo.com"
-                                required
-                                style={{ flex: '1', minWidth: '230px', padding: '1rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: '#1A1A1A', color: 'white', fontFamily: 'var(--font-main)', fontSize: '1rem' }}
-                            />
-                            <button
-                                type="submit"
-                                style={{ padding: '1rem 1.5rem', borderRadius: '6px', backgroundColor: '#ff4d4f', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-main)' }}
-                            >
-                                <AlertTriangle size={18} /> Solicitar Purga
-                            </button>
-                        </div>
-                        {requestStatus === 'error' && (
-                            <p style={{ color: '#ff4d4f', marginTop: '0.75rem', fontWeight: 'bold' }}>Error de conexión. Inténtalo más tarde o escríbenos a ventas@sagason.cl</p>
-                        )}
-                    </form>
-                ) : requestStatus === 'loading' ? (
-                    <p style={{ marginTop: '2rem', color: '#888' }}>Enviando solicitud...</p>
-                ) : (
-                    <div style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: 'rgba(52, 211, 153, 0.1)', border: '1px solid #34d399', borderRadius: '8px', textAlign: 'center' }}>
-                        <MailCheck size={48} style={{ color: '#34d399', marginBottom: '1rem' }} />
-                        <h3 style={{ color: '#34d399', margin: '0 0 0.5rem 0' }}>Revisa tu Bandeja de Entrada</h3>
-                        <p style={{ color: 'white', margin: 0, opacity: 0.9 }}>
-                            Enviamos un correo de confirmación a <strong>{email}</strong>.<br />
-                            Haz clic en el enlace rojo dentro del correo para ejecutar el borrado definitivo.<br />
-                            <span style={{ fontSize: '0.85rem', opacity: 0.7 }}>El enlace expira en 24 horas.</span>
-                        </p>
-                    </div>
-                )}
+                <p style={{ marginTop: '1rem' }}>
+                    Si tienes dudas sobre el tratamiento de tu información, escríbenos a 
+                    <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)', marginLeft: '5px' }}>ventas@sagason.cl</a>.
+                </p>
             </div>
 
             <style>{`

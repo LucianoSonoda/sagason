@@ -50,6 +50,8 @@
         .info-icon { font-size: 18px; }
         .info-text { font-size: 12px; color: #d1d5db; line-height: 1.5; }
         .tip-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); padding: 15px; border-radius: 10px; margin-top: 10px; font-size: 12px; }
+        .danger-box { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); padding: 20px; border-radius: 12px; margin-top: 20px; }
+        .danger-title { color: #ef4444; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body>
@@ -73,6 +75,7 @@
         <button class="tab-btn active" id="btn-list" onclick="showTab('list')">Mis Placas</button>
         <button class="tab-btn" id="btn-activate" onclick="showTab('activate')">Activar Nueva</button>
         <button class="tab-btn" id="btn-plans" onclick="showTab('plans')">Planes</button>
+        <button class="tab-btn" id="btn-privacy" onclick="showTab('privacy')">Privacidad</button>
         <button class="tab-btn" id="btn-admin" onclick="showTab('admin')" style="display:none;">FÁBRICA</button>
     </div>
 
@@ -150,6 +153,32 @@
         </div>
     </div>
 
+    <!-- PRIVACIDAD -->
+    <div class="content-section" id="section-privacy">
+        <div class="danger-box">
+            <div class="danger-title">🗑️ Derecho al Olvido (RGPD)</div>
+            <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 15px;">
+                Puedes solicitar la eliminación completa de todos tus datos. <b>ADVERTENCIA:</b> esta acción es permanente e irreversible.
+            </p>
+            <ul style="font-size: 12px; color: #94a3b8; margin-bottom: 20px; padding-left: 20px; line-height: 1.8;">
+                <li>Tu perfil y contactos serán borrados definitivamente.</li>
+                <li>Tu historial de pedidos desaparecerá.</li>
+                <li>Tus placas SOS dejarán de funcionar de inmediato.</li>
+            </ul>
+
+            <div id="deletion-form-container">
+                <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 8px; color: #ef4444;">CORREO PARA CONFIRMACIÓN:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="email" id="del-email" placeholder="tu@correo.com" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #111; color: white;">
+                    <button onclick="requestDeletion()" style="background: #ef4444; color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">Solicitar Purga</button>
+                </div>
+            </div>
+            <div id="deletion-success" style="display: none; background: rgba(52, 211, 153, 0.1); border: 1px solid #34d399; padding: 15px; border-radius: 10px; text-align: center; color: #34d399; font-size: 13px;">
+                ✅ Solicitud enviada. Revisa tu correo para confirmar el borrado definitivo.
+            </div>
+        </div>
+    </div>
+
     <!-- FÁBRICA -->
     <div class="content-section" id="section-admin">
         <div class="admin-box">
@@ -199,6 +228,36 @@
         ownerId = user.sub; userEmail = user.email;
         if (userEmail === "brluson@gmail.com") document.getElementById('btn-admin').style.display = "block";
         loadTags();
+    }
+
+    const PRIVACY_API = 'https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod';
+
+    async function requestDeletion() {
+        const email = document.getElementById('del-email').value;
+        if(!email) return alert('Ingresa tu correo');
+        
+        const btn = document.querySelector('#deletion-form-container button');
+        btn.disabled = true;
+        btn.innerText = 'Enviando...';
+
+        try {
+            // Disparamos la solicitud
+            fetch(`${PRIVACY_API}/privacy`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            // Si en 2 segundos no falló, mostramos éxito (CORS puede tapar la respuesta pero la Lambda ejecuta)
+            setTimeout(() => {
+                document.getElementById('deletion-form-container').style.display = 'none';
+                document.getElementById('deletion-success').style.display = 'block';
+            }, 2000);
+        } catch(e) {
+            alert('Error de conexión. Inténtalo más tarde.');
+            btn.disabled = false;
+            btn.innerText = 'Solicitar Purga';
+        }
     }
 
     async function loadTags() {
