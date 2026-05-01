@@ -49,8 +49,15 @@ export function Footer() {
                     <a href="https://g.page/r/Ca4jYRRtGQBTEBI/review" target="_blank" rel="noopener noreferrer" className="social-link" style={{ marginBottom: '8px' }}>
                         ¡Califícanos en Google! <Star size={16} fill="#fbbf24" color="#fbbf24" />
                     </a>
-                    <div className="qr-wrapper" style={{ background: 'white', padding: '5px', borderRadius: '8px', display: 'inline-flex' }}>
-                        <canvas ref={qrRef} style={{ display: 'block' }}></canvas>
+                    <div className="qr-wrapper" style={{ 
+                        background: 'white', 
+                        padding: '6px', 
+                        borderRadius: '12px', 
+                        display: 'inline-block',
+                        width: 'fit-content',
+                        lineHeight: 0
+                    }}>
+                        <canvas ref={qrRef} style={{ display: 'block', width: '120px', height: '120px' }}></canvas>
                     </div>
                 </div>
             </div>
