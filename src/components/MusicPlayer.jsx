@@ -13,8 +13,11 @@ export function MusicPlayer() {
   const [visible, setVisible]   = useState(false); // mostrar player después de carga
   const [progress, setProgress] = useState(0);
 
-  // Mostrar el widget tras 1s para no interferir con la carga inicial
+  // Mostrar el widget tras 1s y configurar volumen suave inicial
   useEffect(() => {
+    if (audioRef.current) {
+        audioRef.current.volume = 0.1; // 10% del volumen
+    }
     const t = setTimeout(() => setVisible(true), 1000);
     return () => clearTimeout(t);
   }, []);
