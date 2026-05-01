@@ -30,8 +30,10 @@ export function Footer() {
                     <h3 className="footer-title">Enlaces Rápidos</h3>
                     <Link to="/#home" className="footer-link">Inicio</Link>
                     <Link to="/como-funciona" className="footer-link">¿Cómo funciona?</Link>
+                    <Link to="/aventuras" className="footer-link">Aventuras en Familia</Link>
                     <Link to="/#gallery" className="footer-link">Catálogo</Link>
                     <Link to="/#custom" className="footer-link">Personalizar</Link>
+                    <a href="/dashboard.html" className="footer-link">Panel de Control</a>
                     <Link to="/warranty" className="footer-link">Garantía y Políticas</Link>
                     <Link to="/privacidad" className="footer-link">Privacidad y Datos</Link>
                 </div>

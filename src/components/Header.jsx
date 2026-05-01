@@ -25,8 +25,10 @@ export function Header() {
         { name: 'Inicio', href: '/#home' },
         { name: '¿Cómo funciona?', href: '/como-funciona' },
         { name: 'Tecnología', href: '/tecnologia' },
+        { name: 'Aventuras', href: '/aventuras' },
         { name: 'Catálogo', href: '/#gallery' },
         { name: 'Personalizar', href: '/#custom' },
+        { name: 'Panel de Control', href: '/dashboard.html', external: true },
         { name: 'Contacto', href: '/#contact' },
     ];
 
@@ -39,6 +41,8 @@ export function Header() {
 
                 <nav className="nav desktop-only">
                     {navLinks.map(link => (
+                        link.external ? 
+                        <a key={link.name} href={link.href}>{link.name}</a> :
                         <Link key={link.name} to={link.href}>{link.name}</Link>
                     ))}
                 </nav>
@@ -72,9 +76,14 @@ export function Header() {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: idx * 0.1 }}
                                 >
-                                    <Link to={link.href} className="mobile-link" onClick={() => setIsOpen(false)}>
-                                        {link.name}
-                                    </Link>
+                                    {link.external ? 
+                                        <a href={link.href} className="mobile-link" onClick={() => setIsOpen(false)}>
+                                            {link.name}
+                                        </a> :
+                                        <Link to={link.href} className="mobile-link" onClick={() => setIsOpen(false)}>
+                                            {link.name}
+                                        </Link>
+                                    }
                                 </motion.div>
                             ))}
                             <motion.div

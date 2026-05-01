@@ -107,7 +107,7 @@ export function Technology() {
                         <h3 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>¿LISTO PARA INMORTALIZAR TUS AVENTURAS?</h3>
                         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                             <Link to="/#custom" className="btn btn-primary glow">Personalizar Ahora</Link>
-                            <Link to="/como-funciona" className="btn btn-glass">Ver Guía de Inicio</Link>
+                            <a href="/dashboard.html" className="btn btn-glass">Panel de Control</a>
                         </div>
                     </div>
                 </div>

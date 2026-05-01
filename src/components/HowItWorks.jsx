@@ -72,9 +72,9 @@ export function HowItWorks() {
                 </div>
 
                 <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-                    <Link to="/#custom" className="btn btn-primary glow" style={{ padding: '1rem 3rem' }}>
+                    <a href="/dashboard.html" className="btn btn-primary glow" style={{ padding: '1rem 3rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
                         Ir al Panel de Control <ArrowRight size={20} />
-                    </Link>
+                    </a>
                 </div>
             </div>
         </div>

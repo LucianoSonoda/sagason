@@ -104,11 +104,6 @@ export function Home() {
                 <Gallery />
             </div>
 
-            {/* Discover Section */}
-            <div id="aventuras">
-                <DiscoverCity />
-            </div>
-
             {/* Customizer Section */}
             <div id="custom">
                 <CustomForm />
