@@ -23,6 +23,28 @@ function useWindowWidth() {
 }
 
 export function Home() {
+    const [stats, setStats] = useState({ active: 5, donated: 2 }); // Valores iniciales (fallback)
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const res = await fetch('https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod/customers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_public_stats' })
+                });
+                const data = await res.json();
+                if (data.total_active !== undefined) {
+                    // Mantenemos el "+" visual agregando 1 o usando el valor real
+                    setStats({ active: data.total_active, donated: data.total_donated });
+                }
+            } catch (err) {
+                console.error("Error fetching stats:", err);
+            }
+        };
+        fetchStats();
+    }, []);
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -73,12 +95,12 @@ export function Home() {
                     </motion.div>
                     <motion.div className="hero-stats" variants={itemVariants}>
                         <div className="stat-item">
-                            <span className="stat-value">5+</span>
+                            <span className="stat-value">{stats.active}+</span>
                             <span className="stat-label">Placas Entregadas</span>
                         </div>
                         <div className="stat-divider"></div>
                         <div className="stat-item">
-                            <span className="stat-value">2+</span>
+                            <span className="stat-value">{stats.donated}+</span>
                             <span className="stat-label">Placas Donadas</span>
                         </div>
                         <div className="stat-divider"></div>
