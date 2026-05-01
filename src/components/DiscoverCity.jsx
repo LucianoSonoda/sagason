@@ -19,10 +19,12 @@ export function DiscoverCity() {
         
         // 2. Fetch from Google Places API (2 parallel requests for diversity)
         const today = new Date().toISOString().split('T')[0];
+        const currentCity = geo.city || "unknown";
         const cachedDate = localStorage.getItem("sagasonAdvCultDate");
+        const cachedCity = localStorage.getItem("sagasonAdvCultCity");
         const cachedData = localStorage.getItem("sagasonAdvCultData");
 
-        if (cachedDate === today && cachedData) {
+        if (cachedDate === today && cachedCity === currentCity && cachedData) {
             setPlaces(JSON.parse(cachedData));
             setLoading(false);
             return;
@@ -101,6 +103,7 @@ export function DiscoverCity() {
                 const top30 = validSpots.sort((a,b) => b.rating - a.rating).slice(0, 30);
                 
                 localStorage.setItem("sagasonAdvCultDate", today);
+                localStorage.setItem("sagasonAdvCultCity", currentCity);
                 localStorage.setItem("sagasonAdvCultData", JSON.stringify(top30));
                 
                 setPlaces(top30);
