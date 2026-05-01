@@ -33,29 +33,8 @@ export function MusicPlayer() {
     return () => audio.removeEventListener('timeupdate', tick);
   }, []);
 
-  // Intentar play al primer evento de usuario en el documento
-  useEffect(() => {
-    if (started) return;
-    const tryPlay = () => {
-      if (started) return;
-      const audio = audioRef.current;
-      if (!audio) return;
-      audio.play()
-        .then(() => { setPlaying(true); setStarted(true); })
-        .catch(() => { /* el usuario puede presionar manualmente */ });
-      document.removeEventListener('click',     tryPlay);
-      document.removeEventListener('touchstart', tryPlay);
-      document.removeEventListener('keydown',   tryPlay);
-    };
-    document.addEventListener('click',     tryPlay);
-    document.addEventListener('touchstart', tryPlay);
-    document.addEventListener('keydown',   tryPlay);
-    return () => {
-      document.removeEventListener('click',     tryPlay);
-      document.removeEventListener('touchstart', tryPlay);
-      document.removeEventListener('keydown',   tryPlay);
-    };
-  }, [started]);
+  // Eliminamos el autoplay automático en el primer gesto del usuario
+  // para cumplir con la solicitud de que no empiece "siempre" ni al máximo.
 
   const toggle = (e) => {
     e.stopPropagation();

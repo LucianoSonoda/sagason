@@ -108,6 +108,9 @@
     const btn      = document.getElementById('sgs-play-btn');
     const info     = document.getElementById('sgs-music-info');
     const fill     = document.getElementById('sgs-progress-fill');
+    
+    // Configuramos volumen suave inicial (10%)
+    audio.volume = 0.1;
 
     let playing = false;
     let started = false;
@@ -138,18 +141,8 @@
       }
     });
 
-    // Auto-play en primer gesto del usuario
-    function tryAutoplay() {
-      if (started) return;
-      started = true;
-      audio.play().then(() => setPlaying(true)).catch(() => {});
-      document.removeEventListener('click',      tryAutoplay);
-      document.removeEventListener('touchstart', tryAutoplay);
-      document.removeEventListener('keydown',    tryAutoplay);
-    }
-    document.addEventListener('click',      tryAutoplay);
-    document.addEventListener('touchstart', tryAutoplay);
-    document.addEventListener('keydown',    tryAutoplay);
+    // Eliminamos el autoplay automático para cumplir la solicitud del usuario.
+    // Solo comenzará si el usuario presiona el botón ▶.
 
     // Mostrar widget tras el delay
     setTimeout(() => wrapper.classList.add('visible'), DELAY);
