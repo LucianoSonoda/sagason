@@ -249,7 +249,7 @@ export function CustomForm() {
                         <input type="hidden" name="Categoria" value={selections.category} />
                         <input type="hidden" name="Características" value={selections.size} />
 
-                        <AnimatePresence mode="wait">
+                        <AnimatePresence mode="popLayout">
                             {/* STEP 1 */}
                             {step === 1 && (
                                 <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>

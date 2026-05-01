@@ -176,7 +176,7 @@ export function DiscoverCity() {
                                     <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', marginBottom: '10px', fontStyle: 'italic' }}>
                                         Recomendación Sagason: Insignia <strong>{getTagRecommendation(spot.type)}</strong>
                                     </p>
-                                    <Link to={`/insignia#?lugar=${encodeURIComponent(spot.title)}`} style={{
+                                    <Link to={`/insignia?lugar=${encodeURIComponent(spot.title)}`} style={{
                                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                                         width: '100%', padding: '10px 0',
                                         background: 'rgba(14,165,233,0.1)',

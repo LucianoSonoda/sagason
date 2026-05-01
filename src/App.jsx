@@ -20,16 +20,14 @@ function ScrollToHashElement() {
 
   useEffect(() => {
     if (hash) {
-      setTimeout(() => {
-        const element = document.getElementById(hash.substring(1));
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else if (pathname === '/') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const element = document.getElementById(hash.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
-  }, [hash, pathname]);
+  }, [pathname, hash]);
 
   return null;
 }

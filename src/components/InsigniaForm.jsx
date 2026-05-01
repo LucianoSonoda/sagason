@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, MapPin, Calendar, User, CheckCircle, Award } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/CustomForm.css';
 
 export function InsigniaForm() {
@@ -19,16 +19,18 @@ export function InsigniaForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null);
 
+    const location = useLocation();
+
     useEffect(() => {
-        // Parse from URL hash (e.g. #insignia?lugar=Parque%20Araucano)
-        const hashParams = window.location.hash.split('?')[1];
-        if (hashParams) {
-            const searchParams = new URLSearchParams(hashParams);
-            const lugar = searchParams.get('lugar');
-            if (lugar) {
-                setLugarInicial(lugar);
-                setSelections(prev => ({ ...prev, lugar: lugar }));
-            }
+        // Desplazamiento instantáneo al inicio al cargar el formulario
+        window.scrollTo({ top: 0, behavior: 'auto' });
+
+        // Parse from URL search params (e.g. /insignia?lugar=Parque%20Araucano)
+        const searchParams = new URLSearchParams(location.search);
+        const lugar = searchParams.get('lugar');
+        if (lugar) {
+            setLugarInicial(lugar);
+            setSelections(prev => ({ ...prev, lugar: lugar }));
         }
 
         // Load Datalist from LocalStorage (Aventuras VIPs generadas)
@@ -41,7 +43,7 @@ export function InsigniaForm() {
                 console.error(e);
             }
         }
-    }, []);
+    }, [location.search]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
