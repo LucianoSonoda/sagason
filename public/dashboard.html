@@ -233,9 +233,14 @@
     const PRIVACY_API = 'https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod';
 
     async function requestDeletion() {
-        const email = document.getElementById('del-email').value;
+        const email = document.getElementById('del-email').value.trim().toLowerCase();
         if(!email) return alert('Ingresa tu correo');
         
+        if (email !== userEmail.toLowerCase()) {
+            alert('Error: No puedes solicitar el borrado de datos de otros usuarios. El correo debe coincidir con tu sesión actual.');
+            return;
+        }
+
         const btn = document.querySelector('#deletion-form-container button');
         btn.disabled = true;
         btn.innerText = 'Enviando...';
