@@ -126,79 +126,86 @@ export function GlobalStatsMap() {
                         }
                     </Geographies>
 
-                    {Object.entries(stats.countries || {}).map(([rawCountry, count]) => {
-                        const country = rawCountry.trim();
-                        // Normalización para asegurar coincidencia (sin tildes, lowercase)
-                        const norm = country.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                        
-                        // Intentar match directo, luego normalizado
-                        let coords = COUNTRY_COORDS[country] || COUNTRY_COORDS["Otros"];
-                        
-                        // Búsqueda manual en keys si no hay match directo
-                        if (coords === COUNTRY_COORDS["Otros"]) {
-                            const matchKey = Object.keys(COUNTRY_COORDS).find(k => 
-                                k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === norm
-                            );
-                            if (matchKey) coords = COUNTRY_COORDS[matchKey];
-                        }
-                        
-                        const radius = getRadius(count);
-                        const isChile = country === "Chile" || norm === "chile";
-                        const chileCoords = COUNTRY_COORDS["Chile"];
-
-                        return (
-                            <React.Fragment key={country}>
-                                {/* Línea desde Chile a otros países */}
-                                {!isChile && (
-                                    <Line
-                                        from={chileCoords}
-                                        to={coords}
-                                        stroke="#0ea5e9"
-                                        strokeWidth={2}
-                                        strokeLinecap="round"
-                                        strokeDasharray="4 4"
-                                        className="map-line-dash"
-                                        style={{ pointerEvents: "none", opacity: 0.6 }}
-                                    />
-                                )}
-                                
-                                <Marker coordinates={coords}>
-                                    <motion.circle
-                                        r={radius}
-                                        fill="#0ea5e9"
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        className="map-marker-glow"
-                                    />
-                                    <circle
-                                        r={radius * 2.5}
-                                        fill="#0ea5e9"
-                                        opacity="0.1"
-                                        className="map-marker-pulse"
-                                    />
-                                    <text
-                                        textAnchor="middle"
-                                        y={-radius - 5}
-                                        style={{ 
-                                            fontFamily: "Inter, sans-serif", 
-                                            fill: "white", 
-                                            fontSize: "10px",
-                                            fontWeight: "600",
-                                            textShadow: "0 2px 4px rgba(0,0,0,0.5)"
-                                        }}
-                                    >
-                                        {country}
-                                    </text>
-                                </Marker>
-                            </React.Fragment>
-                        );
-                    })}
                     <defs>
                         <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.8" />
                             <stop offset="100%" stopColor="#22c55e" stopOpacity="0.8" />
                         </linearGradient>
                     </defs>
+
+                    {/* Render prop to access projection for straight lines */}
+                    {({ projection }) => {
+                        const chileCoords = COUNTRY_COORDS["Chile"];
+                        const [chileX, chileY] = projection(chileCoords);
+
+                        return Object.entries(stats.countries || {}).map(([rawCountry, count]) => {
+                            const country = rawCountry.trim();
+                            const norm = country.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                            
+                            let coords = COUNTRY_COORDS[country] || COUNTRY_COORDS["Otros"];
+                            if (coords === COUNTRY_COORDS["Otros"]) {
+                                const matchKey = Object.keys(COUNTRY_COORDS).find(k => 
+                                    k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === norm
+                                );
+                                if (matchKey) coords = COUNTRY_COORDS[matchKey];
+                            }
+                            
+                            const radius = getRadius(count);
+                            const isChile = country === "Chile" || norm === "chile";
+                            const [targetX, targetY] = projection(coords);
+
+                            return (
+                                <React.Fragment key={country}>
+                                    {!isChile && (
+                                        <motion.line
+                                            x1={chileX}
+                                            y1={chileY}
+                                            x2={targetX}
+                                            y2={targetY}
+                                            stroke="#0ea5e9"
+                                            strokeWidth={2}
+                                            strokeLinecap="round"
+                                            strokeDasharray="4 4"
+                                            className="map-line-dash"
+                                            initial={{ pathLength: 0, opacity: 0 }}
+                                            animate={{ pathLength: 1, opacity: 0.5 }}
+                                            transition={{ duration: 1.5, ease: "easeOut" }}
+                                            style={{ pointerEvents: "none" }}
+                                        />
+                                    )}
+                                    
+                                    <Marker coordinates={coords}>
+                                        <motion.circle
+                                            r={radius}
+                                            fill="#0ea5e9"
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            className="map-marker-glow"
+                                        />
+                                        <circle
+                                            r={radius * 2.5}
+                                            fill="#0ea5e9"
+                                            opacity="0.1"
+                                            className="map-marker-pulse"
+                                        />
+                                        <text
+                                            textAnchor="middle"
+                                            y={-radius - 5}
+                                            style={{ 
+                                                fontFamily: "Inter, sans-serif", 
+                                                fill: "white", 
+                                                fontSize: "10px",
+                                                fontWeight: "600",
+                                                textShadow: "0 2px 4px rgba(0,0,0,0.5)"
+                                            }}
+                                        >
+                                            {country}
+                                        </text>
+                                    </Marker>
+                                </React.Fragment>
+                            );
+                        });
+                    }}
                 </ComposableMap>
                 
                 {loading && (
