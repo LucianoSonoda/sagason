@@ -28,7 +28,6 @@ export function Footer() {
 
                 <div className="footer-links-col">
                     <h3 className="footer-title">Enlaces Rápidos</h3>
-                    <Link to="/#home" className="footer-link">Inicio</Link>
                     <Link to="/aventuras" className="footer-link">Aventuras en Familia</Link>
                     <Link to="/#gallery" className="footer-link">Catálogo</Link>
                     <Link to="/#custom" className="footer-link">Personalizar</Link>

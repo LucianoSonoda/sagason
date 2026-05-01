@@ -22,7 +22,6 @@ export function Header() {
     }, [location]);
 
     const navLinks = [
-        { name: 'Inicio', href: '/#home' },
         { name: 'Aventuras', href: '/aventuras' },
         { name: 'Catálogo', href: '/#gallery' },
         { name: 'Personalizar', href: '/#custom' },
