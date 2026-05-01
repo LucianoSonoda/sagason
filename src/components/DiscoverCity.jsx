@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { MapPin, Star, Utensils, TreePine, Map, PlusCircle } from 'lucide-react';
 
 export function DiscoverCity() {
@@ -175,7 +176,7 @@ export function DiscoverCity() {
                                     <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', marginBottom: '10px', fontStyle: 'italic' }}>
                                         Recomendación Sagason: Insignia <strong>{getTagRecommendation(spot.type)}</strong>
                                     </p>
-                                    <a href={`#insignia?lugar=${encodeURIComponent(spot.title)}`} style={{
+                                    <Link to={`/insignia#?lugar=${encodeURIComponent(spot.title)}`} style={{
                                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                                         width: '100%', padding: '10px 0',
                                         background: 'rgba(14,165,233,0.1)',
@@ -191,7 +192,7 @@ export function DiscoverCity() {
                                     onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(14,165,233,0.1)'; e.currentTarget.style.color = 'var(--color-primary)'; }}
                                     >
                                         <PlusCircle size={16} /> Inmortalizar Insignia
-                                    </a>
+                                    </Link>
                                 </div>
                             </motion.div>
                         ))}

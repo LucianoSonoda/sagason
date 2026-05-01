@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle, Printer, Award } from 'lucide-react';
 import '../styles/CustomForm.css';
@@ -44,6 +45,7 @@ const SIZES = {
 };
 
 export function CustomForm() {
+    const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [selections, setSelections] = useState({
         product: '',
@@ -261,7 +263,7 @@ export function CustomForm() {
                                                     className={`option-card ${selections.product === p.title ? 'selected' : ''}`}
                                                     onClick={() => {
                                                         if (p.id === 'insignias') {
-                                                            window.location.hash = '#insignia';
+                                                            navigate('/insignia');
                                                             return;
                                                         }
                                                         handleSelectAndAdvance('product', p.title);
