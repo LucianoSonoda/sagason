@@ -31,9 +31,9 @@ const TECH_FEATURES = [
     {
         pilar: 'Kizuna',
         title: 'PRIVACIDAD POR DISEÑO',
-        icon: <Shield style={{ color: '#10b981' }} />,
-        color: '#10b981',
-        bg: 'rgba(16, 185, 129, 0.1)',
+        icon: <Shield className="text-primary" />,
+        color: 'var(--color-primary)',
+        bg: 'rgba(14, 165, 233, 0.1)',
         desc: 'Tu identidad es sagrada. Hemos diseñado el sistema para proteger tu privacidad por encima de todo.',
         points: [
             { icon: <Lock size={18} />, label: 'Zero-Knowledge Base', detail: 'No recolectamos metadatos publicitarios ni perfiles de usuario.' },
@@ -43,9 +43,9 @@ const TECH_FEATURES = [
     {
         pilar: 'Kansha',
         title: 'MODELO DE VALOR ÚNICO',
-        icon: <Diamond style={{ color: '#a855f7' }} />,
-        color: '#a855f7',
-        bg: 'rgba(168, 85, 247, 0.1)',
+        icon: <Diamond className="text-primary" />,
+        color: 'var(--color-primary)',
+        bg: 'rgba(14, 165, 233, 0.1)',
         desc: 'Rompemos el ciclo del SaaS tradicional para ofrecer una protección centrada en el ser humano.',
         points: [
             { icon: <Award size={18} />, label: 'Sin Suscripciones', detail: 'Plan Free renovable que democratiza la seguridad inteligente.' },

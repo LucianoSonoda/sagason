@@ -24,13 +24,13 @@ const STEPS = [
     },
     { 
         num: 2, 
-        icon: <UserCheck style={{ color: '#10b981' }} />,
+        icon: <UserCheck className="text-primary" />,
         title: 'Panel de Control', 
         desc: 'Presiona "Panel de Control" e inicia sesión con tu cuenta de Google. Simple, rápido y seguro.' 
     },
     { 
         num: 3, 
-        icon: <Lock style={{ color: '#f59e0b' }} />,
+        icon: <Lock className="text-primary" />,
         title: 'Vincular Placa', 
         desc: 'Ingresa el ID único de tu placa (XXXX-XXXX) y el PIN de activación que recibiste con tu pedido.' 
     },
@@ -42,13 +42,13 @@ const STEPS = [
     },
     { 
         num: 5, 
-        icon: <Bell style={{ color: '#a855f7' }} />,
+        icon: <Bell className="text-primary" />,
         title: 'Notificaciones', 
         desc: 'Cada vez que alguien escanee tu placa, recibirás una alerta inmediata con la ubicación del hallazgo.' 
     },
     { 
         num: 6, 
-        icon: <Database style={{ color: '#0ea5e9' }} />,
+        icon: <Database className="text-primary" />,
         title: 'Gestión de Datos', 
         desc: 'Modifica tu información de contacto en cualquier momento sin necesidad de cambiar tu placa física.' 
     }
@@ -209,7 +209,7 @@ export function HowItWorks() {
                             </div>
 
                             <h3 style={{ 
-                                color: 'var(--color-primary)', 
+                                color: 'white', 
                                 marginBottom: '1rem', 
                                 fontSize: '1.4rem',
                                 fontFamily: 'var(--font-display)'

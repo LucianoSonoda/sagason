@@ -192,7 +192,21 @@
 
 .service-icon-wrapper {
     color: var(--color-primary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.3));
+}
+
+.service-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.service-desc {
+    color: var(--color-muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
 }
 
 .pilar-card {
@@ -215,7 +229,7 @@
 .pilar-name {
     font-family: var(--font-display);
     font-size: 3rem;
-    color: var(--color-primary);
+    color: #ffffff;
 }
 
 .pilar-sub {
