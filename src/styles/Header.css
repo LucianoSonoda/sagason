@@ -17,6 +17,7 @@
     display: flex;
     align-items: center;
     text-decoration: none;
+    z-index: 1001; /* Ensure logo is above mobile menu */
 }
 
 .header-logo-img {
@@ -25,9 +26,17 @@
     object-fit: contain;
 }
 
+.mobile-menu-toggle {
+    display: none;
+    cursor: pointer;
+    z-index: 1001;
+    color: var(--color-text);
+}
+
 .nav {
     display: flex;
     gap: var(--spacing-md);
+    align-items: center;
 }
 
 .nav a {
@@ -35,6 +44,7 @@
     font-size: 0.9rem;
     letter-spacing: 0.5px;
     position: relative;
+    color: var(--color-text);
 }
 
 .nav a::after {
@@ -54,13 +64,18 @@
 
 .btn-header {
     background: var(--color-primary);
-    color: #0D0D0D;
+    color: #0D0D0D !important;
     padding: 0.5rem 1.25rem;
     border-radius: var(--radius-sm);
     font-weight: 600;
     font-size: 0.9rem;
     transition: all 0.3s ease;
     text-decoration: none;
+    display: inline-block;
+}
+
+.btn-header::after {
+    display: none; /* No underline for button */
 }
 
 .btn-header:hover {
@@ -69,16 +84,53 @@
     transform: translateY(-2px);
 }
 
+.mobile-btn {
+    display: none;
+}
+
+.desktop-btn {
+    display: inline-block;
+}
+
 @media (max-width: 768px) {
     .header-content {
-        flex-direction: column;
-        height: auto;
-        padding: var(--spacing-sm) 0;
-        gap: var(--spacing-sm);
+        height: 70px; /* slightly smaller on mobile */
+    }
+
+    .desktop-btn {
+        display: none;
+    }
+
+    .mobile-btn {
+        display: inline-block;
+        margin-top: var(--spacing-sm);
+    }
+
+    .mobile-menu-toggle {
+        display: block;
     }
 
     .nav {
-        margin-top: var(--spacing-sm);
-        gap: var(--spacing-sm);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: var(--color-surface);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: var(--spacing-lg);
+        transform: translateY(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1000;
+    }
+
+    .nav.nav-open {
+        transform: translateY(0);
+    }
+
+    .nav a {
+        font-size: 1.5rem;
     }
 }
