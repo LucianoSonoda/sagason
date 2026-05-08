@@ -714,7 +714,7 @@
 
     async function loadProfile() {
         try {
-            const res = await fetch(`${API}/user-profile?ownerId=${ownerId}`);
+            const res = await fetch(`${API}/user-tags?action=profile&ownerId=${ownerId}`);
             if(res.ok) {
                 const profile = await res.json();
                 document.getElementById('profile-name').value = profile.name || "";
@@ -736,7 +736,7 @@
         };
 
         try {
-            await fetch(`${API}/user-profile?ownerId=${ownerId}`, {
+            await fetch(`${API}/user-tags?action=profile&ownerId=${ownerId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
