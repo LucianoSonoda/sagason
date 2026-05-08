@@ -525,6 +525,7 @@
     <div class="tabs">
         <button class="tab-btn active" id="btn-list" onclick="showTab('list')">Mis Placas</button>
         <button class="tab-btn" id="btn-activate" onclick="showTab('activate')">Activar Nueva</button>
+        <button class="tab-btn" id="btn-profile" onclick="showTab('profile')">Mi Perfil</button>
         <button class="tab-btn" id="btn-plans" onclick="showTab('plans')">Planes</button>
         <button class="tab-btn" id="btn-privacy" onclick="showTab('privacy')">Privacidad</button>
         <button class="tab-btn" id="btn-admin" onclick="showTab('admin')" style="display:none;">FÁBRICA</button>
@@ -557,6 +558,23 @@
             <label>País:</label>
             <input type="text" id="new-tag-country" list="countries-list" placeholder="Selecciona o escribe un país" value="Chile">
             <button class="btn-action" style="background:var(--primary); color:white;" onclick="registerTag()">Activar Ahora</button>
+        </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="content-section" id="section-profile">
+        <div style="background:var(--card); backdrop-filter:blur(12px); padding:30px; border-radius:20px; border:1px solid var(--border);">
+            <h3 style="margin:0 0 20px 0; font-size:2rem; font-family:var(--font-display); text-transform:uppercase; letter-spacing:1px;">Mi Perfil</h3>
+            <label>Nombre Completo:</label>
+            <input type="text" id="profile-name" placeholder="Tu Nombre">
+            <label>Teléfono:</label>
+            <input type="tel" id="profile-phone" placeholder="+56 9 ...">
+            <label>Empresa (Opcional):</label>
+            <input type="text" id="profile-company" placeholder="Ej: Mi Empresa SpA">
+            <button class="btn-action" id="btn-save-profile" style="background:var(--primary); color:white;" onclick="saveProfile()">Guardar Cambios</button>
+            <div id="profile-success" style="display: none; background: rgba(52, 211, 153, 0.1); border: 1px solid #34d399; padding: 15px; border-radius: 10px; text-align: center; color: #34d399; font-size: 13px; margin-top: 20px;">
+                ✅ Perfil actualizado correctamente.
+            </div>
         </div>
     </div>
 
@@ -691,6 +709,46 @@
         ownerId = user.sub; userEmail = user.email;
         if (userEmail === "brluson@gmail.com") document.getElementById('btn-admin').style.display = "block";
         loadTags();
+        loadProfile();
+    }
+
+    async function loadProfile() {
+        try {
+            const res = await fetch(`${API}/user-profile?ownerId=${ownerId}`);
+            if(res.ok) {
+                const profile = await res.json();
+                document.getElementById('profile-name').value = profile.name || "";
+                document.getElementById('profile-phone').value = profile.phone || "";
+                document.getElementById('profile-company').value = profile.company || "";
+            }
+        } catch(e) { console.error("Error cargando perfil", e); }
+    }
+
+    async function saveProfile() {
+        const btn = document.getElementById('btn-save-profile');
+        btn.disabled = true;
+        btn.innerText = 'Guardando...';
+
+        const body = {
+            name: document.getElementById('profile-name').value,
+            phone: document.getElementById('profile-phone').value,
+            company: document.getElementById('profile-company').value
+        };
+
+        try {
+            await fetch(`${API}/user-profile?ownerId=${ownerId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            document.getElementById('profile-success').style.display = 'block';
+            setTimeout(() => { document.getElementById('profile-success').style.display = 'none'; }, 3000);
+        } catch (e) {
+            alert('Error al guardar el perfil.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Guardar Cambios';
+        }
     }
 
     const PRIVACY_API = 'https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod';
