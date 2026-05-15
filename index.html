@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="icon" type="image/png" href="/logo-chico.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- SEO Básico -->
@@ -30,6 +30,85 @@
   <meta name="twitter:description"
     content="Especialistas en sublimación y personalización en Chile. Destaca con nuestros cuadros de metal, tazones y rompecabezas." />
   <meta name="twitter:image" content="https://sagason.cl/logo-completo.jpg" />
+
+  <!-- Schema.org Datos Estructurados -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://sagason.cl/#business",
+        "name": "Sagason SpA",
+        "url": "https://sagason.cl",
+        "logo": "https://sagason.cl/logo-completo.jpg",
+        "image": "https://sagason.cl/logo-completo.jpg",
+        "description": "Especialistas en sublimación y personalización en Chile. Cuadros de metal con grabado láser 4K, tazones, rompecabezas, placas de mascotas y más.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "CL",
+          "addressRegion": "Región Metropolitana"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "email": "ventas@sagason.cl",
+          "availableLanguage": "Spanish"
+        },
+        "sameAs": [
+          "https://www.instagram.com/sagasoncl/"
+        ],
+        "areaServed": {
+          "@type": "Country",
+          "name": "Chile"
+        },
+        "priceRange": "$$"
+      },
+      {
+        "@type": "Product",
+        "name": "Cuadro de Metal HD con Grabado Láser 4K",
+        "description": "Cuadro fotográfico sublimado sobre aluminio con resolución 4K. Resistente a UV y climas extremos. Personalización completa.",
+        "brand": { "@type": "Brand", "name": "Sagason" },
+        "image": "https://sagason.cl/logo-completo.jpg",
+        "url": "https://sagason.cl/#gallery",
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "CLP",
+          "availability": "https://schema.org/InStock",
+          "seller": { "@type": "Organization", "name": "Sagason SpA" }
+        }
+      },
+      {
+        "@type": "Product",
+        "name": "Placa de Identificación para Mascotas",
+        "description": "Placa personalizada con foto y datos de tu mascota, grabado láser de alta precisión sobre metal.",
+        "brand": { "@type": "Brand", "name": "Sagason" },
+        "image": "https://sagason.cl/logo-completo.jpg",
+        "url": "https://sagason.cl/#gallery",
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "CLP",
+          "availability": "https://schema.org/InStock",
+          "seller": { "@type": "Organization", "name": "Sagason SpA" }
+        }
+      },
+      {
+        "@type": "Product",
+        "name": "Tazón Personalizado Sublimado",
+        "description": "Tazón de cerámica con impresión sublimada de alta calidad. Diseño completamente personalizable.",
+        "brand": { "@type": "Brand", "name": "Sagason" },
+        "url": "https://sagason.cl/#gallery",
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "CLP",
+          "availability": "https://schema.org/InStock",
+          "seller": { "@type": "Organization", "name": "Sagason SpA" }
+        }
+      }
+    ]
+  }
+  </script>
+  <!-- End Schema.org -->
 
   <!-- Google Tag Manager -->
   <script>(function (w, d, s, l, i) {
