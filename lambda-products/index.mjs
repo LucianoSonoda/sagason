@@ -113,7 +113,7 @@ export const handler = async (event) => {
       }
 
       const body = JSON.parse(event.body || '{}');
-      const { productId, basePrice, priceVariants, notes } = body;
+      const { productId, basePrice, priceVariants, notes, name, cat, imageUrl } = body;
 
       if (!productId || basePrice === undefined) {
         return response(400, { success: false, error: 'productId y basePrice son requeridos' });
@@ -125,11 +125,17 @@ export const handler = async (event) => {
         TableName: TABLE_NAME,
         Key: { productId },
         UpdateExpression:
-          'SET basePrice = :bp, priceVariants = :pv, notes = :n, updatedAt = :ua',
+          'SET basePrice = :bp, priceVariants = :pv, notes = :n, #productName = :pn, cat = :cat, imageUrl = :iu, updatedAt = :ua',
+        ExpressionAttributeNames: {
+          '#productName': 'name'
+        },
         ExpressionAttributeValues: {
           ':bp': Number(basePrice),
           ':pv': priceVariants || {},
           ':n' : notes || '',
+          ':pn': name || '',
+          ':cat': cat || '',
+          ':iu': imageUrl || '',
           ':ua': now,
         },
       }));
