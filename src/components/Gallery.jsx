@@ -144,7 +144,7 @@ export function Gallery() {
                                             }}
                                         >
                                             {image ? (
-                                                <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: objectFit || 'cover', padding: padding || '0', opacity: 0.75 }} />
+                                                <img src={image} alt={title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: objectFit || 'cover', padding: padding || '0', opacity: 0.75 }} />
                                             ) : (
                                                 <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, #1A1A1A, ${color})`, opacity: 0.75 }} />
                                             )}
@@ -206,7 +206,7 @@ export function Gallery() {
                     <motion.div className="lightbox" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeLightbox}>
                         <button className="lightbox-close" onClick={closeLightbox}><X size={32} /></button>
                         <motion.div className="lightbox-content" initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }} onClick={(e) => e.stopPropagation()}>
-                            <img src={selectedImage.image} alt={selectedImage.title} className="lightbox-img"
+                            <img src={selectedImage.image} alt={selectedImage.title} loading="eager" className="lightbox-img"
                                 style={{ objectFit: selectedImage.objectFit || 'contain', backgroundColor: selectedImage.objectFit === 'contain' ? '#1f2833' : 'transparent', padding: selectedImage.padding || '0' }} />
                             <div className="lightbox-caption">
                                 <h3>{selectedImage.title}</h3>
@@ -245,7 +245,7 @@ function GalleryItem({ item, onClick }) {
         >
             {item.image ? (
                 <>
-                    <img src={item.image} alt={item.title} className="gallery-img"
+                    <img src={item.image} alt={item.title} loading="lazy" className="gallery-img"
                         style={{ width: '100%', height: '100%', objectFit: item.objectFit || 'cover', backgroundColor: '#1a1a1a', padding: item.padding || '0' }} />
                     <div className="zoom-icon-overlay"><ZoomIn size={32} /></div>
                 </>

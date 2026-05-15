@@ -23,27 +23,6 @@ function useWindowWidth() {
 }
 
 export function Home() {
-    const [stats, setStats] = useState({ active: 5, donated: 2 }); // Valores iniciales (fallback)
-
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const res = await fetch('https://s4k.sagason.cl/report', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_public_stats' })
-                });
-                const data = await res.json();
-                if (data.total_active !== undefined) {
-                    // Mantenemos el "+" visual agregando 1 o usando el valor real
-                    setStats({ active: data.total_active, donated: data.total_donated });
-                }
-            } catch (err) {
-                console.error("Error fetching stats:", err);
-            }
-        };
-        fetchStats();
-    }, []);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -95,23 +74,23 @@ export function Home() {
                     </motion.div>
                     <motion.div className="hero-stats" variants={itemVariants}>
                         <div className="stat-item">
-                            <span className="stat-value">{stats.active}+</span>
-                            <span className="stat-label">Placas Entregadas</span>
-                        </div>
-                        <div className="stat-divider"></div>
-                        <div className="stat-item">
-                            <span className="stat-value">{stats.donated}+</span>
-                            <span className="stat-label">Placas Donadas</span>
-                        </div>
-                        <div className="stat-divider"></div>
-                        <div className="stat-item">
                             <span className="stat-value">4K</span>
-                            <span className="stat-label">Resolución DPI</span>
+                            <span className="stat-label">Resolución Láser</span>
                         </div>
                         <div className="stat-divider"></div>
                         <div className="stat-item">
                             <span className="stat-value">72h</span>
                             <span className="stat-label">Envío Rápido</span>
+                        </div>
+                        <div className="stat-divider"></div>
+                        <div className="stat-item">
+                            <span className="stat-value">100%</span>
+                            <span className="stat-label">Personalizable</span>
+                        </div>
+                        <div className="stat-divider"></div>
+                        <div className="stat-item">
+                            <span className="stat-value">∞</span>
+                            <span className="stat-label">Durabilidad</span>
                         </div>
                     </motion.div>
                 </motion.div>
@@ -159,6 +138,7 @@ function TrustSymbolSection() {
                     <img
                         src={sagasonSymbol}
                         alt="Símbolo Sagason"
+                        loading="lazy"
                         className="trust-symbol-img"
                     />
                 </div>
@@ -323,6 +303,7 @@ function S4KCarousel() {
                                 <img
                                     src={pilar.kanji}
                                     alt=""
+                                    loading="lazy"
                                     className="pilar-kanji-bg"
                                 />
                             )}
@@ -352,7 +333,6 @@ function S4KCarousel() {
                 <Link to="/aventuras" className="btn btn-primary glow">🗺️ Aventuras</Link>
                 <Link to="/como-funciona" className="btn btn-glass">¿Cómo funciona?</Link>
                 <Link to="/tecnologia" className="btn btn-glass">Tecnología</Link>
-                <a href="/dashboard.html" className="btn btn-glass">Panel de Control</a>
                 <button onClick={() => setWaitlistOpen(true)} className="btn btn-glass">Lista de Espera</button>
             </div>
 
