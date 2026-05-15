@@ -18,8 +18,10 @@
     align-items: center;
     height: 70px;
     padding: 0 var(--spacing-md);
-    margin: 0 var(--spacing-sm);
+    margin: 0 auto;
     border-radius: var(--radius-md);
+    position: relative;
+    z-index: 1001;
 }
 
 .logo {
