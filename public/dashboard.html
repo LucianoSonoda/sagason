@@ -801,7 +801,6 @@
                     <th style="padding: 10px; width: 80px; text-align: center;">Imagen</th>
                     <th style="padding: 10px;">Producto</th>
                     <th style="padding: 10px; min-width: 120px;">Precio (CLP)</th>
-                    <th style="padding: 10px;">Notas</th>
                     <th style="padding: 10px;">Acción</th>
                 </tr>
             </thead>
@@ -814,7 +813,7 @@
             const imageUrl = loc.imageUrl || '';
             
             html += `
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <tr>
                     <td style="padding: 12px 10px; text-align:center;">
                         <img id="img-preview-${loc.id}" src="${imageUrl || 'https://via.placeholder.com/60'}" width="60" height="60" style="border-radius:8px; object-fit:cover; display:block; margin:0 auto 5px auto;" onerror="this.src='https://via.placeholder.com/60'">
                         <label style="cursor:pointer; background:var(--primary); color:white; padding:4px 8px; border-radius:4px; font-size:10px; display:inline-block; margin-top:5px;">
@@ -830,10 +829,12 @@
                         <input type="number" id="price-${loc.id}" value="${price}" style="width: 100%; padding: 8px; margin: 0; background: rgba(0,0,0,0.2);" />
                     </td>
                     <td style="padding: 12px 10px;">
-                        <textarea id="notes-${loc.id}" rows="3" style="width: 100%; padding: 8px; margin: 0; background: rgba(0,0,0,0.2); resize: vertical; border-radius: 8px;" placeholder="Notas...">${notes}</textarea>
-                    </td>
-                    <td style="padding: 12px 10px;">
                         <button id="btn-save-${loc.id}" onclick="saveAdminPrice('${loc.id}')" style="background:var(--success); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:var(--font-main);">Guardar</button>
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td colspan="4" style="padding: 0 10px 12px 10px;">
+                        <textarea id="notes-${loc.id}" rows="2" style="width: 100%; padding: 8px; margin: 0; background: rgba(0,0,0,0.2); resize: vertical; border-radius: 8px;" placeholder="Notas...">${notes}</textarea>
                     </td>
                 </tr>
             `;
@@ -841,7 +842,7 @@
 
         // Add new product row
         html += `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+            <tr style="background: rgba(255,255,255,0.02);">
                 <td style="padding: 12px 10px; text-align:center;">
                     <img id="img-preview-new" src="https://via.placeholder.com/60" width="60" height="60" style="border-radius:8px; object-fit:cover; display:block; margin:0 auto 5px auto;">
                     <label style="cursor:pointer; background:var(--primary); color:white; padding:4px 8px; border-radius:4px; font-size:10px; display:inline-block; margin-top:5px;">
@@ -858,10 +859,12 @@
                     <input type="number" id="price-new" placeholder="Precio" style="width: 100%; padding: 8px; margin: 0; background: rgba(0,0,0,0.2);" />
                 </td>
                 <td style="padding: 12px 10px;">
-                    <textarea id="notes-new" rows="3" style="width: 100%; padding: 8px; margin: 0; background: rgba(0,0,0,0.2); resize: vertical; border-radius: 8px;" placeholder="Notas..."></textarea>
-                </td>
-                <td style="padding: 12px 10px;">
                     <button id="btn-save-new" onclick="saveAdminPrice('new')" style="background:var(--success); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:var(--font-main);">Crear</button>
+                </td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+                <td colspan="4" style="padding: 0 10px 12px 10px;">
+                    <textarea id="notes-new" rows="2" style="width: 100%; padding: 8px; margin: 0; background: rgba(0,0,0,0.2); resize: vertical; border-radius: 8px;" placeholder="Notas..."></textarea>
                 </td>
             </tr>
         `;
