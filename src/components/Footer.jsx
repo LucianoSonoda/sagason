@@ -23,7 +23,7 @@ export function Footer() {
             <div className="container footer-content">
                 <div className="footer-brand">
                     <img src={logoCompleto} alt="Sagason SpA" className="footer-logo-img" />
-                    <p>Placas personalizadas de metal con calidad que dura toda la vida.</p>
+                    <p>Grabamos los recuerdos que más importan en metal que dura toda la vida.</p>
                 </div>
 
                 <div className="footer-links-col">
@@ -61,7 +61,7 @@ export function Footer() {
                 </div>
             </div>
             <div className="footer-bottom">
-                &copy; {new Date().getFullYear()} Sagason. Hecho con 4K desde Chile para el Mundo.
+                &copy; {new Date().getFullYear()} Sagason SpA. Hecho con amor y precisión láser, desde Chile para el mundo.
             </div>
         </footer>
     );

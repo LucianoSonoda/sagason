@@ -55,21 +55,21 @@ export function Home() {
                     animate="visible"
                 >
                     <motion.div className="hero-label" variants={itemVariants}>
-                        <Zap size={14} /> <span>TECNOLOGÍA LÁSER 4K</span>
+                        <Zap size={14} /> <span>GRABADO LÁSER · HECHO CON ALMA</span>
                     </motion.div>
                     <motion.h1 className="hero-title" variants={itemVariants}>
-                        PRECISIÓN QUE <br />
-                        <span className="text-gradient">INMORTALIZA</span>
+                        LOS MOMENTOS QUE <br />
+                        <span className="text-gradient">IMPORTAN PARA SIEMPRE</span>
                     </motion.h1>
                     <motion.p className="hero-subtitle" variants={itemVariants}>
-                        Cuadros de metal con acabado fotográfico y grabado láser de alta definición. Personalización premium para marcas, hogares y seguridad SOS.
+                        Transformamos tus recuerdos más especiales en piezas de metal que duran toda la vida. Para tu hogar, tu mascota, las personas que más quieres.
                     </motion.p>
                     <motion.div className="cta-group" variants={itemVariants}>
                         <Link to="/#custom" className="btn btn-primary magnetic">
-                            Personalizar Ahora <ArrowRight size={20} />
+                            Crea tu pieza <ArrowRight size={20} />
                         </Link>
                         <Link to="/#gallery" className="btn btn-glass">
-                            Ver Catálogo
+                            Ver inspiración
                         </Link>
                     </motion.div>
                     <motion.div className="hero-stats" variants={itemVariants}>
@@ -144,13 +144,13 @@ function TrustSymbolSection() {
                 </div>
 
                 <h2 className="trust-title">
-                    DONDE ESTÁ ESTE SÍMBOLO, <span className="text-primary">HAY CONFIANZA</span>
+                    DONDE ESTÁ ESTE SÍMBOLO, <span className="text-primary">ALGUIEN CUIDA</span>
                 </h2>
                 <p className="trust-desc">
-                    El ecosistema Sagason garantiza seguridad y durabilidad. Nuestros QR son verificados y seguros, diseñados para ayudar sin comprometer tu privacidad.
+                    Cada placa Sagason lleva una promesa: si algo se pierde, el camino de regreso siempre existe. Nuestros QR conectan a quien ayuda contigo, sin exponer tus datos ni pedir apps.
                 </p>
                 <div className="trust-features">
-                    {['Sin Datos Expuestos', 'Sin Apps Extra', 'Privacidad Total'].map(t => (
+                    {['Tu privacidad, intacta', 'Sin apps, sin barreras', 'Siempre disponible'].map(t => (
                         <div key={t} className="trust-feature-item">
                             <Shield size={14} /> <span>{t}</span>
                         </div>
@@ -162,10 +162,10 @@ function TrustSymbolSection() {
 }
 
 const SERVICIOS = [
-    { icon: <Target size={32} />, title: 'Nitidez Extrema', desc: 'Acabados en 4K que capturan cada detalle con una fidelidad asombrosa sobre metal real.' },
-    { icon: <Cpu size={32} />, title: 'Grabado Digital', desc: 'Procesos automatizados de alta precisión para resultados idénticos en cada pieza.' },
-    { icon: <Shield size={32} />, title: 'Resistencia Total', desc: 'Nuestras placas soportan climas extremos, rayos UV y el paso de las décadas.' },
-    { icon: <Truck size={32} />, title: 'Logística Global', desc: 'Envíos a todo el mundo con entregas garantizadas (aplican tasas de transporte internacional).' },
+    { icon: <Target size={32} />, title: 'Cada detalle, vivo', desc: 'La resolución 4K captura lo que el ojo apenas nota: la textura de un abrazo, la luz de ese día especial.' },
+    { icon: <Cpu size={32} />, title: 'Hecho solo para ti', desc: 'No hay dos piezas iguales. Cada grabado es único porque el recuerdo que guarda también lo es.' },
+    { icon: <Shield size={32} />, title: 'Dura lo que el amor', desc: 'Metal que resiste décadas, lluvia, sol y tiempo. Porque lo que más importa merece no desvanecerse.' },
+    { icon: <Truck size={32} />, title: 'Llega donde estés', desc: 'Enviamos a todo Chile y al mundo. Tu pieza llega lista para regalar, colgar o atesorar.' },
 ];
 
 function ServicesCarousel() {
@@ -198,8 +198,8 @@ function ServicesCarousel() {
     return (
         <section className="services-section container">
             <div className="section-header">
-                <span className="section-label">EXCELENCIA OPERATIVA</span>
-                <h2 className="section-title">DETALLES QUE <span className="text-primary">MARCAN DIFERENCIA</span></h2>
+                <span className="section-label">POR QUÉ SAGASON</span>
+                <h2 className="section-title">HECHO PARA <span className="text-primary">DURAR CONTIGO</span></h2>
             </div>
 
             <div className="carousel-container"
@@ -243,10 +243,10 @@ function ServicesCarousel() {
 }
 
 const PILARES = [
-    { name: 'Kaeru', sub: 'Regresar', desc: 'Nuestra promesa fundamental. Al escanear el tag, activas un puente digital inmediato que reduce la incertidumbre del extravío.', kanji: imgKanji_Kaeru },
-    { name: 'Kizuna', sub: 'Vínculo', desc: 'Gestionas la información de quienes más amas en un entorno seguro y siempre disponible.', kanji: imgKanji_Kizuna },
-    { name: 'Kansha', sub: 'Gratitud', desc: 'Diseñamos la interfaz para que quien ayuda lo haga con facilidad. La gratitud permite un ciclo eterno de ayuda al prójimo.', kanji: imgKanji_Kansha },
-    { name: 'Kenshin', sub: 'Dedicación', desc: 'Desde Chile hacia el mundo, cada placa es grabada con precisión láser para resistir el tiempo y la aventura.', kanji: imgKanji_Kenshin },
+    { name: 'Kaeru', sub: 'Regresar', desc: 'La promesa que lo une todo. Si tu mascota se pierde, si tu mochila queda en el metro, si alguien necesita ayuda — un escaneo es todo lo que se necesita para volver a casa.', kanji: imgKanji_Kaeru },
+    { name: 'Kizuna', sub: 'Vínculo', desc: 'Los lazos que nos importan merecen protección. Guardamos la información de quienes más quieres de forma segura, para que el amor siempre encuentre el camino.', kanji: imgKanji_Kizuna },
+    { name: 'Kansha', sub: 'Gratitud', desc: 'Quien ayuda merece que sea fácil hacerlo. Diseñamos cada detalle para que un extraño pueda devolverte lo tuyo con un solo gesto, y sentir que valió la pena.', kanji: imgKanji_Kansha },
+    { name: 'Kenshin', sub: 'Dedicación', desc: 'Cada placa sale de nuestras manos con el cuidado de quien sabe que guardará un recuerdo. Grabado láser de precisión, desde Chile, para durar toda una vida.', kanji: imgKanji_Kenshin },
 ];
 
 function S4KCarousel() {
@@ -280,8 +280,8 @@ function S4KCarousel() {
     return (
         <section className="philosophy-section container">
             <div className="section-header">
-                <span className="section-label">ADN SAGASON</span>
-                <h2 className="section-title">FILOSOFÍA <span className="text-primary">SAGASON 4K</span></h2>
+                <span className="section-label">LO QUE NOS MUEVE</span>
+                <h2 className="section-title">EL ALMA DETRÁS DE <span className="text-primary">CADA PIEZA</span></h2>
             </div>
 
             <div className="pilar-carousel"
