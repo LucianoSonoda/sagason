@@ -76,12 +76,20 @@
     box-shadow: 0 4px 20px rgba(14, 165, 233, 0.4);
 }
 
-.mobile-toggle {
-    display: none;
+.menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: transparent;
     border: none;
     color: var(--color-text);
     cursor: pointer;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
 }
 
 /* Mobile Menu */
@@ -117,9 +125,6 @@
         display: none !important;
     }
 
-    .mobile-toggle {
-        display: block;
-    }
 
     .header-content {
         margin: 0 var(--spacing-xs);

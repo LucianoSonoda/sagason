@@ -21,10 +21,14 @@ export function Header() {
         setIsOpen(false);
     }, [location]);
 
-    const navLinks = [
+    const topNavLinks = [
         { name: 'Aventuras', href: '/aventuras' },
         { name: 'Comunidad 4K', href: '/tags-4k' },
         { name: 'Catálogo', href: '/catalogo' },
+    ];
+
+    const allNavLinks = [
+        ...topNavLinks,
         { name: 'Personalizar', href: '/#custom' },
         { name: 'Contacto', href: '/#contact' },
     ];
@@ -37,22 +41,24 @@ export function Header() {
                 </Link>
 
                 <nav className="nav desktop-only">
-                    {navLinks.map(link => (
+                    {topNavLinks.map(link => (
                         link.external ? 
                         <a key={link.name} href={link.href}>{link.name}</a> :
                         <Link key={link.name} to={link.href}>{link.name}</Link>
                     ))}
                 </nav>
 
-                <div className="header-actions desktop-only">
-                    <Link to="/#custom" className="btn-header">
-                        Pedir Ahora <ArrowRight size={16} />
-                    </Link>
-                </div>
+                <div className="header-right">
+                    <div className="header-actions desktop-only">
+                        <Link to="/#custom" className="btn-header">
+                            Pedir Ahora <ArrowRight size={16} />
+                        </Link>
+                    </div>
 
-                <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <X size={24} /> : <Menu size={24} />}
-                </button>
+                    <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
+                        {isOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                </div>
             </div>
 
             {/* Mobile Menu Overlay */}
@@ -66,7 +72,7 @@ export function Header() {
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                     >
                         <div className="mobile-menu-content">
-                            {navLinks.map((link, idx) => (
+                            {allNavLinks.map((link, idx) => (
                                 <motion.div
                                     key={link.name}
                                     initial={{ opacity: 0, x: 20 }}
