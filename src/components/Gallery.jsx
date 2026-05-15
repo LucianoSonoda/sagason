@@ -150,13 +150,6 @@ export function Gallery() {
                                 )}
                             </AnimatePresence>
                         </div>
-
-                        {/* Mostrar todos los items por defecto cuando no hay categoría activa */}
-                        <div className="gallery-grid">
-                            {ITEMS.map(item => (
-                                <GalleryItem key={item.id} item={item} onClick={() => openLightbox(item)} />
-                            ))}
-                        </div>
                     </motion.div>
                 ) : (
                     <motion.div key="items-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
