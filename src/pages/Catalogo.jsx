@@ -10,7 +10,7 @@ import '../styles/Catalogo.css';
 // ─────────────────────────────────────────────────────────
 //  Componente: Card de producto
 // ─────────────────────────────────────────────────────────
-function ProductCard({ product }) {
+function ProductCard({ product, price }) {
   const [expanded, setExpanded] = useState(false);
   const [tab, setTab] = useState('desc'); // 'desc' | 'sizes' | 'care'
   const catInfo = PRODUCT_CATEGORIES.find(c => c.id === product.category);
@@ -41,14 +41,24 @@ function ProductCard({ product }) {
               {catInfo?.label}
             </span>
           </div>
-          {product.tag && (
-            <span
-              className="product-card__tag"
-              style={{ background: product.tagColor || '#0EA5E9' }}
-            >
-              {product.tag}
-            </span>
-          )}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+            {product.tag && (
+              <span
+                className="product-card__tag"
+                style={{ background: product.tagColor || '#0EA5E9' }}
+              >
+                {product.tag}
+              </span>
+            )}
+            {price && (
+              <span
+                className="product-card__price"
+                style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-primary)' }}
+              >
+                ${price.toLocaleString('es-CL')}
+              </span>
+            )}
+          </div>
         </div>
         <p className="product-card__short-desc">{product.shortDesc}</p>
         <button className="product-card__toggle" aria-label="Expandir">
@@ -165,7 +175,28 @@ function ProductCard({ product }) {
 export function Catalogo() {
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [search, setSearch] = useState('');
+  const [prices, setPrices] = useState({});
   const searchRef = useRef(null);
+
+  useEffect(() => {
+    const apiUrl = import.meta.env.VITE_PRODUCTS_API_URL;
+    if (!apiUrl) return;
+    
+    fetch(`${apiUrl}public`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          const priceMap = {};
+          data.data.forEach(item => {
+            if (item.basePrice) {
+              priceMap[item.productId] = item.basePrice;
+            }
+          });
+          setPrices(priceMap);
+        }
+      })
+      .catch(err => console.error("Error al cargar precios:", err));
+  }, []);
 
   const filtered = PRODUCTS.filter(p => {
     const matchCat  = activeCategory === 'ALL' || p.category === activeCategory;
@@ -268,7 +299,11 @@ export function Catalogo() {
             animate="visible"
           >
             {filtered.map(product => (
-              <ProductCard key={product.productId} product={product} />
+              <ProductCard 
+                key={product.productId} 
+                product={product} 
+                price={prices[product.productId]}
+              />
             ))}
           </motion.div>
         )}
@@ -279,9 +314,9 @@ export function Catalogo() {
         <div className="price-note-box glass-panel">
           <Info size={18} />
           <div>
-            <strong>¿Cuánto cuesta?</strong>
+            <strong>Cotiza tu idea</strong>
             <p>
-              Los precios varían según el diseño, tamaño y cantidad. Contáctanos por
+              Los precios mostrados son referenciales o bases. Pueden variar según el diseño final, tamaño específico o cantidad de productos. Contáctanos por
               WhatsApp o usa el formulario de personalización para recibir una cotización
               exacta para tu pedido.
             </p>

@@ -34,18 +34,13 @@ const client = new DynamoDBClient({ region: REGION });
 const ddb    = DynamoDBDocumentClient.from(client);
 
 // ────────────────────────────────────────────────────────
-//  CORS Headers
+//  CORS Headers (Manejado por AWS Function URL)
 // ────────────────────────────────────────────────────────
-const CORS = {
-  'Access-Control-Allow-Origin' : '*',
-  'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type,x-admin-token',
-};
 
 function response(statusCode, body) {
   return {
     statusCode,
-    headers: { 'Content-Type': 'application/json', ...CORS },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   };
 }
@@ -89,7 +84,7 @@ export const handler = async (event) => {
 
   // ── Preflight ──────────────────────────────────────────
   if (method === 'OPTIONS') {
-    return { statusCode: 200, headers: CORS, body: '' };
+    return { statusCode: 200, body: '' };
   }
 
   try {
@@ -97,7 +92,7 @@ export const handler = async (event) => {
     if (method === 'GET' && path.includes('/public')) {
       const result = await ddb.send(new ScanCommand({
         TableName: TABLE_NAME,
-        ProjectionExpression: 'productId, productName, category, isActive',
+        ProjectionExpression: 'productId, productName, category, isActive, basePrice, priceVariants',
       }));
       return response(200, { success: true, data: result.Items || [] });
     }
@@ -182,6 +177,6 @@ export const handler = async (event) => {
 
   } catch (err) {
     console.error('Lambda error:', err);
-    return response(500, { success: false, error: 'Error interno del servidor' });
+    return response(500, { success: false, error: err.message || 'Error interno del servidor', stack: err.stack });
   }
 };
