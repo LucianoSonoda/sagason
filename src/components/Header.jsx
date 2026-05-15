@@ -24,7 +24,7 @@ export function Header() {
     const navLinks = [
         { name: 'Aventuras', href: '/aventuras' },
         { name: 'Comunidad 4K', href: '/tags-4k' },
-        { name: 'Catálogo', href: '/#gallery' },
+        { name: 'Catálogo', href: '/catalogo' },
         { name: 'Personalizar', href: '/#custom' },
         { name: 'Contacto', href: '/#contact' },
     ];

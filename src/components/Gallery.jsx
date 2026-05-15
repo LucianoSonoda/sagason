@@ -21,36 +21,45 @@ import imgImpresionEngranaje from '../assets/impresion3d_engranaje.jpg';
 import imgImpresionOruga from '../assets/impresion3d_oruga.jpg';
 
 const CATEGORIES = [
-    { title: 'POSAVASOS', color: '#c2410c' },
-    { title: 'MOUSEPAD', color: '#1d4ed8', image: imgMousepad },
-    { title: 'CUADRO HD', color: '#b91c1c', image: imgAluminio1 },
-    { title: 'LLAVEROS', color: '#047857' },
-    { title: 'ID MASCOTAS', color: '#b45309', image: imgPlacaBailey },
-    { title: 'ID SALUD', color: '#be185d' },
-    { title: 'ROMPECABEZAS', color: '#4338ca' },
     { title: 'TAZONES', color: '#a21caf', image: imgTazonMujeres },
     { title: 'TUMBLERS', color: '#0f766e' },
+    { title: 'MOUSEPAD', color: '#1d4ed8', image: imgMousepad },
+    { title: 'CUADRO HD', color: '#b91c1c', image: imgAluminio1 },
+    { title: 'POSAVASOS', color: '#c2410c' },
+    { title: 'BOLSAS', color: '#7c3aed' },
+    { title: 'ROMPECABEZAS', color: '#4338ca' },
+    { title: 'AZULEJOS', color: '#0369a1' },
+    { title: 'BOTELLAS', color: '#047857' },
+    { title: 'LLAVEROS', color: '#b45309' },
+    { title: 'ID MASCOTAS', color: '#d97706', image: imgPlacaBailey },
+    { title: 'ID SALUD', color: '#be185d' },
     { title: 'IMPRESIÓN 3D', color: '#ea580c', image: imgImpresionOruga },
     { title: 'CORPORATIVO / OTRO', color: '#1D4ED8', image: logoCompleto, objectFit: 'contain', padding: '1rem' }
 ];
 
 const ITEMS = [
-    { id: 1, title: 'Cuadro Aluminio HD', category: 'CUADRO HD', color: '#b91c1c', image: imgAluminio1 },
-    { id: 2, title: 'Edición Especial Aluminio', category: 'CUADRO HD', color: '#b91c1c', image: imgAluminio5 },
-    { id: 3, title: 'Placa con Brillo', category: 'CUADRO HD', color: '#b91c1c', image: imgAluminio6 },
-    { id: 4, title: 'Castillo y Magia', category: 'CUADRO HD', color: '#b91c1c', image: imgCastillo },
-    { id: 5, title: 'Cuadro Día de la Mujer', category: 'CUADRO HD', color: '#b91c1c', image: imgCuadroMujeres },
-    { id: 6, title: 'Diseño Mujeres', category: 'CUADRO HD', color: '#b91c1c', image: imgMujeres },
-    { id: 7, title: 'Stranger Things', category: 'CUADRO HD', color: '#b91c1c', image: imgStrangerThings },
-    { id: 8, title: 'MousePad Starry Night', category: 'MOUSEPAD', color: '#1d4ed8', image: imgMousepad },
-    { id: 9, title: 'Placa Identificación Bailey', category: 'ID MASCOTAS', color: '#b45309', image: imgPlacaBailey },
-    { id: 10, title: 'Retrato Mascotas', category: 'ID MASCOTAS', color: '#b45309', image: imgPerro },
-    { id: 14, title: 'Placas Mascotas', category: 'ID MASCOTAS', color: '#b45309', image: imgPlacasMascotas },
-    { id: 11, title: 'Tazón Naturaleza', category: 'TAZONES', color: '#a21caf', image: imgEstrela },
-    { id: 12, title: 'Tazón Especial DDM', category: 'TAZONES', color: '#a21caf', image: imgTazonMujeres },
-    { id: 15, title: 'Mecanismo Engranaje 3D', category: 'IMPRESIÓN 3D', color: '#ea580c', image: imgImpresionEngranaje },
-    { id: 16, title: 'Chasis Oruga', category: 'IMPRESIÓN 3D', color: '#ea580c', image: imgImpresionOruga },
-    { id: 13, title: 'Logo Corporativo', category: 'CORPORATIVO / OTRO', color: '#1D4ED8', image: logoCompleto, objectFit: 'contain', padding: '1rem' }
+    // Cuadros HD
+    { id: 1,  title: 'Cuadro Aluminio HD',      category: 'CUADRO HD',         color: '#b91c1c', image: imgAluminio1 },
+    { id: 2,  title: 'Edición Especial',         category: 'CUADRO HD',         color: '#b91c1c', image: imgAluminio5 },
+    { id: 3,  title: 'Placa con Brillo',         category: 'CUADRO HD',         color: '#b91c1c', image: imgAluminio6 },
+    { id: 4,  title: 'Castillo y Magia',         category: 'CUADRO HD',         color: '#b91c1c', image: imgCastillo },
+    { id: 5,  title: 'Cuadro Día de la Mujer',   category: 'CUADRO HD',         color: '#b91c1c', image: imgCuadroMujeres },
+    { id: 6,  title: 'Diseño Mujeres',           category: 'CUADRO HD',         color: '#b91c1c', image: imgMujeres },
+    { id: 7,  title: 'Stranger Things',          category: 'CUADRO HD',         color: '#b91c1c', image: imgStrangerThings },
+    // Tazones
+    { id: 11, title: 'Tazón Naturaleza',         category: 'TAZONES',           color: '#a21caf', image: imgEstrela },
+    { id: 12, title: 'Tazón Especial DDM',       category: 'TAZONES',           color: '#a21caf', image: imgTazonMujeres },
+    // Mousepad
+    { id: 8,  title: 'MousePad Starry Night',    category: 'MOUSEPAD',          color: '#1d4ed8', image: imgMousepad },
+    // ID Mascotas
+    { id: 9,  title: 'Placa ID Bailey',          category: 'ID MASCOTAS',       color: '#d97706', image: imgPlacaBailey },
+    { id: 10, title: 'Retrato Mascotas',         category: 'ID MASCOTAS',       color: '#d97706', image: imgPerro },
+    { id: 14, title: 'Placas Mascotas',          category: 'ID MASCOTAS',       color: '#d97706', image: imgPlacasMascotas },
+    // Impresión 3D
+    { id: 15, title: 'Engranaje 3D',             category: 'IMPRESIÓN 3D',      color: '#ea580c', image: imgImpresionEngranaje },
+    { id: 16, title: 'Chasis Oruga',             category: 'IMPRESIÓN 3D',      color: '#ea580c', image: imgImpresionOruga },
+    // Corporativo
+    { id: 13, title: 'Logo Corporativo',         category: 'CORPORATIVO / OTRO',color: '#1D4ED8', image: logoCompleto, objectFit: 'contain', padding: '1rem' }
 ];
 
 export function Gallery() {
