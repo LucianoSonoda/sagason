@@ -30,6 +30,7 @@ jobs:
           VITE_GOOGLE_PLACES_API_KEY: ${{ secrets.VITE_GOOGLE_PLACES_API_KEY }}
           VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
           VITE_HERALDRY_API_URL: "https://r3hp6tyrrjorq7rkfgozazbco40ksdvg.lambda-url.sa-east-1.on.aws/"
+          VITE_PRODUCTS_API_URL: "https://brk7ilny2x6vetcqeearzpjxsm0fnzrk.lambda-url.sa-east-1.on.aws/"
 
       - name: Deploy a GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
