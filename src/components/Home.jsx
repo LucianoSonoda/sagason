@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Image, PenTool, Truck, Shield, ChevronLeft, ChevronRight, Zap, Target, Cpu, X } from 'lucide-react';
+import { ArrowRight, Image, PenTool, Truck, Shield, ChevronLeft, ChevronRight, Zap, Target, Cpu, X, Infinity } from 'lucide-react';
 import '../styles/Home.css';
 import imgKanji_Kaeru from '../assets/kanji_kaeru.png';
 import imgKanji_Kizuna from '../assets/kanji_kizuna.png';
@@ -89,7 +89,9 @@ export function Home() {
                         </div>
                         <div className="stat-divider"></div>
                         <div className="stat-item">
-                            <span className="stat-value">∞</span>
+                            <span className="stat-value" style={{ display: 'flex', alignItems: 'center', height: '32px' }}>
+                                <Infinity size={36} strokeWidth={3} />
+                            </span>
                             <span className="stat-label">Durabilidad</span>
                         </div>
                     </motion.div>

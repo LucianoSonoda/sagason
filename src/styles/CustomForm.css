@@ -239,7 +239,13 @@
     border-radius: var(--radius-sm);
     font-family: var(--font-main);
     font-size: 1rem;
+    line-height: 1.5;
     transition: all 0.3s ease;
+}
+
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
 }
 
 .form-input:focus,
