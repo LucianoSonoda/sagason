@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/Header.css';
 import logoChico from '../assets/logo-chico.png';
+import { ChileanHamburger } from './ChileanHamburger';
 
 export function Header() {
     const [isOpen, setIsOpen] = useState(false);
@@ -49,15 +50,7 @@ export function Header() {
                 </nav>
 
                 <div className="header-right">
-                    <div className="header-actions desktop-only">
-                        <Link to="/#custom" className="btn-header">
-                            Pedir Ahora <ArrowRight size={16} />
-                        </Link>
-                    </div>
-
-                    <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
-                        {isOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
+                    <ChileanHamburger isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
                 </div>
             </div>
 

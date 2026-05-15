@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../styles/Gallery.css';
+import { ChileanHamburger } from './ChileanHamburger';
 
 import logoCompleto from '../assets/logo-completo.jpg';
 import imgCastillo from '../assets/Castilloconbrillo.jpeg';
@@ -65,9 +66,7 @@ const ITEMS = [
 export function Gallery() {
     const [activeCategory, setActiveCategory] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [[current, direction], setCurrent] = useState([0, 0]);
-    const [paused, setPaused] = useState(false);
-    const intervalRef = useRef(null);
+    const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const total = CATEGORIES.length;
 
@@ -76,33 +75,6 @@ export function Gallery() {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-
-    // Tarjetas visibles según ancho de pantalla
-    const visibleCount = windowWidth < 640 ? 1 : windowWidth < 1024 ? 2 : 3;
-
-    const paginate = (dir) => {
-        setCurrent(([c]) => [(c + dir + total) % total, dir]);
-    };
-
-    useEffect(() => {
-        if (paused || activeCategory) return;
-        intervalRef.current = setInterval(() => {
-            setCurrent(([c]) => [(c + 1) % total, 1]);
-        }, 3000);
-        return () => clearInterval(intervalRef.current);
-    }, [paused, current, activeCategory]);
-
-    const getVisible = () => {
-        if (visibleCount === 1) return [{ ...CATEGORIES[current], idx: current, offset: 0 }];
-        if (visibleCount === 2) return [-1, 0].map(offset => {
-            const idx = (current + offset + total) % total;
-            return { ...CATEGORIES[idx], idx, offset };
-        });
-        return [-1, 0, 1].map(offset => {
-            const idx = (current + offset + total) % total;
-            return { ...CATEGORIES[idx], idx, offset };
-        });
-    };
 
     const openLightbox = (item) => { if (item.image) setSelectedImage(item); };
     const closeLightbox = () => setSelectedImage(null);
@@ -121,69 +93,62 @@ export function Gallery() {
             <AnimatePresence mode="wait">
                 {!activeCategory ? (
                     <motion.div key="carousel-view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                        {/* Carrusel de 3 categorías visibles */}
-                        <div
-                            style={{ position: 'relative', maxWidth: visibleCount === 1 ? '340px' : visibleCount === 2 ? '620px' : '860px', margin: '0 auto 28px auto', padding: '0 44px' }}
-                            onMouseEnter={() => setPaused(true)}
-                            onMouseLeave={() => setPaused(false)}
-                        >
-                            <button onClick={() => paginate(-1)} style={arrowBtnStyle('left')}><ChevronLeft size={24} /></button>
-                            <button onClick={() => paginate(1)} style={arrowBtnStyle('right')}><ChevronRight size={24} /></button>
-
-                            <div style={{ display: 'flex', gap: '16px', overflow: 'hidden', justifyContent: 'center' }}>
-                                <AnimatePresence initial={false} custom={direction} mode="popLayout">
-                                    {getVisible().map(({ title, color, image, objectFit, padding, idx, offset }) => (
-                                        <motion.div
-                                            key={idx}
-                                            custom={direction}
-                                            initial={{ opacity: 0, x: direction > 0 ? 120 : -120, scale: 0.85 }}
-                                            animate={{ opacity: offset === 0 ? 1 : 0.5, x: 0, scale: offset === 0 ? 1 : 0.88 }}
-                                            exit={{ opacity: 0, x: direction > 0 ? -120 : 120, scale: 0.85 }}
-                                            transition={{ duration: 0.35, ease: 'easeInOut' }}
-                                            onClick={() => offset === 0 ? setActiveCategory(title) : paginate(offset)}
-                                            style={{
-                                                flex: `0 0 calc(${100 / visibleCount}% - ${visibleCount > 1 ? '11px' : '0px'})`,
-                                                aspectRatio: '3/2',
-                                                borderRadius: '16px',
-                                                overflow: 'hidden',
-                                                cursor: 'pointer',
-                                                position: 'relative',
-                                                border: offset === 0 ? '2px solid var(--color-primary)' : '1px solid rgba(255,255,255,0.1)',
-                                                boxShadow: offset === 0 ? '0 0 24px rgba(14,165,233,0.35)' : 'none',
-                                            }}
-                                        >
-                                            {image ? (
-                                                <img src={image} alt={title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: objectFit || 'cover', padding: padding || '0', opacity: 0.75 }} />
-                                            ) : (
-                                                <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, #1A1A1A, ${color})`, opacity: 0.75 }} />
-                                            )}
-                                            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                                <h3 style={{
-                                                    color: '#fff', fontWeight: 800,
-                                                    fontSize: offset === 0 ? (windowWidth < 640 ? '1rem' : '1.2rem') : '0.85rem',
-                                                    letterSpacing: '1px', margin: 0, textAlign: 'center',
-                                                    wordBreak: 'break-word', padding: '0 8px',
-                                                }}>{title}</h3>
-                                                {offset === 0 && (
-                                                    <span style={{ background: 'var(--color-primary)', color: '#000', padding: '2px 14px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>EXPLORAR</span>
-                                                )}
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+                                <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>VER CATEGORÍAS</span>
+                                <ChileanHamburger isOpen={isCategoryMenuOpen} onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)} size={32} />
                             </div>
-                        </div>
-
-                        {/* Dots */}
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-                            {CATEGORIES.map((_, i) => (
-                                <button key={i} onClick={() => setCurrent([i, i > current ? 1 : -1])} style={{
-                                    width: i === current ? '24px' : '8px', height: '8px',
-                                    borderRadius: '9999px', border: 'none', cursor: 'pointer',
-                                    background: i === current ? 'var(--color-primary)' : 'rgba(14,165,233,0.3)',
-                                    transition: 'all 0.3s ease', padding: 0,
-                                }} />
-                            ))}
+                            
+                            <AnimatePresence>
+                                {isCategoryMenuOpen && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        style={{ overflow: 'hidden', width: '100%', maxWidth: '800px' }}
+                                    >
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '15px', padding: '10px' }}>
+                                            {CATEGORIES.map((cat, idx) => (
+                                                <motion.button
+                                                    key={cat.title}
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: idx * 0.05 }}
+                                                    onClick={() => {
+                                                        setActiveCategory(cat.title);
+                                                        setIsCategoryMenuOpen(false); // Close menu
+                                                    }}
+                                                    style={{
+                                                        background: 'rgba(255,255,255,0.05)',
+                                                        border: '1px solid rgba(14,165,233,0.3)',
+                                                        padding: '12px 10px',
+                                                        borderRadius: '8px',
+                                                        color: 'white',
+                                                        cursor: 'pointer',
+                                                        fontWeight: 'bold',
+                                                        transition: 'all 0.2s',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        textAlign: 'center',
+                                                        fontSize: '0.9rem'
+                                                    }}
+                                                    onMouseOver={(e) => {
+                                                        e.currentTarget.style.background = 'var(--color-primary)';
+                                                        e.currentTarget.style.color = 'black';
+                                                    }}
+                                                    onMouseOut={(e) => {
+                                                        e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                                        e.currentTarget.style.color = 'white';
+                                                    }}
+                                                >
+                                                    {cat.title}
+                                                </motion.button>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </motion.div>
                 ) : (
