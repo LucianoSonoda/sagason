@@ -529,6 +529,7 @@
         <button class="tab-btn" id="btn-plans" onclick="showTab('plans')">Planes</button>
         <button class="tab-btn" id="btn-privacy" onclick="showTab('privacy')">Privacidad</button>
         <button class="tab-btn" id="btn-admin" onclick="showTab('admin')" style="display:none;">FÁBRICA</button>
+        <button class="tab-btn" id="btn-precios" onclick="showTab('precios')" style="display:none;">PRECIOS</button>
     </div>
 
     <!-- LISTADO -->
@@ -687,10 +688,24 @@
             </div>
         </div>
     </div>
+
+    <!-- PRECIOS -->
+    <div class="content-section" id="section-precios">
+        <div style="background:var(--card); backdrop-filter:blur(12px); padding:30px; border-radius:20px; border:1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin:0; font-size:1.5rem; text-transform:uppercase;">💰 Gestión de Precios</h3>
+                <button onclick="loadAdminPrices()" style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">Recargar</button>
+            </div>
+            <div id="prices-container" style="overflow-x: auto;">
+                <p>Cargando precios...</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     const API = "https://s4k.sagason.cl";
+    const PRICES_API = "https://brk7ilny2x6vetcqeearzpjxsm0fnzrk.lambda-url.sa-east-1.on.aws";
     let ownerId = null; let userEmail = "";
 
     function showTab(n) {
@@ -707,9 +722,131 @@
         localStorage.setItem('sagason_token', token);
         const user = JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
         ownerId = user.sub; userEmail = user.email;
-        if (userEmail === "brluson@gmail.com") document.getElementById('btn-admin').style.display = "block";
+        if (userEmail === "brluson@gmail.com") {
+            document.getElementById('btn-admin').style.display = "block";
+            document.getElementById('btn-precios').style.display = "block";
+            loadAdminPrices();
+        }
         loadTags();
         loadProfile();
+    }
+
+    const LOCAL_PRODUCTS = [
+      { id: 'tazon-11oz', name: 'Tazón Sublimado 11oz', cat: 'TAZONES' },
+      { id: 'tazon-magico', name: 'Tazón Mágico Sublimado', cat: 'TAZONES' },
+      { id: 'tumbler-20oz', name: 'Tumbler Inox Sublimado 20oz', cat: 'TUMBLERS' },
+      { id: 'mousepad-standard', name: 'Mousepad Sublimado Estándar', cat: 'MOUSEPAD' },
+      { id: 'cuadro-aluminio-hd', name: 'Cuadro HD Aluminio Sublimado', cat: 'CUADRO_HD' },
+      { id: 'posavasos-set4', name: 'Set Posavasos Sublimados (x4)', cat: 'POSAVASOS' },
+      { id: 'bolsa-tote', name: 'Bolsa Tote Sublimada', cat: 'BOLSAS' },
+      { id: 'puzzle-110', name: 'Rompecabezas Sublimado 110 pzs', cat: 'PUZZLES' },
+      { id: 'azulejo-10x10', name: 'Azulejo / Plancha Sublimada', cat: 'AZULEJOS' },
+      { id: 'botella-aluminio-750', name: 'Botella Aluminio Sublimada 750ml', cat: 'BOTELLAS' },
+      { id: 'llavero-sublimado', name: 'Llavero Sublimado Personalizado', cat: 'LLAVEROS' },
+      { id: 'id-mascota', name: 'Placa ID Mascotas', cat: 'ID_MASCOTAS' },
+      { id: 'id-salud', name: 'Placa ID Salud / Emergencia', cat: 'ID_SALUD' }
+    ];
+
+    async function loadAdminPrices() {
+        const token = localStorage.getItem('sagason_token');
+        if (!token || userEmail !== "brluson@gmail.com") return;
+        
+        try {
+            document.getElementById('prices-container').innerHTML = '<p>Cargando precios...</p>';
+            const res = await fetch(`${PRICES_API}/products/prices`, {
+                headers: { 'x-admin-token': token }
+            });
+            const data = await res.json();
+            if (data.success) {
+                renderAdminPrices(data.data);
+            } else {
+                document.getElementById('prices-container').innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+            }
+        } catch (e) {
+            document.getElementById('prices-container').innerHTML = '<p style="color:red;">Error de conexión</p>';
+        }
+    }
+
+    function renderAdminPrices(dbPrices) {
+        let html = `
+        <table style="width:100%; border-collapse: collapse; font-size: 13px;">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--border); text-align: left; color: var(--muted);">
+                    <th style="padding: 10px;">Producto</th>
+                    <th style="padding: 10px; min-width: 120px;">Precio (CLP)</th>
+                    <th style="padding: 10px;">Notas</th>
+                    <th style="padding: 10px;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+        `;
+
+        LOCAL_PRODUCTS.forEach(loc => {
+            const dbItem = dbPrices.find(p => p.productId === loc.id) || {};
+            const price = dbItem.basePrice || '';
+            const notes = dbItem.notes || '';
+            html += `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 12px 10px;">
+                        <strong>${loc.name}</strong><br>
+                        <span style="color:var(--muted); font-size:11px;">${loc.cat}</span>
+                    </td>
+                    <td style="padding: 12px 10px;">
+                        <input type="number" id="price-${loc.id}" value="${price}" style="width: 100%; padding: 8px; margin: 0; background: rgba(0,0,0,0.2);" />
+                    </td>
+                    <td style="padding: 12px 10px;">
+                        <input type="text" id="notes-${loc.id}" value="${notes}" style="width: 100%; padding: 8px; margin: 0; background: rgba(0,0,0,0.2);" placeholder="Notas..." />
+                    </td>
+                    <td style="padding: 12px 10px;">
+                        <button id="btn-save-${loc.id}" onclick="saveAdminPrice('${loc.id}')" style="background:var(--success); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold; font-family:var(--font-main);">Guardar</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table>`;
+        document.getElementById('prices-container').innerHTML = html;
+    }
+
+    async function saveAdminPrice(productId) {
+        const token = localStorage.getItem('sagason_token');
+        const priceVal = document.getElementById(`price-${productId}`).value;
+        const notesVal = document.getElementById(`notes-${productId}`).value;
+        const btn = document.getElementById(`btn-save-${productId}`);
+        
+        const price = parseFloat(priceVal);
+        if (isNaN(price) || price < 0) return alert("Precio inválido");
+
+        btn.innerText = "⏳";
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`${PRICES_API}/products/${productId}/price`, {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-admin-token': token 
+                },
+                body: JSON.stringify({
+                    productId,
+                    basePrice: price,
+                    notes: notesVal
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                btn.innerText = "✓";
+                setTimeout(() => { btn.innerText = "Guardar"; btn.disabled = false; }, 2000);
+            } else {
+                alert("Error: " + data.error);
+                btn.innerText = "Guardar";
+                btn.disabled = false;
+            }
+        } catch (e) {
+            alert("Error de conexión");
+            btn.innerText = "Guardar";
+            btn.disabled = false;
+        }
     }
 
     async function loadProfile() {
