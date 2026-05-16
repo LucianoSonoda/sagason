@@ -215,12 +215,7 @@ function arrowBtnStyle(side) {
 
 function GalleryItem({ item, onClick }) {
     return (
-        <motion.div
-            layout
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
+        <div
             className="gallery-item glass-panel lightbox-trigger"
             onClick={onClick}
         >
@@ -237,6 +232,6 @@ function GalleryItem({ item, onClick }) {
                 <h3 className="item-title">{item.title}</h3>
                 <span className="item-category">{item.category}</span>
             </div>
-        </motion.div>
+        </div>
     );
 }
