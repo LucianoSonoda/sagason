@@ -529,6 +529,7 @@
         <button class="tab-btn" id="btn-plans" onclick="showTab('plans')">Planes</button>
         <button class="tab-btn" id="btn-privacy" onclick="showTab('privacy')">Privacidad</button>
         <button class="tab-btn" id="btn-admin" onclick="showTab('admin')" style="display:none;">FÁBRICA</button>
+        <button class="tab-btn" id="btn-precios" onclick="showTab('precios')" style="display:none;">💰 PRECIOS</button>
     </div>
 
     <!-- LISTADO -->
@@ -686,7 +687,26 @@
                 <button onclick="downloadAllQRs()" style="background:#0f172a; color:white; width:100%; padding:10px; border-radius:8px; border:none; cursor:pointer; font-weight:bold;">📥 Descargar Lote (.zip)</button>
             </div>
         </div>
+        <!-- PRECIOS (solo admin) -->
+    <div class="content-section" id="section-precios">
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:20px; padding:30px;">
+            <h3 style="margin:0 0 6px 0; font-size:2rem; font-family:var(--font-display); text-transform:uppercase; letter-spacing:1px;">Listado de Precios</h3>
+            <p style="color:var(--muted); font-size:13px; margin:0 0 24px 0;">Precios orientativos que se muestran en el formulario de personalización. El cliente los ve como referencia al final del formulario.</p>
+
+            <div id="precios-grid" style="display:grid; gap:12px;">
+                <!-- Generado por JS -->
+            </div>
+
+            <button id="btn-guardar-precios" class="btn-action btn-save" onclick="savePrecios()" style="margin-top:28px;">
+                💾 Guardar y Publicar Precios
+            </button>
+            <div id="precios-success" style="display:none; background:rgba(52,211,153,0.1); border:1px solid #34d399; padding:15px; border-radius:10px; text-align:center; color:#34d399; font-size:13px; margin-top:16px;">
+                ✅ Precios actualizados correctamente.
+            </div>
+        </div>
     </div>
+
+</div>
 </div>
 
 <script>
@@ -707,7 +727,11 @@
         localStorage.setItem('sagason_token', token);
         const user = JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
         ownerId = user.sub; userEmail = user.email;
-        if (userEmail === "brluson@gmail.com") document.getElementById('btn-admin').style.display = "block";
+        if (userEmail === "brluson@gmail.com") {
+            document.getElementById('btn-admin').style.display = "block";
+            document.getElementById('btn-precios').style.display = "block";
+            loadAdminPrecios();
+        }
         loadTags();
         loadProfile();
     }
@@ -1342,6 +1366,96 @@
     }
 
     function logout() { localStorage.removeItem('sagason_token'); location.href="https://sagason.cl"; }
+
+    // ── GESTIÓN DE PRECIOS (solo admin) ───────────────────────────────────
+    const ADMIN_PRODUCTS = [
+        { id: 'posavasos',    label: 'Posavasos' },
+        { id: 'mousepad',     label: 'Mousepad' },
+        { id: 'cuadro',       label: 'Cuadro HD' },
+        { id: 'llaveros',     label: 'Llaveros' },
+        { id: 'id-mascotas',  label: 'ID Mascotas' },
+        { id: 'id-salud',     label: 'ID Salud' },
+        { id: 'rompecabezas', label: 'Rompecabezas' },
+        { id: 'tazones',      label: 'Tazones' },
+        { id: 'tumblers',     label: 'Tumblers' },
+        { id: 'impresion3d',  label: 'Impresión 3D' },
+        { id: 'insignias',    label: 'Insignias' },
+        { id: 'otro',         label: 'Otro' },
+    ];
+
+    let adminPrecios = {};
+
+    async function loadAdminPrecios() {
+        try {
+            const res = await fetch(`${API}/user-tags?action=prices`);
+            if (res.ok) {
+                const data = await res.json();
+                if (Object.keys(data).length > 0) adminPrecios = data;
+            }
+        } catch (_) {}
+        // Fallback: leer del JSON estático
+        if (Object.keys(adminPrecios).length === 0) {
+            try {
+                const res = await fetch('/precios.json');
+                if (res.ok) adminPrecios = await res.json();
+            } catch (_) {}
+        }
+        renderPreciosGrid();
+    }
+
+    function renderPreciosGrid() {
+        const grid = document.getElementById('precios-grid');
+        grid.innerHTML = ADMIN_PRODUCTS.map(p => {
+            const d = adminPrecios[p.id] || { desde: 0, nota: '' };
+            return `
+            <div style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center;">
+                <div>
+                    <div style="font-weight:700; font-size:14px; color:#fff; margin-bottom:4px;">${p.label}</div>
+                    <input type="text" id="nota-${p.id}" value="${d.nota || ''}" placeholder="Nota breve (ej: Precio unitario)"
+                        style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:100%; box-sizing:border-box; margin-top:4px;">
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Desde $</div>
+                    <input type="number" id="precio-${p.id}" value="${d.desde || 0}" min="0" step="100"
+                        style="background:rgba(14,165,233,0.08); border:1px solid rgba(14,165,233,0.3); color:var(--primary); font-size:16px; font-weight:700; padding:8px 12px; border-radius:10px; width:120px; text-align:right; box-sizing:border-box;">
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    async function savePrecios() {
+        const btn = document.getElementById('btn-guardar-precios');
+        btn.disabled = true; btn.innerText = 'Guardando...';
+
+        const prices = {};
+        ADMIN_PRODUCTS.forEach(p => {
+            prices[p.id] = {
+                desde: parseInt(document.getElementById(`precio-${p.id}`).value) || 0,
+                nota: document.getElementById(`nota-${p.id}`).value.trim()
+            };
+        });
+
+        try {
+            const res = await fetch(`${API}/user-tags?action=prices`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adminEmail: userEmail, prices })
+            });
+            if (res.ok) {
+                document.getElementById('precios-success').style.display = 'block';
+                setTimeout(() => document.getElementById('precios-success').style.display = 'none', 3500);
+                adminPrecios = prices;
+            } else {
+                alert('Error al guardar precios: ' + await res.text());
+            }
+        } catch(e) {
+            alert('Error de conexión: ' + e.message);
+        } finally {
+            btn.disabled = false; btn.innerText = '💾 Guardar y Publicar Precios';
+        }
+    }
+    // ─────────────────────────────────────────────────────────────────────
+
     init();
 </script>
 <script src="/music-player.js"></script>

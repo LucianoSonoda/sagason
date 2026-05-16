@@ -44,6 +44,10 @@ const SIZES = {
     'otro': ['Consultar tamaño']
 };
 
+const API = 'https://s4k.sagason.cl';
+
+const formatPrecio = (n) => n > 0 ? `$${n.toLocaleString('es-CL')}` : 'Consultar';
+
 export function CustomForm() {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
@@ -52,12 +56,32 @@ export function CustomForm() {
         category: '',
         size: ''
     });
+    const [precios, setPrecios] = useState({});
 
     const [fileName, setFileName] = useState('');
     const [fileError, setFileError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
     const qrInputRef = useRef(null);
+
+    // Cargar precios de referencia
+    useEffect(() => {
+        const loadPrecios = async () => {
+            try {
+                const res = await fetch(`${API}/user-tags?action=prices`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Object.keys(data).length > 0) { setPrecios(data); return; }
+                }
+            } catch (_) {}
+            // Fallback al archivo estático
+            try {
+                const res = await fetch('/precios.json');
+                if (res.ok) setPrecios(await res.json());
+            } catch (_) {}
+        };
+        loadPrecios();
+    }, []);
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
@@ -257,6 +281,7 @@ export function CustomForm() {
                                     <div className="options-grid products-grid">
                                         {PRODUCTS.map(p => {
                                             const Icon = p.icon;
+                                            const precio = precios[p.id];
                                             return (
                                                 <div
                                                     key={p.id}
@@ -272,6 +297,12 @@ export function CustomForm() {
                                                     <Icon size={24} className="option-icon" />
                                                     <h4>{p.title}</h4>
                                                     <p>{p.desc}</p>
+                                                    {precio && (
+                                                        <span className="precio-desde">
+                                                            Desde {formatPrecio(precio.desde)}
+                                                            {precio.nota ? <em> · {precio.nota}</em> : null}
+                                                        </span>
+                                                    )}
                                                 </div>
                                             )
                                         })}
@@ -386,6 +417,29 @@ export function CustomForm() {
                                             {fileError && <span style={{ color: '#ff4d4f', fontSize: '0.8rem', display: 'block', marginTop: '8px', fontWeight: 'bold' }}>{fileError}</span>}
                                         </div>
                                     </div>
+
+                                    {/* Precio referencial */}
+                                    {(() => {
+                                        const prodId = PRODUCTS.find(p => p.title === selections.product)?.id;
+                                        const precio = prodId && precios[prodId];
+                                        if (!precio) return null;
+                                        return (
+                                            <div className="precio-referencia-box">
+                                                <div className="precio-ref-header">
+                                                    <span>💰</span>
+                                                    <strong>Precio Referencial</strong>
+                                                </div>
+                                                <div className="precio-ref-body">
+                                                    <span className="precio-ref-producto">{selections.product}</span>
+                                                    <span className="precio-ref-valor">
+                                                        Desde {formatPrecio(precio.desde)}
+                                                        {precio.nota ? <span className="precio-ref-nota"> ({precio.nota})</span> : null}
+                                                    </span>
+                                                </div>
+                                                <p className="precio-ref-disclaimer">⚠ Este valor es orientativo. El precio final depende de la cantidad, materiales y detalles de tu pedido. Nuestro equipo te confirmará el valor exacto.</p>
+                                            </div>
+                                        );
+                                    })()}
 
                                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', backgroundColor: 'rgba(37, 99, 235, 0.08)', border: '1px solid rgba(37, 99, 235, 0.25)', borderRadius: '8px', padding: '12px 14px', marginBottom: '1.25rem' }}>
                                         <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>💬</span>
