@@ -271,7 +271,7 @@ export function CustomForm() {
                         <AnimatePresence mode="wait">
                             {/* STEP 1 */}
                             {step === 1 && (
-                                <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                <motion.div key="step1" initial={{ opacity: 1, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                                     <h3 className="step-title">¿QUÉ PRODUCTO QUIERES PERSONALIZAR?</h3>
                                     <div className="options-grid products-grid">
                                         {PRODUCTS.map(p => {
@@ -300,7 +300,7 @@ export function CustomForm() {
 
                             {/* STEP 2 */}
                             {step === 2 && (
-                                <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                <motion.div key="step2" initial={{ opacity: 1, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                                     <h3 className="step-title">
                                         {selections.product === 'ID SALUD'
                                             ? '¿QUÉ FORMATO DE FICHA NECESITAS?'
@@ -333,7 +333,7 @@ export function CustomForm() {
 
                             {/* STEP 3 */}
                             {step === 3 && (
-                                <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                <motion.div key="step3" initial={{ opacity: 1, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                                     <h3 className="step-title">
                                         {selections.product === 'IMPRESIÓN 3D' ? '¿QUÉ MATERIAL PREFIERES?' : '¿QUÉ TAMAÑO / FORMATO NECESITAS?'}
                                     </h3>
@@ -386,7 +386,7 @@ export function CustomForm() {
 
                             {/* STEP 4 */}
                             {step === 4 && (
-                                <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                <motion.div key="step4" initial={{ opacity: 1, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                                     <h3 className="step-title">TUS DATOS Y DETALLES</h3>
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
 
