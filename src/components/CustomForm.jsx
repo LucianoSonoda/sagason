@@ -244,8 +244,8 @@ export function CustomForm() {
                 <div className="progress-tracker">
                     {stepsInfo.map((s, idx) => (
                         <React.Fragment key={s.id}>
-                            <div className={`progress-step ${step >= s.id ? 'active' : ''} ${step === s.id ? 'current' : ''}`}>
-                                <div className="step-circle">{s.id}</div>
+                            <div className={`progress-step ${step >= s.id ? 'active' : ''} ${step === s.id ? 'current' : ''} ${step > s.id ? 'done' : ''}`}>
+                                <div className="step-circle">{step > s.id ? '✓' : s.id}</div>
                                 <span className="step-name">{s.name}</span>
                             </div>
                             {idx < stepsInfo.length - 1 && <div className={`progress-line ${step > s.id ? 'active' : ''}`} />}
@@ -268,10 +268,10 @@ export function CustomForm() {
                         <input type="hidden" name="Categoria" value={selections.category} />
                         <input type="hidden" name="Características" value={selections.size} />
 
-                        <AnimatePresence mode="wait">
+                        <div className="form-steps-wrapper">
                             {/* STEP 1 */}
                             {step === 1 && (
-                                <motion.div key="step1" initial={{ opacity: 1, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                <div className="form-step">
                                     <h3 className="step-title">¿QUÉ PRODUCTO QUIERES PERSONALIZAR?</h3>
                                     <div className="options-grid products-grid">
                                         {PRODUCTS.map(p => {
@@ -295,12 +295,12 @@ export function CustomForm() {
                                             )
                                         })}
                                     </div>
-                                </motion.div>
+                                </div>
                             )}
 
                             {/* STEP 2 */}
                             {step === 2 && (
-                                <motion.div key="step2" initial={{ opacity: 1, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                <div className="form-step">
                                     <h3 className="step-title">
                                         {selections.product === 'ID SALUD'
                                             ? '¿QUÉ FORMATO DE FICHA NECESITAS?'
@@ -328,12 +328,12 @@ export function CustomForm() {
                                             &larr; Volver
                                         </button>
                                     </div>
-                                </motion.div>
+                                </div>
                             )}
 
                             {/* STEP 3 */}
                             {step === 3 && (
-                                <motion.div key="step3" initial={{ opacity: 1, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                <div className="form-step">
                                     <h3 className="step-title">
                                         {selections.product === 'IMPRESIÓN 3D' ? '¿QUÉ MATERIAL PREFIERES?' : '¿QUÉ TAMAÑO / FORMATO NECESITAS?'}
                                     </h3>
@@ -381,12 +381,12 @@ export function CustomForm() {
                                             &larr; Volver
                                         </button>
                                     </div>
-                                </motion.div>
+                                </div>
                             )}
 
                             {/* STEP 4 */}
                             {step === 4 && (
-                                <motion.div key="step4" initial={{ opacity: 1, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                <div className="form-step">
                                     <h3 className="step-title">TUS DATOS Y DETALLES</h3>
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
 
@@ -457,9 +457,9 @@ export function CustomForm() {
                                             <p style={{ color: 'white', margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>Nuestro servidor tuvo problemas con la foto adjunta. Por favor, <strong>envía tu formulario sin la foto</strong> y luego envíanos la imagen directamente a <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)' }}>ventas@sagason.cl</a>.</p>
                                         </div>
                                     )}
-                                </motion.div>
+                                </div>
                             )}
-                        </AnimatePresence>
+                        </div>
                     </form>
                 </div>
             </div>

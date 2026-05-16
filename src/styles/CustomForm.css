@@ -47,9 +47,17 @@
     box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
 }
 
+.progress-step.done .step-circle {
+    background: #10b981;
+    border-color: #10b981;
+    color: #000;
+    font-size: 0.9rem;
+}
+
 .progress-step.current .step-circle {
-    transform: scale(1.2);
+    transform: scale(1.25);
     border-width: 2px;
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.7);
 }
 
 .step-name {
