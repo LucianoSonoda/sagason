@@ -10,6 +10,8 @@ import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
 import sagasonSymbol from '/sagason-symbol.png';
 import { DiscoverCity } from './DiscoverCity';
 import { CustomForm } from './CustomForm';
+import { PRODUCTS, PRODUCT_CATEGORIES } from '../data/products';
+import { Link as RouterLink } from 'react-router-dom';
 
 function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth);
@@ -111,6 +113,9 @@ export function Home() {
             <div id="custom">
                 <CustomForm />
             </div>
+
+            {/* Catálogo Preview */}
+            <CatalogoPreview />
         </div>
     );
 }
@@ -337,6 +342,84 @@ function S4KCarousel() {
                     <WaitlistModal isOpen={isWaitlistOpen} onClose={() => setWaitlistOpen(false)} />
                 )}
             </AnimatePresence>
+        </section>
+    );
+}
+
+function CatalogoPreview() {
+    const [activeCategory, setActiveCategory] = useState('ALL');
+    const categories = [{ id: 'ALL', label: 'Todo', icon: '✨' }, ...PRODUCT_CATEGORIES];
+
+    const filtered = activeCategory === 'ALL'
+        ? PRODUCTS
+        : PRODUCTS.filter(p => p.category === activeCategory);
+
+    return (
+        <section className="home-catalog-section container" id="productos">
+            <div className="section-header">
+                <span className="section-label">NUESTROS PRODUCTOS</span>
+                <h2 className="section-title">TODO LO QUE PODEMOS <span className="text-primary">CREAR PARA TI</span></h2>
+            </div>
+
+            {/* Filtros de categoría */}
+            <div className="home-cat-filters">
+                {categories.map(cat => (
+                    <button
+                        key={cat.id}
+                        onClick={() => setActiveCategory(cat.id)}
+                        className={`home-cat-btn ${activeCategory === cat.id ? 'active' : ''}`}
+                        style={activeCategory === cat.id && cat.color ? { borderColor: cat.color, color: cat.color } : {}}
+                    >
+                        {cat.icon} {cat.label}
+                    </button>
+                ))}
+            </div>
+
+            {/* Grid de productos */}
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={activeCategory}
+                    className="home-catalog-grid"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    {filtered.map(product => {
+                        const catInfo = PRODUCT_CATEGORIES.find(c => c.id === product.category);
+                        const img = product.images?.[0];
+                        return (
+                            <RouterLink
+                                key={product.productId}
+                                to="/catalogo"
+                                className="home-prod-card glass-panel"
+                                style={{ '--card-color': catInfo?.color || '#0EA5E9' }}
+                            >
+                                {img ? (
+                                    <div className="home-prod-img-wrap">
+                                        <img src={img} alt={product.name} className="home-prod-img" loading="lazy" />
+                                    </div>
+                                ) : (
+                                    <div className="home-prod-img-wrap home-prod-img-placeholder">
+                                        <span className="home-prod-icon">{catInfo?.icon}</span>
+                                    </div>
+                                )}
+                                <div className="home-prod-info">
+                                    <span className="home-prod-cat" style={{ color: catInfo?.color }}>{catInfo?.label}</span>
+                                    <h3 className="home-prod-name">{product.name}</h3>
+                                    <p className="home-prod-desc">{product.shortDesc}</p>
+                                </div>
+                            </RouterLink>
+                        );
+                    })}
+                </motion.div>
+            </AnimatePresence>
+
+            <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+                <RouterLink to="/catalogo" className="btn btn-primary glow">
+                    Ver catálogo completo <ArrowRight size={18} />
+                </RouterLink>
+            </div>
         </section>
     );
 }
