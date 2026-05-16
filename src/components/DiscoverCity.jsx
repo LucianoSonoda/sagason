@@ -169,7 +169,7 @@ export function DiscoverCity() {
                         {places.map((spot, idx) => (
                             <motion.div 
                                 key={spot.title + idx}
-                                initial={{ opacity: 0, y: 30 }}
+                                initial={{ opacity: 1, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.05 }}
                                 className="glass-panel"

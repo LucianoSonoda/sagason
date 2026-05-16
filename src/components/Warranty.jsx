@@ -5,7 +5,7 @@ import '../styles/Warranty.css';
 
 export function Warranty() {
     const containerVariants = {
-        hidden: { opacity: 0 },
+        hidden: { opacity: 1 },
         visible: {
             opacity: 1,
             transition: {
@@ -15,7 +15,7 @@ export function Warranty() {
     };
 
     const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
+        hidden: { y: 20, opacity: 1 },
         visible: {
             y: 0,
             opacity: 1,

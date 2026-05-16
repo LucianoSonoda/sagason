@@ -56,7 +56,7 @@ const TECH_FEATURES = [
 
 export function Technology() {
     const containerVariants = {
-        hidden: { opacity: 0 },
+        hidden: { opacity: 1 },
         visible: {
             opacity: 1,
             transition: { staggerChildren: 0.2 }
@@ -64,7 +64,7 @@ export function Technology() {
     };
 
     const cardVariants = {
-        hidden: { y: 30, opacity: 0 },
+        hidden: { y: 30, opacity: 1 },
         visible: {
             y: 0,
             opacity: 1,
@@ -77,7 +77,7 @@ export function Technology() {
             <div className="container">
                 {/* Header */}
                 <motion.div 
-                    initial={{ opacity: 0, y: -20 }}
+                    initial={{ opacity: 1, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="section-header"
                     style={{ marginBottom: '80px' }}
@@ -185,7 +185,7 @@ export function Technology() {
 
                 {/* Tech Specs Table or Stats */}
                 <motion.div 
-                    initial={{ opacity: 0 }}
+                    initial={{ opacity: 1 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
                     style={{ marginTop: '8rem', textAlign: 'center' }}
@@ -212,7 +212,7 @@ export function Technology() {
 
                 {/* Final CTA */}
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 1, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.6 }}
                     style={{ textAlign: 'center', marginTop: '6rem' }}

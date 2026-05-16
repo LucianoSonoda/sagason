@@ -56,7 +56,7 @@ const STEPS = [
 
 export function HowItWorks() {
     const containerVariants = {
-        hidden: { opacity: 0 },
+        hidden: { opacity: 1 },
         visible: {
             opacity: 1,
             transition: { staggerChildren: 0.1 }
@@ -64,7 +64,7 @@ export function HowItWorks() {
     };
 
     const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
+        hidden: { y: 20, opacity: 1 },
         visible: {
             y: 0,
             opacity: 1,
@@ -77,7 +77,7 @@ export function HowItWorks() {
             <div className="container">
                 {/* Header Section */}
                 <motion.div 
-                    initial={{ opacity: 0, y: -20 }}
+                    initial={{ opacity: 1, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="section-header"
                     style={{ marginBottom: '60px' }}
@@ -91,7 +91,7 @@ export function HowItWorks() {
 
                 {/* Trust Section - Styled like Home.jsx */}
                 <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 1, scale: 1 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="glass-panel glow-card"
@@ -224,7 +224,7 @@ export function HowItWorks() {
 
                 {/* Info Alert */}
                 <motion.div 
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 1, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
                     style={{ marginTop: '5rem' }}
@@ -252,7 +252,7 @@ export function HowItWorks() {
 
                 {/* Final CTA */}
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 1, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.6 }}
                     style={{ textAlign: 'center', marginTop: '6rem' }}

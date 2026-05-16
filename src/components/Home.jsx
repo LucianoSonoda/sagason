@@ -26,21 +26,21 @@ function useWindowWidth() {
 export function Home() {
 
     const containerVariants = {
-        hidden: { opacity: 0 },
+        hidden: { opacity: 1 },
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.15
+                staggerChildren: 0.12
             }
         }
     };
 
     const itemVariants = {
-        hidden: { y: 30, opacity: 0 },
+        hidden: { y: 20, opacity: 1 },
         visible: {
             y: 0,
             opacity: 1,
-            transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+            transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
         }
     };
 
@@ -124,7 +124,7 @@ function TrustSymbolSection() {
     const isMobile = useWindowWidth() < 640;
     return (
         <motion.section
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 1, scale: 1 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
             className="trust-section glass-panel glow-card"
