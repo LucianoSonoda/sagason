@@ -815,7 +815,7 @@
             html += `
                 <tr>
                     <td style="padding: 12px 10px; text-align:center;">
-                        <img id="img-preview-${loc.id}" src="${imageUrl || 'https://via.placeholder.com/60'}" width="60" height="60" style="border-radius:8px; object-fit:cover; display:block; margin:0 auto 5px auto;" onerror="this.src='https://via.placeholder.com/60'">
+                        <img id="img-preview-${loc.id}" src="${imageUrl || 'https://sagason.cl/images/logo.png'}" width="60" height="60" style="border-radius:8px; object-fit:cover; display:block; margin:0 auto 5px auto;" onerror="this.src='https://sagason.cl/images/logo.png'">
                         <label style="cursor:pointer; background:var(--primary); color:white; padding:4px 8px; border-radius:4px; font-size:10px; display:inline-block; margin-top:5px;">
                             Foto
                             <input type="file" id="file-${loc.id}" style="display:none;" accept="image/*" onchange="previewImage('${loc.id}', this)">
@@ -844,7 +844,7 @@
         html += `
             <tr style="background: rgba(255,255,255,0.02);">
                 <td style="padding: 12px 10px; text-align:center;">
-                    <img id="img-preview-new" src="https://via.placeholder.com/60" width="60" height="60" style="border-radius:8px; object-fit:cover; display:block; margin:0 auto 5px auto;">
+                    <img id="img-preview-new" src="https://sagason.cl/images/logo.png" width="60" height="60" style="border-radius:8px; object-fit:cover; display:block; margin:0 auto 5px auto;" onerror="this.src='https://sagason.cl/images/logo.png'">
                     <label style="cursor:pointer; background:var(--primary); color:white; padding:4px 8px; border-radius:4px; font-size:10px; display:inline-block; margin-top:5px;">
                         Foto
                         <input type="file" id="file-new" style="display:none;" accept="image/*" onchange="previewImage('new', this)">
@@ -944,7 +944,7 @@
         if (imgEl && imgEl.src.startsWith('data:image')) {
             const resizedBase64 = await resizeImage(imgEl.src, 400);
             bodyPayload.imageUrl = resizedBase64;
-        } else if (imgEl && !imgEl.src.includes('placeholder.com')) {
+        } else if (imgEl) {
             bodyPayload.imageUrl = imgEl.src;
         }
 
