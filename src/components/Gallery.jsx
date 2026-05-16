@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, X, ZoomIn, ChevronLeft, ChevronRight, Menu } from 'lucide-react';
 import '../styles/Gallery.css';
-import { ChileanHamburger } from './ChileanHamburger';
 
 import logoCompleto from '../assets/logo-completo.jpg';
 import imgCastillo from '../assets/Castilloconbrillo.jpeg';
@@ -80,7 +79,7 @@ export function Gallery() {
     const closeLightbox = () => setSelectedImage(null);
 
     return (
-        <section id="gallery" className="gallery-section container">
+        <section id="gallery" className="gallery-section container" style={{ position: 'relative', zIndex: 10 }}>
             <div className="section-header">
                 <p className="section-subtitle">NUESTRO CATÁLOGO</p>
                 <h2 className="section-title">
@@ -92,11 +91,15 @@ export function Gallery() {
 
             <AnimatePresence mode="wait">
                 {!activeCategory ? (
-                    <motion.div key="carousel-view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <motion.div key="carousel-view" initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-                                <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>VER CATEGORÍAS</span>
-                                <ChileanHamburger isOpen={isCategoryMenuOpen} onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)} size={32} />
+                                <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-primary)', cursor: 'pointer' }} onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}>VER CATEGORÍAS</span>
+                                <Menu 
+                                    size={32} 
+                                    style={{ color: 'var(--color-primary)', cursor: 'pointer' }} 
+                                    onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)} 
+                                />
                             </div>
                             
                             <AnimatePresence>
@@ -159,7 +162,7 @@ export function Gallery() {
                         </div>
                     </motion.div>
                 ) : (
-                    <motion.div key="items-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+                    <motion.div key="items-view" initial={{ opacity: 1, y: 0 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
                             <button className="filter-btn active" onClick={() => setActiveCategory(null)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <ArrowLeft size={18} /> Volver a los Productos
