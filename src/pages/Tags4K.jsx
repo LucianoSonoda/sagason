@@ -7,7 +7,7 @@ export function Tags4K() {
     return (
         <div className="tags4k-page container" style={{ paddingTop: '100px', paddingBottom: '60px' }}>
             <motion.div 
-                initial={{ opacity: 1, y: 20 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="section-header"
                 style={{ textAlign: 'center', marginBottom: '40px' }}

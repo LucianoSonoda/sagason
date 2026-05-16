@@ -7,7 +7,6 @@ import '../styles/CustomForm.css';
 export function InsigniaForm() {
     const [lugarInicial, setLugarInicial] = useState("");
     const [cachedDestinations, setCachedDestinations] = useState([]);
-    const [catalogData, setCatalogData] = useState([]);
     
     const [selections, setSelections] = useState({
         lugar: "",
@@ -44,16 +43,6 @@ export function InsigniaForm() {
                 console.error(e);
             }
         }
-
-        // Fetch prices
-        fetch('https://brk7ilny2x6vetcqeearzpjxsm0fnzrk.lambda-url.sa-east-1.on.aws/products/public')
-            .then(res => res.json())
-            .then(data => {
-                if (data.success && Array.isArray(data.data)) {
-                    setCatalogData(data.data);
-                }
-            })
-            .catch(err => console.error('Error fetching catalog data:', err));
     }, [location.search]);
 
     const handleChange = (e) => {
@@ -191,30 +180,14 @@ export function InsigniaForm() {
                                     DIÁMETRO DE INSIGNIA (ACERO INOXIDABLE) *
                                 </label>
                                 <div style={{ display: 'flex', gap: '15px', marginTop: '8px' }}>
-                                    {(() => {
-                                        const getPrice = (id) => {
-                                            const prod = catalogData.find(p => p.productId === id && p.isActive !== false);
-                                            if (prod && prod.basePrice) {
-                                                return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(prod.basePrice);
-                                            }
-                                            return '';
-                                        };
-                                        const price10mm = getPrice('insignia-10mm');
-                                        const price15mm = getPrice('insignia-15mm');
-
-                                        return (
-                                            <>
-                                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 15px', background: selections.tamano === '10mm Circular' ? 'rgba(14,165,233,0.2)' : 'rgba(255,255,255,0.05)', border: selections.tamano === '10mm Circular' ? '1px solid var(--color-primary)' : '1px solid transparent', borderRadius: '8px', transition: 'all 0.2s' }}>
-                                                    <input type="radio" name="tamano" value="10mm Circular" checked={selections.tamano === '10mm Circular'} onChange={handleChange} style={{ accentColor: 'var(--color-primary)' }} />
-                                                    10mm Circular {price10mm && <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>({price10mm})</span>}
-                                                </label>
-                                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 15px', background: selections.tamano === '15mm Circular' ? 'rgba(14,165,233,0.2)' : 'rgba(255,255,255,0.05)', border: selections.tamano === '15mm Circular' ? '1px solid var(--color-primary)' : '1px solid transparent', borderRadius: '8px', transition: 'all 0.2s' }}>
-                                                    <input type="radio" name="tamano" value="15mm Circular" checked={selections.tamano === '15mm Circular'} onChange={handleChange} style={{ accentColor: 'var(--color-primary)' }} />
-                                                    15mm Circular {price15mm && <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>({price15mm})</span>}
-                                                </label>
-                                            </>
-                                        );
-                                    })()}
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 15px', background: selections.tamano === '10mm Circular' ? 'rgba(14,165,233,0.2)' : 'rgba(255,255,255,0.05)', border: selections.tamano === '10mm Circular' ? '1px solid var(--color-primary)' : '1px solid transparent', borderRadius: '8px', transition: 'all 0.2s' }}>
+                                        <input type="radio" name="tamano" value="10mm Circular" checked={selections.tamano === '10mm Circular'} onChange={handleChange} style={{ accentColor: 'var(--color-primary)' }} />
+                                        10mm Circular
+                                    </label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '10px 15px', background: selections.tamano === '15mm Circular' ? 'rgba(14,165,233,0.2)' : 'rgba(255,255,255,0.05)', border: selections.tamano === '15mm Circular' ? '1px solid var(--color-primary)' : '1px solid transparent', borderRadius: '8px', transition: 'all 0.2s' }}>
+                                        <input type="radio" name="tamano" value="15mm Circular" checked={selections.tamano === '15mm Circular'} onChange={handleChange} style={{ accentColor: 'var(--color-primary)' }} />
+                                        15mm Circular
+                                    </label>
                                 </div>
                             </div>
 

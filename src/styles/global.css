@@ -69,10 +69,6 @@ a:hover {
     -webkit-text-fill-color: transparent;
 }
 
-.text-primary {
-    color: var(--color-primary);
-}
-
 /* Sections */
 .section-header {
     text-align: center;
@@ -120,8 +116,7 @@ button {
     border: var(--glass-border);
     box-shadow: var(--glass-shadow);
     border-radius: var(--radius-md);
-    transition: border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-panel:hover {

@@ -6,20 +6,17 @@ import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzl
 import '../styles/CustomForm.css';
 
 const PRODUCTS = [
-    { id: 'tazones', icon: Coffee, title: 'TAZONES', dbCategory: 'TAZONES', desc: 'Tazones sublimados personalizados' },
-    { id: 'tumblers', icon: CupSoda, title: 'TUMBLERS', dbCategory: 'TUMBLERS', desc: 'Tumbler / vaso térmico personalizado' },
-    { id: 'mousepad', icon: Mouse, title: 'MOUSEPAD', dbCategory: 'MOUSEPAD', desc: 'Mousepad sublimado de alta resolución' },
-    { id: 'cuadro', icon: ImageIcon, title: 'CUADRO HD', dbCategory: 'CUADRO_HD', desc: 'Cuadro en metal con impresión en alta definición' },
-    { id: 'posavasos', icon: Coffee, title: 'POSAVASOS', dbCategory: 'POSAVASOS', desc: 'Set de posavasos sublimados' },
-    { id: 'bolsas', icon: Package, title: 'BOLSAS', dbCategory: 'BOLSAS', desc: 'Bolsas Tote ecológicas' },
-    { id: 'rompecabezas', icon: Puzzle, title: 'ROMPECABEZAS', dbCategory: 'PUZZLES', desc: 'Rompecabezas personalizado' },
-    { id: 'azulejos', icon: ImageIcon, title: 'AZULEJOS', dbCategory: 'AZULEJOS', desc: 'Azulejos cerámicos decorativos' },
-    { id: 'botellas', icon: CupSoda, title: 'BOTELLAS', dbCategory: 'BOTELLAS', desc: 'Botellas de aluminio' },
-    { id: 'llaveros', icon: Key, title: 'LLAVEROS', dbCategory: 'LLAVEROS', desc: 'Llaveros personalizados (Metal, Acrílico, MDF)' },
-    { id: 'id-mascotas', icon: Dog, title: 'ID MASCOTAS', dbCategory: 'ID_MASCOTAS', desc: 'Identificación para mascota (Metal, Acrílico, MDF)' },
-    { id: 'id-salud', icon: Heart, title: 'ID SALUD', dbCategory: 'ID_SALUD', desc: 'Identificación de enfermedades y alergias' },
+    { id: 'posavasos', icon: Coffee, title: 'POSAVASOS', desc: 'Set de posavasos de MDF con corcho' },
+    { id: 'mousepad', icon: Mouse, title: 'MOUSEPAD', desc: 'Mousepad sublimado de alta resolución' },
+    { id: 'cuadro', icon: ImageIcon, title: 'CUADRO HD', desc: 'Cuadro en metal con impresión en alta definición' },
+    { id: 'llaveros', icon: Key, title: 'LLAVEROS', desc: 'Llaveros personalizados (Metal, Acrílico, MDF)' },
+    { id: 'id-mascotas', icon: Dog, title: 'ID MASCOTAS', desc: 'Identificación para mascota (Metal, Acrílico, MDF)' },
+    { id: 'id-salud', icon: Heart, title: 'ID SALUD', desc: 'Identificación de enfermedades y alergias' },
+    { id: 'rompecabezas', icon: Puzzle, title: 'ROMPECABEZAS', desc: 'Rompecabezas personalizado con tu diseño o foto' },
+    { id: 'tazones', icon: Coffee, title: 'TAZONES', desc: 'Tazones sublimados personalizados' },
+    { id: 'tumblers', icon: CupSoda, title: 'TUMBLERS', desc: 'Tumbler / vaso térmico personalizado' },
     { id: 'impresion3d', icon: Printer, title: 'IMPRESIÓN 3D', desc: 'Piezas y modelos impresos en 3D' },
-    { id: 'insignias', icon: Award, title: 'INSIGNIAS', desc: 'Insignias circulares de acero inoxidable' },
+    { id: 'insignias', icon: Award, title: 'INSIGNIAS', desc: 'Insignias circulares de acero inoxidable (10mm / 15mm)' },
     { id: 'otro', icon: Package, title: 'OTRO', desc: 'Otro producto personalizado — consúltanos' },
 ];
 
@@ -34,20 +31,16 @@ const CATEGORIES = [
 ];
 
 const SIZES = {
-    'posavasos': ['Set de 4 (MDF Cuadrado)', 'Set de 4 (MDF Redondo)', 'Set de 4 (Cerámica 10cm)', 'Set de 6 (MDF Cuadrado)', 'Set de 6 (MDF Redondo)', 'Otro'],
-    'mousepad': ['Estándar 21x21 cm', 'Medio 20x24 cm', 'Grande 40x45 cm', 'Otro'],
-    'cuadro': ['10x15 cm', '15x20 cm', '20x30 cm', '30x40 cm', '40x60 cm', 'Personalizado'],
+    'posavasos': ['Set de 4 (Cuadrados)', 'Set de 4 (Circulares)', 'Set de 6 (Cuadrados)', 'Set de 6 (Circulares)', 'Otro'],
+    'mousepad': ['17x21 cm', '19,8x24 cm', 'Otro'],
+    'cuadro': ['10x15 cm', '20x28 cm', 'Personalizado'],
     'llaveros': ['Redondo', 'Cuadrado', 'Rectangular', 'Corazón', 'Otro'],
     'id-mascotas': ['Hueso', 'Círculo', 'Corazón', 'Otro'],
     'id-salud': ['Pulsera / Brazalete', 'Medallón / Tag', 'Tarjeta de Cartera', 'Formato Personalizado'],
-    'rompecabezas': ['110 piezas (28x19 cm)', '252 piezas (38x26 cm)', 'Otro'],
-    'tazones': ['11oz Blanco', '11oz Mágico', '15oz Blanco', 'Otro'],
+    'rompecabezas': ['A4 (120 piezas)', 'A5 (30 o 36 piezas)', 'Otro'],
+    'tazones': ['11oz Blanco', '11oz Mágico', 'Otro'],
     'tumblers': ['20 oz', '30 oz', 'Otro'],
-    'bolsas': ['Tote 38x42 cm', 'Tote 40x50 cm', 'Otro'],
-    'azulejos': ['10x10 cm', '15x15 cm', '20x20 cm', 'Otro'],
-    'botellas': ['500 ml', '750 ml', 'Otro'],
     'impresion3d': ['PLA', 'ABS', 'Ambos', 'Otro'],
-    'insignias': ['10mm', '15mm'],
     'otro': ['Consultar tamaño']
 };
 
@@ -60,7 +53,6 @@ export function CustomForm() {
         size: ''
     });
 
-    const [catalogData, setCatalogData] = useState([]);
     const [fileName, setFileName] = useState('');
     const [fileError, setFileError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -194,17 +186,6 @@ export function CustomForm() {
         }
     };
 
-    useEffect(() => {
-        fetch('https://brk7ilny2x6vetcqeearzpjxsm0fnzrk.lambda-url.sa-east-1.on.aws/products/public')
-            .then(res => res.json())
-            .then(data => {
-                if (data.success && Array.isArray(data.data)) {
-                    setCatalogData(data.data);
-                }
-            })
-            .catch(err => console.error('Error fetching catalog data:', err));
-    }, []);
-
     const stepsInfo = [
         { id: 1, name: 'Producto' },
         { id: 2, name: 'Categoría' },
@@ -244,8 +225,8 @@ export function CustomForm() {
                 <div className="progress-tracker">
                     {stepsInfo.map((s, idx) => (
                         <React.Fragment key={s.id}>
-                            <div className={`progress-step ${step >= s.id ? 'active' : ''} ${step === s.id ? 'current' : ''} ${step > s.id ? 'done' : ''}`}>
-                                <div className="step-circle">{step > s.id ? '✓' : s.id}</div>
+                            <div className={`progress-step ${step >= s.id ? 'active' : ''} ${step === s.id ? 'current' : ''}`}>
+                                <div className="step-circle">{s.id}</div>
                                 <span className="step-name">{s.name}</span>
                             </div>
                             {idx < stepsInfo.length - 1 && <div className={`progress-line ${step > s.id ? 'active' : ''}`} />}
@@ -268,10 +249,10 @@ export function CustomForm() {
                         <input type="hidden" name="Categoria" value={selections.category} />
                         <input type="hidden" name="Características" value={selections.size} />
 
-                        <div className="form-steps-wrapper">
+                        <AnimatePresence mode="popLayout">
                             {/* STEP 1 */}
                             {step === 1 && (
-                                <div className="form-step">
+                                <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                                     <h3 className="step-title">¿QUÉ PRODUCTO QUIERES PERSONALIZAR?</h3>
                                     <div className="options-grid products-grid">
                                         {PRODUCTS.map(p => {
@@ -295,12 +276,12 @@ export function CustomForm() {
                                             )
                                         })}
                                     </div>
-                                </div>
+                                </motion.div>
                             )}
 
                             {/* STEP 2 */}
                             {step === 2 && (
-                                <div className="form-step">
+                                <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                                     <h3 className="step-title">
                                         {selections.product === 'ID SALUD'
                                             ? '¿QUÉ FORMATO DE FICHA NECESITAS?'
@@ -328,65 +309,39 @@ export function CustomForm() {
                                             &larr; Volver
                                         </button>
                                     </div>
-                                </div>
+                                </motion.div>
                             )}
 
                             {/* STEP 3 */}
                             {step === 3 && (
-                                <div className="form-step">
+                                <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                                     <h3 className="step-title">
                                         {selections.product === 'IMPRESIÓN 3D' ? '¿QUÉ MATERIAL PREFIERES?' : '¿QUÉ TAMAÑO / FORMATO NECESITAS?'}
                                     </h3>
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category}</p>
 
                                     <div className="options-grid sizes-grid">
-                                        {(() => {
-                                            const selectedProductObj = PRODUCTS.find(p => p.title === selections.product);
-                                            const dbCat = selectedProductObj?.dbCategory;
-                                            const categoryProducts = catalogData.filter(p => p.category === dbCat && p.isActive);
-                                            const options = [];
-                                            if (categoryProducts.length > 0) {
-                                                categoryProducts.forEach(prod => {
-                                                    if (prod.priceVariants && Object.keys(prod.priceVariants).length > 0) {
-                                                        Object.entries(prod.priceVariants).forEach(([variantName, price]) => {
-                                                            const formattedPrice = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(price);
-                                                            const label = `${prod.productName} - ${variantName}`;
-                                                            options.push({ label, priceStr: formattedPrice, value: `${label} (${formattedPrice})` });
-                                                        });
-                                                    } else {
-                                                        const formattedPrice = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(prod.basePrice || 0);
-                                                        options.push({ label: prod.productName, priceStr: formattedPrice, value: `${prod.productName} (${formattedPrice})` });
-                                                    }
-                                                });
-                                                options.push({ label: 'Otro', priceStr: '', value: 'Otro' });
-                                            } else {
-                                                const defaultSizes = SIZES[selectedProductObj?.id || 'otro'] || ['Consultar'];
-                                                defaultSizes.forEach(s => options.push({ label: s, priceStr: '', value: s }));
-                                            }
-
-                                            return options.map(opt => (
-                                                <div
-                                                    key={opt.value}
-                                                    className={`option-card simple-card ${selections.size === opt.value ? 'selected' : ''}`}
-                                                    onClick={() => handleSelectAndAdvance('size', opt.value)}
-                                                >
-                                                    <h4>{opt.label.toUpperCase()}</h4>
-                                                    {opt.priceStr && <p style={{ color: 'var(--color-primary)', fontWeight: 'bold', marginTop: '5px' }}>{opt.priceStr}</p>}
-                                                </div>
-                                            ));
-                                        })()}
+                                        {SIZES[PRODUCTS.find(p => p.title === selections.product)?.id || 'otro'].map(s => (
+                                            <div
+                                                key={s}
+                                                className={`option-card simple-card ${selections.size === s ? 'selected' : ''}`}
+                                                onClick={() => handleSelectAndAdvance('size', s)}
+                                            >
+                                                <h4>{s.toUpperCase()}</h4>
+                                            </div>
+                                        ))}
                                     </div>
                                     <div className="step-actions">
                                         <button type="button" className="btn-prev" onClick={handlePrev}>
                                             &larr; Volver
                                         </button>
                                     </div>
-                                </div>
+                                </motion.div>
                             )}
 
                             {/* STEP 4 */}
                             {step === 4 && (
-                                <div className="form-step">
+                                <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
                                     <h3 className="step-title">TUS DATOS Y DETALLES</h3>
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
 
@@ -457,9 +412,9 @@ export function CustomForm() {
                                             <p style={{ color: 'white', margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>Nuestro servidor tuvo problemas con la foto adjunta. Por favor, <strong>envía tu formulario sin la foto</strong> y luego envíanos la imagen directamente a <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)' }}>ventas@sagason.cl</a>.</p>
                                         </div>
                                     )}
-                                </div>
+                                </motion.div>
                             )}
-                        </div>
+                        </AnimatePresence>
                     </form>
                 </div>
             </div>

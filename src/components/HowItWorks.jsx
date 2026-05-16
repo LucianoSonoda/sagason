@@ -56,7 +56,7 @@ const STEPS = [
 
 export function HowItWorks() {
     const containerVariants = {
-        hidden: { opacity: 1 },
+        hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: { staggerChildren: 0.1 }
@@ -64,7 +64,7 @@ export function HowItWorks() {
     };
 
     const itemVariants = {
-        hidden: { y: 20, opacity: 1 },
+        hidden: { y: 20, opacity: 0 },
         visible: {
             y: 0,
             opacity: 1,
@@ -77,7 +77,7 @@ export function HowItWorks() {
             <div className="container">
                 {/* Header Section */}
                 <motion.div 
-                    initial={{ opacity: 1, y: -20 }}
+                    initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="section-header"
                     style={{ marginBottom: '60px' }}
@@ -91,9 +91,9 @@ export function HowItWorks() {
 
                 {/* Trust Section - Styled like Home.jsx */}
                 <motion.div 
-                    initial={{ opacity: 1, scale: 1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
                     className="glass-panel glow-card"
                     style={{ marginBottom: '80px', padding: '3rem', position: 'relative', overflow: 'hidden' }}
                 >
@@ -166,7 +166,8 @@ export function HowItWorks() {
                 <motion.div 
                     variants={containerVariants}
                     initial="hidden"
-                    animate="visible"
+                    whileInView="visible"
+                    viewport={{ once: true }}
                     className="steps-grid" 
                     style={{ 
                         display: 'grid', 
@@ -224,9 +225,9 @@ export function HowItWorks() {
 
                 {/* Info Alert */}
                 <motion.div 
-                    initial={{ opacity: 1, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     style={{ marginTop: '5rem' }}
                 >
                     <div className="glass-panel" style={{ 
@@ -252,9 +253,9 @@ export function HowItWorks() {
 
                 {/* Final CTA */}
                 <motion.div 
-                    initial={{ opacity: 1, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     style={{ textAlign: 'center', marginTop: '6rem' }}
                 >
                     <div className="glass-panel glow-card" style={{ padding: '4rem 2rem', maxWidth: '800px', margin: '0 auto' }}>

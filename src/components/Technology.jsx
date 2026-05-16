@@ -56,7 +56,7 @@ const TECH_FEATURES = [
 
 export function Technology() {
     const containerVariants = {
-        hidden: { opacity: 1 },
+        hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: { staggerChildren: 0.2 }
@@ -64,7 +64,7 @@ export function Technology() {
     };
 
     const cardVariants = {
-        hidden: { y: 30, opacity: 1 },
+        hidden: { y: 30, opacity: 0 },
         visible: {
             y: 0,
             opacity: 1,
@@ -77,7 +77,7 @@ export function Technology() {
             <div className="container">
                 {/* Header */}
                 <motion.div 
-                    initial={{ opacity: 1, y: -20 }}
+                    initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="section-header"
                     style={{ marginBottom: '80px' }}
@@ -93,7 +93,8 @@ export function Technology() {
                 <motion.div 
                     variants={containerVariants}
                     initial="hidden"
-                    animate="visible"
+                    whileInView="visible"
+                    viewport={{ once: true }}
                     className="tech-stack"
                     style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}
                 >
@@ -185,9 +186,9 @@ export function Technology() {
 
                 {/* Tech Specs Table or Stats */}
                 <motion.div 
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
                     style={{ marginTop: '8rem', textAlign: 'center' }}
                 >
                     <div className="glass-panel" style={{ padding: '4rem 2rem' }}>
@@ -212,9 +213,9 @@ export function Technology() {
 
                 {/* Final CTA */}
                 <motion.div 
-                    initial={{ opacity: 1, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     style={{ textAlign: 'center', marginTop: '6rem' }}
                 >
                     <div className="glass-panel glow-card" style={{ padding: '4rem 2rem', maxWidth: '800px', margin: '0 auto' }}>

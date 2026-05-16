@@ -5,7 +5,7 @@ import '../styles/Warranty.css';
 
 export function Warranty() {
     const containerVariants = {
-        hidden: { opacity: 1 },
+        hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: {
@@ -15,7 +15,7 @@ export function Warranty() {
     };
 
     const itemVariants = {
-        hidden: { y: 20, opacity: 1 },
+        hidden: { y: 20, opacity: 0 },
         visible: {
             y: 0,
             opacity: 1,
@@ -71,7 +71,8 @@ export function Warranty() {
                     className="features-grid"
                     variants={containerVariants}
                     initial="hidden"
-                    animate="visible"
+                    whileInView="visible"
+                    viewport={{ once: true }}
                 >
                     {policyItems.map((item, index) => {
                         const IconComponent = item.icon;
@@ -93,7 +94,8 @@ export function Warranty() {
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
-                    animate="visible"
+                    whileInView="visible"
+                    viewport={{ once: true }}
                 >
                     <motion.div className="intro-text" variants={itemVariants}>
                         <p>
@@ -223,7 +225,8 @@ export function Warranty() {
                     className="contact-content"
                     variants={containerVariants}
                     initial="hidden"
-                    animate="visible"
+                    whileInView="visible"
+                    viewport={{ once: true }}
                 >
                     <motion.h2 variants={itemVariants}>¿Tienes alguna duda?</motion.h2>
                     <motion.p variants={itemVariants}>

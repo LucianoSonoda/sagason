@@ -47,17 +47,9 @@
     box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
 }
 
-.progress-step.done .step-circle {
-    background: #10b981;
-    border-color: #10b981;
-    color: #000;
-    font-size: 0.9rem;
-}
-
 .progress-step.current .step-circle {
-    transform: scale(1.25);
+    transform: scale(1.2);
     border-width: 2px;
-    box-shadow: 0 0 20px rgba(14, 165, 233, 0.7);
 }
 
 .step-name {
@@ -115,34 +107,6 @@
     margin-bottom: 2.5rem;
 }
 
-/* Step 1: Productos — 3 columnas */
-.products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1rem;
-}
-
-/* Step 2: Categorías — más anchas, menos columnas */
-.categories-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-}
-
-/* Step 3: Tamaños/Variantes — compactas */
-.sizes-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
-}
-
-/* Card simple para categorías y tamaños (más compacta) */
-.option-card.simple-card {
-    padding: 1.2rem 1rem;
-    min-height: auto;
-}
-
-.option-card.simple-card h4 {
-    font-size: 0.9rem;
-}
-
 .option-card {
     padding: 2rem 1.5rem;
     background: rgba(255, 255, 255, 0.03);
@@ -197,13 +161,9 @@
 /* Step Actions */
 .step-actions {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     margin-top: 3rem;
-}
-
-.step-actions.dual-actions {
-    justify-content: space-between;
 }
 
 .btn-prev {
@@ -248,17 +208,12 @@
     box-shadow: 0 0 30px rgba(14, 165, 233, 0.5);
 }
 
-/* Form Fields — Step 4 */
+/* Form Fields */
 .fields-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
     margin-bottom: 1.5rem;
-}
-
-/* Phone field: tercer hijo → columna completa */
-.fields-grid .form-group:nth-child(3) {
-    grid-column: 1 / -1;
 }
 
 .form-group {
@@ -284,13 +239,7 @@
     border-radius: var(--radius-sm);
     font-family: var(--font-main);
     font-size: 1rem;
-    line-height: 1.5;
     transition: all 0.3s ease;
-}
-
-.form-textarea {
-    min-height: 120px;
-    resize: vertical;
 }
 
 .form-input:focus,
@@ -316,23 +265,9 @@
 }
 
 @media (max-width: 768px) {
-    .form-content-panel { padding: 1.5rem 1rem; }
+    .form-content-panel { padding: 2rem 1.5rem; }
     .fields-grid { grid-template-columns: 1fr; }
-    .fields-grid .form-group:nth-child(3) { grid-column: auto; }
-    .options-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .products-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .categories-grid { grid-template-columns: 1fr; }
-    .sizes-grid { grid-template-columns: 1fr 1fr; }
-    .step-title { font-size: 1.6rem; }
+    .options-grid { grid-template-columns: 1fr 1fr; }
+    .step-title { font-size: 1.8rem; }
     .progress-tracker { display: none; }
-    .option-card { padding: 1.25rem 0.75rem; }
-    .option-card.simple-card { padding: 0.9rem 0.75rem; }
-    .step-actions.dual-actions { gap: 1rem; }
-    .submit-btn { flex: 1; }
 }
-
-@media (max-width: 480px) {
-    .products-grid { grid-template-columns: 1fr; }
-    .sizes-grid { grid-template-columns: 1fr; }
-    .step-title { font-size: 1.35rem; }
-}
