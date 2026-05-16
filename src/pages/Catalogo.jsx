@@ -213,8 +213,8 @@ export function Catalogo() {
   });
 
   const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.08 } },
   };
 
   return (
@@ -299,6 +299,7 @@ export function Catalogo() {
           </motion.div>
         ) : (
           <motion.div
+            key={activeCategory + search}
             className="catalogo-list"
             variants={containerVariants}
             initial="hidden"
