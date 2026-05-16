@@ -126,7 +126,7 @@ function TrustSymbolSection() {
         <motion.section
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "0px" }}
             transition={{ duration: 0.8 }}
             className="trust-section glass-panel glow-card"
         >
@@ -272,9 +272,9 @@ function S4KCarousel() {
     }, [paused, current]);
 
     const variants = {
-        enter: (dir) => ({ opacity: 0, filter: 'blur(10px)' }),
-        center: { opacity: 1, filter: 'blur(0px)' },
-        exit: (dir) => ({ opacity: 0, filter: 'blur(10px)' }),
+        enter: (dir) => ({ opacity: 0 }),
+        center: { opacity: 1 },
+        exit: (dir) => ({ opacity: 0 }),
     };
 
     const pilar = PILARES[current];

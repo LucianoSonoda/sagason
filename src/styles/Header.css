@@ -83,12 +83,29 @@
 }
 
 @media (max-width: 900px) {
-    .desktop-only {
-        display: none !important;
+    .header-content {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px;
+        margin: 0 var(--spacing-xs);
+        justify-content: space-between;
     }
 
+    .nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
 
-    .header-content {
-        margin: 0 var(--spacing-xs);
+    .nav a {
+        font-size: 0.85rem;
+    }
+
+    .btn-header {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
     }
 }

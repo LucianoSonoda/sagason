@@ -26,7 +26,7 @@ export function Header() {
                     <img src={logoChico} alt="SAGASON" className="header-logo-img" />
                 </Link>
 
-                <nav className="nav desktop-only">
+                <nav className="nav">
                     {topNavLinks.map(link => (
                         link.external ? 
                         <a key={link.name} href={link.href}>{link.name}</a> :
@@ -35,7 +35,7 @@ export function Header() {
                 </nav>
 
                 <div className="header-right">
-                    <div className="header-actions desktop-only">
+                    <div className="header-actions">
                         <Link to="/#custom" className="btn-header">
                             Pedir Ahora <ArrowRight size={16} />
                         </Link>
