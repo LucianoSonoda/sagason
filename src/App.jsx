@@ -40,6 +40,8 @@ function MainContent() {
   return (
     <>
       <Home />
+      <Gallery />
+      <CustomForm />
     </>
   );
 }

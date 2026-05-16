@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import '../styles/Header.css';
 import logoChico from '../assets/logo-chico.png';
 
 export function Header() {
-    const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const location = useLocation();
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -16,21 +13,10 @@ export function Header() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Close menu when route changes
-    useEffect(() => {
-        setIsOpen(false);
-    }, [location]);
-
     const topNavLinks = [
         { name: 'Aventuras', href: '/aventuras' },
         { name: 'Comunidad 4K', href: '/tags-4k' },
         { name: 'Catálogo', href: '/catalogo' },
-    ];
-
-    const allNavLinks = [
-        ...topNavLinks,
-        { name: 'Personalizar', href: '/#custom' },
-        { name: 'Contacto', href: '/#contact' },
     ];
 
     return (
@@ -55,54 +41,8 @@ export function Header() {
                         </Link>
                     </div>
 
-                    <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
-                        {isOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
                 </div>
             </div>
-
-            {/* Mobile Menu Overlay */}
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div 
-                        className="mobile-menu-overlay"
-                        initial={{ opacity: 0, x: '100%' }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: '100%' }}
-                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                    >
-                        <div className="mobile-menu-content">
-                            {allNavLinks.map((link, idx) => (
-                                <motion.div
-                                    key={link.name}
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.1 }}
-                                >
-                                    {link.external ? 
-                                        <a href={link.href} className="mobile-link" onClick={() => setIsOpen(false)}>
-                                            {link.name}
-                                        </a> :
-                                        <Link to={link.href} className="mobile-link" onClick={() => setIsOpen(false)}>
-                                            {link.name}
-                                        </Link>
-                                    }
-                                </motion.div>
-                            ))}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4 }}
-                                style={{ marginTop: '2rem' }}
-                            >
-                                <Link to="/#custom" className="btn btn-primary" style={{ width: '100%', textAlign: 'center' }} onClick={() => setIsOpen(false)}>
-                                    Pedir Ahora
-                                </Link>
-                            </motion.div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </header>
     );
 }
