@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/Header.css';
 import logoChico from '../assets/logo-chico.png';
@@ -50,10 +50,32 @@ export function Header() {
                     </Link>
                 </div>
 
-                <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)} aria-label="Menú">
+                    {isOpen ? (
+                        <X size={24} color="#fff" />
+                    ) : (
+                        <span className="hamburger-tricolor">
+                            <span className="bar bar-red"></span>
+                            <span className="bar bar-white"></span>
+                            <span className="bar bar-blue"></span>
+                        </span>
+                    )}
                 </button>
             </div>
+
+            {/* Mobile Menu Backdrop */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        className="mobile-menu-backdrop"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => setIsOpen(false)}
+                    />
+                )}
+            </AnimatePresence>
 
             {/* Mobile Menu Overlay */}
             <AnimatePresence>
