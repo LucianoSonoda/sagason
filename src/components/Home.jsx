@@ -376,16 +376,13 @@ function CatalogoPreview() {
             </div>
 
             {/* Grid de productos */}
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={activeCategory}
-                    className="home-catalog-grid"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    {filtered.map(product => {
+            <motion.div
+                key={activeCategory}
+                className="home-catalog-grid"
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 1 }}
+            >
+                {filtered.map(product => {
                         const catInfo = PRODUCT_CATEGORIES.find(c => c.id === product.category);
                         const img = product.images?.[0];
                         return (
@@ -413,7 +410,7 @@ function CatalogoPreview() {
                         );
                     })}
                 </motion.div>
-            </AnimatePresence>
+
 
             <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
                 <RouterLink to="/catalogo" className="btn btn-primary glow">
