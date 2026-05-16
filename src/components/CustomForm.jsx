@@ -67,18 +67,32 @@ export function CustomForm() {
     // Cargar precios de referencia
     useEffect(() => {
         const loadPrecios = async () => {
+            let dynamoPrecios = {};
             try {
                 const res = await fetch(`${API}/user-tags?action=prices`);
                 if (res.ok) {
                     const data = await res.json();
-                    if (Object.keys(data).length > 0) { setPrecios(data); return; }
+                    if (Object.keys(data).length > 0) dynamoPrecios = data;
                 }
             } catch (_) {}
-            // Fallback al archivo estático
+            
+            let finalPrecios = {};
+            // Leer estático como base
             try {
                 const res = await fetch('/precios.json');
-                if (res.ok) setPrecios(await res.json());
+                if (res.ok) {
+                    finalPrecios = await res.json();
+                }
             } catch (_) {}
+
+            // Sobrescribir con Dynamo
+            for (const key of Object.keys(dynamoPrecios)) {
+                // Solo si el key existe en nuestros productos actuales
+                if (PRODUCTS.find(p => p.id === key)) {
+                    finalPrecios[key] = dynamoPrecios[key];
+                }
+            }
+            setPrecios(finalPrecios);
         };
         loadPrecios();
     }, []);

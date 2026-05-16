@@ -811,10 +811,13 @@
     }
 
     async function loadTags() {
-        const res = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
-        const tags = await res.json();
         const cont = document.getElementById('tags-list-container');
-        if (!tags || tags.length === 0) { cont.innerHTML = "<p style='text-align:center; padding:20px;'>No tienes placas registradas.</p>"; return; }
+        try {
+            const res = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
+            if (!res.ok) throw new Error('Error en API');
+            const tags = await res.json();
+            if (!tags || tags.length === 0) { cont.innerHTML = "<p style='text-align:center; padding:20px;'>No tienes placas registradas.</p>"; return; }
+
         
         const now = new Date();
         // 1. Pre-computar el estado real de cada placa antes de dibujar
@@ -977,6 +980,10 @@
                 </div>
             </div>`;
         }).join('');
+        } catch (e) {
+            console.error("Error loading tags:", e);
+            cont.innerHTML = "<p style='text-align:center; padding:20px; color:#ef4444;'>Error al cargar las placas. Verifica tu conexión o intenta más tarde.</p>";
+        }
     }
 
     async function payRAKA(tagId, plan, price, gateway) {
@@ -1386,20 +1393,33 @@
     let adminPrecios = {};
 
     async function loadAdminPrecios() {
+        let dynamoPrecios = {};
         try {
             const res = await fetch(`${API}/user-tags?action=prices`);
             if (res.ok) {
                 const data = await res.json();
-                if (Object.keys(data).length > 0) adminPrecios = data;
+                if (Object.keys(data).length > 0) dynamoPrecios = data;
             }
         } catch (_) {}
-        // Fallback: leer del JSON estático
-        if (Object.keys(adminPrecios).length === 0) {
-            try {
-                const res = await fetch('/precios.json');
-                if (res.ok) adminPrecios = await res.json();
-            } catch (_) {}
+
+        // Leer del JSON estático como base
+        try {
+            const res = await fetch('/precios.json');
+            if (res.ok) {
+                const staticPrecios = await res.json();
+                adminPrecios = { ...staticPrecios };
+            }
+        } catch (_) {}
+
+        // Sobrescribir con lo de DynamoDB si existe el ID correspondiente
+        for (const key of Object.keys(dynamoPrecios)) {
+            // Solo usar si el key de dynamo existe en nuestros ADMIN_PRODUCTS (ignorar viejos)
+            // o si es la primera vez, el usuario tendra que guardar.
+            if (ADMIN_PRODUCTS.find(p => p.id === key)) {
+                adminPrecios[key] = dynamoPrecios[key];
+            }
         }
+
         renderPreciosGrid();
     }
 
