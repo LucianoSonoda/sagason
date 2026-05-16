@@ -105,7 +105,7 @@ export function Gallery() {
                             <AnimatePresence>
                                 {isCategoryMenuOpen && (
                                     <motion.div 
-                                        initial={{ opacity: 0, height: 0 }}
+                                        initial={{ opacity: 1, height: 0 }}
                                         animate={{ opacity: 1, height: 'auto' }}
                                         exit={{ opacity: 0, height: 0 }}
                                         style={{ overflow: 'hidden', width: '100%', maxWidth: '800px' }}
@@ -114,7 +114,7 @@ export function Gallery() {
                                             {CATEGORIES.map((cat, idx) => (
                                                 <motion.button
                                                     key={cat.title}
-                                                    initial={{ opacity: 0, y: 10 }}
+                                                    initial={{ opacity: 1, y: 10 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ delay: idx * 0.05 }}
                                                     onClick={() => {
@@ -187,7 +187,7 @@ export function Gallery() {
             {/* Lightbox */}
             <AnimatePresence>
                 {selectedImage && (
-                    <motion.div className="lightbox" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeLightbox}>
+                    <motion.div className="lightbox" initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeLightbox}>
                         <button className="lightbox-close" onClick={closeLightbox}><X size={32} /></button>
                         <motion.div className="lightbox-content" initial={{ scale: 0.8 }} animate={{ scale: 1 }} exit={{ scale: 0.8 }} onClick={(e) => e.stopPropagation()}>
                             <img src={selectedImage.image} alt={selectedImage.title} loading="eager" className="lightbox-img"

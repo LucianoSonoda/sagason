@@ -452,7 +452,7 @@ function WaitlistModal({ isOpen, onClose }) {
         <div className="modal-overlay" onClick={onClose}>
             <motion.div 
                 className="modal-content glass-panel"
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 1, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 50 }}
                 transition={{ duration: 0.25 }}

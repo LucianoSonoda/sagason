@@ -104,7 +104,7 @@ function ProductCard({ product, price }) {
         {expanded && (
           <motion.div
             className="product-card__detail"
-            initial={{ height: 0, opacity: 0 }}
+            initial={{ height: 0, opacity: 1 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
@@ -124,12 +124,12 @@ function ProductCard({ product, price }) {
 
             <AnimatePresence mode="wait">
               {tab === 'desc' && (
-                <motion.div key="desc" className="pcard-tab-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+                <motion.div key="desc" className="pcard-tab-content" initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
                   <p className="pcard-description">{product.description}</p>
                 </motion.div>
               )}
               {tab === 'sizes' && (
-                <motion.div key="sizes" className="pcard-tab-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+                <motion.div key="sizes" className="pcard-tab-content" initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
                   <div className="pcard-materials"><Layers size={14} /><span>{product.materials}</span></div>
                   <ul className="pcard-sizes">
                     {product.sizes.map((size, i) => (
@@ -142,7 +142,7 @@ function ProductCard({ product, price }) {
                 </motion.div>
               )}
               {tab === 'care' && (
-                <motion.div key="care" className="pcard-tab-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+                <motion.div key="care" className="pcard-tab-content" initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
                   <ul className="pcard-care-list">
                     {product.care.map((tip, i) => (
                       <li key={i} className="pcard-care-item">
