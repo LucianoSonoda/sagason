@@ -12,8 +12,17 @@ import '../styles/Catalogo.css';
 // ─────────────────────────────────────────────────────────
 function ProductCard({ product, price }) {
   const [expanded, setExpanded] = useState(false);
-  const [tab, setTab] = useState('desc'); // 'desc' | 'sizes' | 'care'
+  const [tab, setTab] = useState('desc');
+  const [imgIndex, setImgIndex] = useState(0);
   const catInfo = PRODUCT_CATEGORIES.find(c => c.id === product.category);
+  const images = product.images || [];
+
+  // Auto-cycle images
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const t = setInterval(() => setImgIndex(i => (i + 1) % images.length), 3500);
+    return () => clearInterval(t);
+  }, [images.length]);
 
   return (
     <motion.div
@@ -24,46 +33,70 @@ function ProductCard({ product, price }) {
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.35 }}
     >
-      {/* ── Header de la card ── */}
+      {/* ── Header: imagen + info ── */}
       <div
         className="product-card__header"
         style={{ '--cat-color': catInfo?.color || '#0EA5E9' }}
         onClick={() => setExpanded(e => !e)}
       >
-        <div className="product-card__title-row">
-          <span className="product-card__icon">{catInfo?.icon}</span>
-          <div className="product-card__title-block">
-            <h3 className="product-card__name">{product.name}</h3>
-            <span
-              className="product-card__category"
-              style={{ color: catInfo?.color }}
-            >
-              {catInfo?.label}
-            </span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
-            {product.tag && (
-              <span
-                className="product-card__tag"
-                style={{ background: product.tagColor || '#0EA5E9' }}
-              >
-                {product.tag}
-              </span>
+        {/* Foto carousel */}
+        {images.length > 0 && (
+          <div className="product-card__img-wrap" onClick={e => e.stopPropagation()}>
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={imgIndex}
+                src={images[imgIndex]}
+                alt={product.name}
+                className="product-card__img"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                onClick={() => setImgIndex(i => (i + 1) % images.length)}
+              />
+            </AnimatePresence>
+            {images.length > 1 && (
+              <div className="product-card__img-dots">
+                {images.map((_, i) => (
+                  <button
+                    key={i}
+                    className={`img-dot ${i === imgIndex ? 'active' : ''}`}
+                    style={{ '--dot-color': catInfo?.color || '#0EA5E9' }}
+                    onClick={() => setImgIndex(i)}
+                  />
+                ))}
+              </div>
             )}
-            {price && (
-              <span
-                className="product-card__price"
-                style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-primary)' }}
-              >
-                ${price.toLocaleString('es-CL')}
-              </span>
-            )}
           </div>
+        )}
+
+        <div className="product-card__info">
+          <div className="product-card__title-row">
+            <span className="product-card__icon">{catInfo?.icon}</span>
+            <div className="product-card__title-block">
+              <h3 className="product-card__name">{product.name}</h3>
+              <span className="product-card__category" style={{ color: catInfo?.color }}>
+                {catInfo?.label}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+              {product.tag && (
+                <span className="product-card__tag" style={{ background: product.tagColor || '#0EA5E9' }}>
+                  {product.tag}
+                </span>
+              )}
+              {price && (
+                <span className="product-card__price" style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>
+                  ${price.toLocaleString('es-CL')}
+                </span>
+              )}
+            </div>
+          </div>
+          <p className="product-card__short-desc">{product.shortDesc}</p>
+          <button className="product-card__toggle" aria-label="Expandir">
+            {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </button>
         </div>
-        <p className="product-card__short-desc">{product.shortDesc}</p>
-        <button className="product-card__toggle" aria-label="Expandir">
-          {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-        </button>
       </div>
 
       {/* ── Detalle expandible ── */}
@@ -78,54 +111,26 @@ function ProductCard({ product, price }) {
           >
             {/* Tabs */}
             <div className="product-card__tabs">
-              <button
-                className={`pcard-tab ${tab === 'desc' ? 'active' : ''}`}
-                onClick={() => setTab('desc')}
-              >
+              <button className={`pcard-tab ${tab === 'desc' ? 'active' : ''}`} onClick={() => setTab('desc')}>
                 <Info size={14} /> Descripción
               </button>
-              <button
-                className={`pcard-tab ${tab === 'sizes' ? 'active' : ''}`}
-                onClick={() => setTab('sizes')}
-              >
+              <button className={`pcard-tab ${tab === 'sizes' ? 'active' : ''}`} onClick={() => setTab('sizes')}>
                 <Ruler size={14} /> Tallas y Material
               </button>
-              <button
-                className={`pcard-tab ${tab === 'care' ? 'active' : ''}`}
-                onClick={() => setTab('care')}
-              >
+              <button className={`pcard-tab ${tab === 'care' ? 'active' : ''}`} onClick={() => setTab('care')}>
                 <Shield size={14} /> Cuidados
               </button>
             </div>
 
-            {/* Tab content wrapped in AnimatePresence for proper enter/exit coordination */}
             <AnimatePresence mode="wait">
               {tab === 'desc' && (
-                <motion.div
-                  key="desc"
-                  className="pcard-tab-content"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
+                <motion.div key="desc" className="pcard-tab-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
                   <p className="pcard-description">{product.description}</p>
                 </motion.div>
               )}
-
               {tab === 'sizes' && (
-                <motion.div
-                  key="sizes"
-                  className="pcard-tab-content"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <div className="pcard-materials">
-                    <Layers size={14} />
-                    <span>{product.materials}</span>
-                  </div>
+                <motion.div key="sizes" className="pcard-tab-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+                  <div className="pcard-materials"><Layers size={14} /><span>{product.materials}</span></div>
                   <ul className="pcard-sizes">
                     {product.sizes.map((size, i) => (
                       <li key={i} className="pcard-size-item">
@@ -136,21 +141,12 @@ function ProductCard({ product, price }) {
                   </ul>
                 </motion.div>
               )}
-
               {tab === 'care' && (
-                <motion.div
-                  key="care"
-                  className="pcard-tab-content"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
+                <motion.div key="care" className="pcard-tab-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
                   <ul className="pcard-care-list">
                     {product.care.map((tip, i) => (
                       <li key={i} className="pcard-care-item">
-                        <Shield size={13} className="care-icon" />
-                        <span>{tip}</span>
+                        <Shield size={13} className="care-icon" /><span>{tip}</span>
                       </li>
                     ))}
                   </ul>
@@ -158,13 +154,8 @@ function ProductCard({ product, price }) {
               )}
             </AnimatePresence>
 
-            {/* CTA */}
             <div className="pcard-cta">
-              <a
-                href="/#custom"
-                className="btn-pcard-order"
-                style={{ '--btn-color': catInfo?.color || '#0EA5E9' }}
-              >
+              <a href="/#custom" className="btn-pcard-order" style={{ '--btn-color': catInfo?.color || '#0EA5E9' }}>
                 Pedir personalizado <ArrowRight size={14} />
               </a>
             </div>

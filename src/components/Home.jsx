@@ -10,7 +10,6 @@ import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
 import sagasonSymbol from '/sagason-symbol.png';
 import { DiscoverCity } from './DiscoverCity';
 import { CustomForm } from './CustomForm';
-import { Gallery } from './Gallery';
 
 function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth);
@@ -107,10 +106,6 @@ export function Home() {
             {/* Services Overview - Carrusel */}
             <ServicesCarousel />
 
-            {/* Gallery Section */}
-            <div id="gallery">
-                <Gallery />
-            </div>
 
             {/* Customizer Section */}
             <div id="custom">

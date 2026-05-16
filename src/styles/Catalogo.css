@@ -182,15 +182,75 @@
 
 /* Header */
 .product-card__header {
-  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: stretch;
   cursor: pointer;
   position: relative;
   border-left: 3px solid var(--cat-color, #0EA5E9);
   transition: background 0.2s;
+  overflow: hidden;
 }
 
 .product-card__header:hover {
   background: rgba(255,255,255,0.02);
+}
+
+/* Imagen del producto */
+.product-card__img-wrap {
+  position: relative;
+  width: 160px;
+  min-width: 160px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: rgba(0,0,0,0.3);
+  cursor: zoom-in;
+}
+
+.product-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.product-card__img-wrap:hover .product-card__img {
+  transform: scale(1.05);
+}
+
+.product-card__img-dots {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.img-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+
+.img-dot.active {
+  background: var(--dot-color, #0EA5E9);
+  width: 14px;
+  border-radius: 3px;
+}
+
+/* Info del producto */
+.product-card__info {
+  flex: 1;
+  min-width: 0;
+  padding: 1.25rem 1.5rem;
+  position: relative;
 }
 
 .product-card__title-row {
@@ -732,7 +792,16 @@
 /* ─────────────────  RESPONSIVE  ───────────────────────── */
 @media (max-width: 768px) {
   .catalogo-hero { padding: 2rem 0 1.5rem; }
-  .product-card__header { padding: 1rem 1.1rem; }
+
+  /* En móvil: imagen arriba, info abajo */
+  .product-card__header { flex-direction: column; }
+  .product-card__img-wrap {
+    width: 100%;
+    min-width: 100%;
+    height: 180px;
+  }
+  .product-card__info { padding: 1rem 1.1rem; }
+
   .product-card__name { font-size: 1rem; }
   .pcard-tab-content { padding: 1rem 1.1rem; }
   .pcard-size-label { min-width: 90px; }
@@ -747,4 +816,5 @@
   .catalogo-hero__title { font-size: 2rem; }
   .cat-filter-btn { font-size: 0.7rem; padding: 0.4rem 0.75rem; }
   .product-card__tag { display: none; }
+  .product-card__img-wrap { height: 150px; }
 }

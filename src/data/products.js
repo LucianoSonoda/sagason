@@ -3,6 +3,20 @@
 //  Datos estáticos: descripción, materiales, tallas, cuidados.
 //  Los PRECIOS se cargan desde DynamoDB vía Lambda.
 // ============================================================
+// ─── Imágenes de productos ───────────────────────────────────
+import imgTazon from '../assets/tazon DIa de las mujeres.png';
+import imgMousepad from '../assets/MousePad_StarryNight.png';
+import imgCuadroHD from '../assets/Cuador Aluminio1.jpeg';
+import imgAluminio5 from '../assets/Cuador Aluminio5.jpeg';
+import imgAluminio6 from '../assets/Cuador Aluminio6.jpeg';
+import imgCastillo from '../assets/Castilloconbrillo.jpeg';
+import imgStrangerThings from '../assets/stranger_things.png';
+import imgMujeres from '../assets/mujeres.jpeg';
+import imgEstrela from '../assets/estrela.png';
+import imgPlacaMascota from '../assets/Placa identificación Bailey_upscayl_3x_upscayl-standard-4x.png';
+import imgPlacasMascotas from '../assets/placas_mascotas_kiara_perla.jpg';
+import imgPerro from '../assets/perro.jpg';
+import logoCompleto from '../assets/logo-completo.jpg';
 
 export const PRODUCT_CATEGORIES = [
   { id: 'TAZONES',       label: 'Tazones / Mugs',        color: '#a21caf', icon: '☕' },
@@ -27,6 +41,7 @@ export const PRODUCTS = [
     productId: 'tazon-11oz',
     name: 'Tazón Sublimado 11oz',
     category: 'TAZONES',
+    images: [imgTazon, imgEstrela],
     shortDesc: 'Tazón clásico personalizado con tu foto o diseño favorito en alta definición.',
     description:
       'Nuestros tazones de cerámica blanca AAA son el regalo perfecto para cualquier ocasión. ' +
@@ -53,6 +68,7 @@ export const PRODUCTS = [
     productId: 'tazon-magico',
     name: 'Tazón Mágico Sublimado',
     category: 'TAZONES',
+    images: [imgEstrela, imgTazon],
     shortDesc: 'El diseño aparece con el calor: negro en frío, revela tu imagen con el café caliente.',
     description:
       'El tazón mágico negro es uno de nuestros productos más sorprendentes. ' +
@@ -81,6 +97,7 @@ export const PRODUCTS = [
     productId: 'tumbler-20oz',
     name: 'Tumbler Inox Sublimado 20oz',
     category: 'TUMBLERS',
+    images: [logoCompleto],
     shortDesc: 'Vaso térmico de acero inoxidable con tu diseño personalizado. Mantiene frío/calor por horas.',
     description:
       'Tumbler de doble pared en acero inoxidable 304 grado alimenticio. ' +
@@ -111,6 +128,7 @@ export const PRODUCTS = [
     productId: 'mousepad-standard',
     name: 'Mousepad Sublimado Estándar',
     category: 'MOUSEPAD',
+    images: [imgMousepad],
     shortDesc: 'Mousepad personalizado con superficie de tela suave y base antideslizante de caucho.',
     description:
       'Mousepad de alta calidad con sublimación en tela de poliéster de tejido fino. ' +
@@ -140,6 +158,7 @@ export const PRODUCTS = [
     productId: 'cuadro-aluminio-hd',
     name: 'Cuadro HD Aluminio Sublimado',
     category: 'CUADRO_HD',
+    images: [imgCuadroHD, imgAluminio5, imgAluminio6, imgCastillo, imgMujeres, imgStrangerThings],
     shortDesc: 'Impresión fotográfica sobre aluminio de alta definición. Colores metálicos únicos que brillan.',
     description:
       'Nuestros cuadros de aluminio HD son la forma más elegante de decorar tu hogar con tus recuerdos. ' +
@@ -174,6 +193,7 @@ export const PRODUCTS = [
     productId: 'posavasos-set4',
     name: 'Set Posavasos Sublimados (x4)',
     category: 'POSAVASOS',
+    images: [logoCompleto],
     shortDesc: 'Set de 4 posavasos personalizados en MDF o cerámica. Cada uno con su propio diseño.',
     description:
       'Set de 4 posavasos redondos o cuadrados con sublimación de alta definición. ' +
@@ -202,6 +222,7 @@ export const PRODUCTS = [
     productId: 'bolsa-tote',
     name: 'Bolsa Tote Sublimada',
     category: 'BOLSAS',
+    images: [logoCompleto],
     shortDesc: 'Bolsa tote de poliéster con diseño personalizado. Fuerte, lavable y ecológica.',
     description:
       'Bolsa tote de poliéster de alta densidad 100% sublimable. ' +
@@ -230,6 +251,7 @@ export const PRODUCTS = [
     productId: 'puzzle-110',
     name: 'Rompecabezas Sublimado 110 pzs',
     category: 'PUZZLES',
+    images: [imgStrangerThings, imgCuadroHD],
     shortDesc: 'Rompecabezas personalizado con tu foto favorita. 110 piezas, perfecto para niños y adultos.',
     description:
       'Rompecabezas de madera MDF sublimada con tu foto o diseño favorito. ' +
@@ -261,6 +283,7 @@ export const PRODUCTS = [
     productId: 'azulejo-10x10',
     name: 'Azulejo / Plancha Sublimada',
     category: 'AZULEJOS',
+    images: [imgCuadroHD, imgMujeres],
     shortDesc: 'Azulejo cerámico sublimado para decoración, regalo o colección. Alta resistencia.',
     description:
       'Azulejo cerámico blanco de alta calidad con sublimación de tinta. ' +
@@ -290,6 +313,7 @@ export const PRODUCTS = [
     productId: 'botella-aluminio-750',
     name: 'Botella Aluminio Sublimada 750ml',
     category: 'BOTELLAS',
+    images: [logoCompleto],
     shortDesc: 'Botella de aluminio personalizada con diseño sublimado. Ligera, durable y con tapa rosca.',
     description:
       'Botella de aluminio anodizado sublimable. Una alternativa ligera y ecológica a las botellas plásticas, ' +
@@ -318,6 +342,7 @@ export const PRODUCTS = [
     productId: 'llavero-sublimado',
     name: 'Llavero Sublimado Personalizado',
     category: 'LLAVEROS',
+    images: [imgPlacaMascota, imgPlacasMascotas],
     shortDesc: 'Llavero personalizado con foto o diseño sublimado. Disponible en MDF, acrílico y aluminio.',
     description:
       'Llaveros personalizados con sublimación de alta definición. ' +
@@ -347,6 +372,7 @@ export const PRODUCTS = [
     productId: 'id-mascota',
     name: 'Placa ID Mascotas',
     category: 'ID_MASCOTAS',
+    images: [imgPlacaMascota, imgPlacasMascotas, imgPerro],
     shortDesc: 'Placa de identificación para tu mascota con foto, nombre y datos de contacto grabados en metal.',
     description:
       'Placas de identificación para mascotas en acero inoxidable o aluminio anodizado. ' +
@@ -378,6 +404,7 @@ export const PRODUCTS = [
     productId: 'id-salud',
     name: 'Placa ID Salud / Emergencia',
     category: 'ID_SALUD',
+    images: [imgPlacaMascota],
     shortDesc: 'Placa médica con datos de emergencia grabados en metal. Para personas con condiciones especiales.',
     description:
       'Placa de identificación médica en acero inoxidable para personas con condiciones de salud especiales: ' +
