@@ -1462,7 +1462,7 @@
         grid.innerHTML = ADMIN_PRODUCTS.map(p => {
             const d = adminPrecios[p.id] || { desde: 0, nota: '' };
             return `
-            <div style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center;">
+            <div style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:grid; grid-template-columns:1fr auto auto; gap:14px; align-items:center;">
                 <div>
                     <div style="font-weight:700; font-size:14px; color:#fff; margin-bottom:4px;">${p.label}</div>
                     <input type="text" id="nota-${p.id}" value="${d.nota || ''}" placeholder="Nota breve (ej: Precio unitario)"
@@ -1472,6 +1472,12 @@
                     <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Desde $</div>
                     <input type="number" id="precio-${p.id}" value="${d.desde || 0}" min="0" step="100"
                         style="background:rgba(14,165,233,0.08); border:1px solid rgba(14,165,233,0.3); color:var(--primary); font-size:16px; font-weight:700; padding:8px 12px; border-radius:10px; width:120px; text-align:right; box-sizing:border-box;">
+                </div>
+                <div>
+                    <button onclick="saveSinglePrecio('${p.id}', '${p.label}')" id="btn-save-${p.id}" style="background:var(--primary); color:#fff; border:none; border-radius:8px; padding:8px 12px; font-weight:600; cursor:pointer; font-size:12px; height: 100%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right: 4px;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                        Guardar
+                    </button>
                 </div>
             </div>`;
         }).join('');
@@ -1491,6 +1497,46 @@
         document.getElementById('new-prod-label').value = '';
         
         renderPreciosGrid();
+    }
+
+    async function saveSinglePrecio(id, label) {
+        const btn = document.getElementById(`btn-save-${id}`);
+        const originalHtml = btn.innerHTML;
+        btn.disabled = true; 
+        btn.innerHTML = `<svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-opacity="0.3" stroke-width="4"/><path d="M12 2C6.47715 2 2 6.47715 2 12" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`;
+
+        const prices = {};
+        prices[id] = {
+            desde: parseInt(document.getElementById(`precio-${id}`).value) || 0,
+            nota: document.getElementById(`nota-${id}`).value.trim(),
+            label: label
+        };
+
+        try {
+            const res = await fetch(`${API}/user-tags?action=prices`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adminEmail: userEmail, prices })
+            });
+            if (res.ok) {
+                adminPrecios[id] = prices[id];
+                btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>`;
+                btn.style.background = "#22c55e"; // Success green
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.style.background = "var(--primary)";
+                    btn.disabled = false;
+                }, 2000);
+            } else {
+                alert('Error al guardar precio: ' + await res.text());
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        } catch (e) {
+            alert('Error de conexión: ' + e.message);
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+        }
     }
 
     async function savePrecios() {
