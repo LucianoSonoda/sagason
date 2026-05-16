@@ -71,8 +71,7 @@ export function Warranty() {
                     className="features-grid"
                     variants={containerVariants}
                     initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
+                    animate="visible"
                 >
                     {policyItems.map((item, index) => {
                         const IconComponent = item.icon;
@@ -94,8 +93,7 @@ export function Warranty() {
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
+                    animate="visible"
                 >
                     <motion.div className="intro-text" variants={itemVariants}>
                         <p>
@@ -225,8 +223,7 @@ export function Warranty() {
                     className="contact-content"
                     variants={containerVariants}
                     initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
+                    animate="visible"
                 >
                     <motion.h2 variants={itemVariants}>¿Tienes alguna duda?</motion.h2>
                     <motion.p variants={itemVariants}>
