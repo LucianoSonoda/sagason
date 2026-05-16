@@ -699,6 +699,12 @@
                 <!-- Generado por JS -->
             </div>
 
+            <div style="display:flex; gap:10px; margin-top:20px; align-items:center; background:rgba(255,255,255,0.02); padding:15px; border-radius:14px; border:1px dashed var(--border);">
+                <input type="text" id="new-prod-id" placeholder="ID corto (ej: polera)" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:8px; width:30%;">
+                <input type="text" id="new-prod-label" placeholder="Nombre (ej: Polera)" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:8px; flex:1;">
+                <button onclick="addNewPriceItem()" style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:bold;">+ Añadir Item</button>
+            </div>
+
             <button id="btn-guardar-precios" class="btn-action btn-save" onclick="savePrecios()" style="margin-top:28px;">
                 💾 Guardar y Publicar Precios
             </button>
@@ -1377,20 +1383,44 @@
     function logout() { localStorage.removeItem('sagason_token'); location.href="https://sagason.cl"; }
 
     // ── GESTIÓN DE PRECIOS (solo admin) ───────────────────────────────────
-    const ADMIN_PRODUCTS = [
-        { id: 'posavasos',    label: 'Posavasos' },
-        { id: 'mousepad',     label: 'Mousepad' },
-        { id: 'cuadro',       label: 'Cuadro HD' },
-        { id: 'llaveros',     label: 'Llaveros' },
-        { id: 'id-mascotas',  label: 'ID Mascotas' },
-        { id: 'id-salud',     label: 'ID Salud' },
-        { id: 'rompecabezas', label: 'Rompecabezas' },
-        { id: 'tazones',      label: 'Tazones' },
-        { id: 'tumblers',     label: 'Tumblers' },
-        { id: 'impresion3d',  label: 'Impresión 3D' },
-        { id: 'insignias',    label: 'Insignias' },
-        { id: 'otro',         label: 'Otro' },
-    ];
+    const SIZES = {
+        'posavasos': ['Set de 4 (Cuadrados)', 'Set de 4 (Circulares)', 'Set de 6 (Cuadrados)', 'Set de 6 (Circulares)', 'Otro'],
+        'mousepad': ['17x21 cm', '19,8x24 cm', 'Otro'],
+        'cuadro': ['10x15 cm', '20x28 cm', 'Personalizado'],
+        'llaveros': ['Redondo', 'Cuadrado', 'Rectangular', 'Corazón', 'Otro'],
+        'id-mascotas': ['Hueso', 'Círculo', 'Corazón', 'Otro'],
+        'id-salud': ['Pulsera / Brazalete', 'Medallón / Tag', 'Tarjeta de Cartera', 'Formato Personalizado'],
+        'rompecabezas': ['A4 (120 piezas)', 'A5 (30 o 36 piezas)', 'Otro'],
+        'tazones': ['11oz Blanco', '11oz Mágico', 'Otro'],
+        'tumblers': ['20 oz', '30 oz', 'Otro'],
+        'impresion3d': ['PLA', 'ABS', 'Ambos', 'Otro'],
+        'insignias': ['10mm', '15mm', 'Otro'],
+        'otro': ['Consultar tamaño']
+    };
+
+    const PRODUCTS_LABELS = {
+        'posavasos': 'Posavasos',
+        'mousepad': 'Mousepad',
+        'cuadro': 'Cuadro HD',
+        'llaveros': 'Llaveros',
+        'id-mascotas': 'ID Mascotas',
+        'id-salud': 'ID Salud',
+        'rompecabezas': 'Rompecabezas',
+        'tazones': 'Tazones',
+        'tumblers': 'Tumblers',
+        'impresion3d': 'Impresión 3D',
+        'insignias': 'Insignias',
+        'otro': 'Otro'
+    };
+
+    let ADMIN_PRODUCTS = [];
+    for (const [prodId, sizes] of Object.entries(SIZES)) {
+        sizes.forEach(size => {
+            const id = `${prodId}-${size.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
+            const label = `${PRODUCTS_LABELS[prodId]} - ${size}`;
+            ADMIN_PRODUCTS.push({ id, label });
+        });
+    }
 
     let adminPrecios = {};
 
@@ -1415,9 +1445,11 @@
 
         // Sobrescribir con lo de DynamoDB si existe el ID correspondiente
         for (const key of Object.keys(dynamoPrecios)) {
-            // Solo usar si el key de dynamo existe en nuestros ADMIN_PRODUCTS (ignorar viejos)
-            // o si es la primera vez, el usuario tendra que guardar.
-            if (ADMIN_PRODUCTS.find(p => p.id === key)) {
+            const existing = ADMIN_PRODUCTS.find(p => p.id === key);
+            if (existing) {
+                adminPrecios[key] = dynamoPrecios[key];
+            } else if (dynamoPrecios[key].label) {
+                ADMIN_PRODUCTS.push({ id: key, label: dynamoPrecios[key].label });
                 adminPrecios[key] = dynamoPrecios[key];
             }
         }
@@ -1445,6 +1477,22 @@
         }).join('');
     }
 
+    function addNewPriceItem() {
+        let id = document.getElementById('new-prod-id').value.trim().toLowerCase().replace(/\s+/g, '-');
+        const label = document.getElementById('new-prod-label').value.trim();
+        
+        if (!id || !label) return alert("Por favor ingresa un ID y un Nombre para el producto.");
+        if (ADMIN_PRODUCTS.find(p => p.id === id)) return alert("El ID ya existe, elige otro o edita el existente.");
+        
+        ADMIN_PRODUCTS.push({ id, label });
+        adminPrecios[id] = { desde: 0, nota: '' };
+        
+        document.getElementById('new-prod-id').value = '';
+        document.getElementById('new-prod-label').value = '';
+        
+        renderPreciosGrid();
+    }
+
     async function savePrecios() {
         const btn = document.getElementById('btn-guardar-precios');
         btn.disabled = true; btn.innerText = 'Guardando...';
@@ -1453,7 +1501,8 @@
         ADMIN_PRODUCTS.forEach(p => {
             prices[p.id] = {
                 desde: parseInt(document.getElementById(`precio-${p.id}`).value) || 0,
-                nota: document.getElementById(`nota-${p.id}`).value.trim()
+                nota: document.getElementById(`nota-${p.id}`).value.trim(),
+                label: p.label
             };
         });
 

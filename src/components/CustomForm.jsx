@@ -87,10 +87,7 @@ export function CustomForm() {
 
             // Sobrescribir con Dynamo
             for (const key of Object.keys(dynamoPrecios)) {
-                // Solo si el key existe en nuestros productos actuales
-                if (PRODUCTS.find(p => p.id === key)) {
-                    finalPrecios[key] = dynamoPrecios[key];
-                }
+                finalPrecios[key] = dynamoPrecios[key];
             }
             setPrecios(finalPrecios);
         };
@@ -295,7 +292,20 @@ export function CustomForm() {
                                     <div className="options-grid products-grid">
                                         {PRODUCTS.map(p => {
                                             const Icon = p.icon;
-                                            const precio = precios[p.id];
+                                            
+                                            // Buscar el precio "Desde" más bajo entre todos los tamaños de este producto
+                                            let minPrecio = Infinity;
+                                            let notaRef = '';
+                                            for (const [key, value] of Object.entries(precios)) {
+                                                if (key.startsWith(`${p.id}-`) && value.desde > 0) {
+                                                    if (value.desde < minPrecio) {
+                                                        minPrecio = value.desde;
+                                                        notaRef = value.nota;
+                                                    }
+                                                }
+                                            }
+                                            const precioMostrar = minPrecio !== Infinity ? { desde: minPrecio, nota: notaRef } : null;
+
                                             return (
                                                 <div
                                                     key={p.id}
@@ -311,10 +321,10 @@ export function CustomForm() {
                                                     <Icon size={24} className="option-icon" />
                                                     <h4>{p.title}</h4>
                                                     <p>{p.desc}</p>
-                                                    {precio && (
+                                                    {precioMostrar && (
                                                         <span className="precio-desde">
-                                                            Desde {formatPrecio(precio.desde)}
-                                                            {precio.nota ? <em> · {precio.nota}</em> : null}
+                                                            Desde {formatPrecio(precioMostrar.desde)}
+                                                            {precioMostrar.nota ? <em> · {precioMostrar.nota}</em> : null}
                                                         </span>
                                                     )}
                                                 </div>
@@ -366,15 +376,27 @@ export function CustomForm() {
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category}</p>
 
                                     <div className="options-grid sizes-grid">
-                                        {SIZES[PRODUCTS.find(p => p.title === selections.product)?.id || 'otro'].map(s => (
-                                            <div
-                                                key={s}
-                                                className={`option-card simple-card ${selections.size === s ? 'selected' : ''}`}
-                                                onClick={() => handleSelectAndAdvance('size', s)}
-                                            >
-                                                <h4>{s.toUpperCase()}</h4>
-                                            </div>
-                                        ))}
+                                        {SIZES[PRODUCTS.find(p => p.title === selections.product)?.id || 'otro'].map(s => {
+                                            const prodId = PRODUCTS.find(p => p.title === selections.product)?.id || 'otro';
+                                            const sizeId = `${prodId}-${s.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
+                                            const precioSize = precios[sizeId];
+                                            
+                                            return (
+                                                <div
+                                                    key={s}
+                                                    className={`option-card simple-card ${selections.size === s ? 'selected' : ''}`}
+                                                    onClick={() => handleSelectAndAdvance('size', s)}
+                                                >
+                                                    <h4>{s.toUpperCase()}</h4>
+                                                    {precioSize && precioSize.desde > 0 && (
+                                                        <span className="precio-desde" style={{display: 'block', marginTop: '8px', fontSize: '0.85rem', color: 'var(--color-primary)'}}>
+                                                            Desde {formatPrecio(precioSize.desde)}
+                                                            {precioSize.nota ? <span style={{fontSize: '0.75rem', opacity: 0.8, display:'block'}}>{precioSize.nota}</span> : null}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                     <div className="step-actions">
                                         <button type="button" className="btn-prev" onClick={handlePrev}>
@@ -435,8 +457,11 @@ export function CustomForm() {
                                     {/* Precio referencial */}
                                     {(() => {
                                         const prodId = PRODUCTS.find(p => p.title === selections.product)?.id;
-                                        const precio = prodId && precios[prodId];
-                                        if (!precio) return null;
+                                        if (!prodId) return null;
+                                        const sizeId = `${prodId}-${(selections.size || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
+                                        const precio = precios[sizeId];
+                                        if (!precio || precio.desde <= 0) return null;
+                                        
                                         return (
                                             <div className="precio-referencia-box">
                                                 <div className="precio-ref-header">
@@ -444,7 +469,7 @@ export function CustomForm() {
                                                     <strong>Precio Referencial</strong>
                                                 </div>
                                                 <div className="precio-ref-body">
-                                                    <span className="precio-ref-producto">{selections.product}</span>
+                                                    <span className="precio-ref-producto">{selections.product} - {selections.size}</span>
                                                     <span className="precio-ref-valor">
                                                         Desde {formatPrecio(precio.desde)}
                                                         {precio.nota ? <span className="precio-ref-nota"> ({precio.nota})</span> : null}
