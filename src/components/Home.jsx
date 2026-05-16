@@ -338,7 +338,11 @@ function S4KCarousel() {
                 <button onClick={() => setWaitlistOpen(true)} className="btn btn-glass">Lista de Espera</button>
             </div>
 
-            <WaitlistModal isOpen={isWaitlistOpen} onClose={() => setWaitlistOpen(false)} />
+            <AnimatePresence>
+                {isWaitlistOpen && (
+                    <WaitlistModal isOpen={isWaitlistOpen} onClose={() => setWaitlistOpen(false)} />
+                )}
+            </AnimatePresence>
         </section>
     );
 }
@@ -347,8 +351,6 @@ function WaitlistModal({ isOpen, onClose }) {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState('idle');
     const [message, setMessage] = useState('');
-
-    if (!isOpen) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -378,6 +380,8 @@ function WaitlistModal({ isOpen, onClose }) {
                 className="modal-content glass-panel"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 50 }}
+                transition={{ duration: 0.25 }}
                 onClick={(e) => e.stopPropagation()}
             >
                 <button className="modal-close" onClick={onClose}><X size={24} /></button>

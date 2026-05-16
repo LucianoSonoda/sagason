@@ -98,59 +98,65 @@ function ProductCard({ product, price }) {
               </button>
             </div>
 
-            {/* Tab: Descripción */}
-            {tab === 'desc' && (
-              <motion.div
-                key="desc"
-                className="pcard-tab-content"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                <p className="pcard-description">{product.description}</p>
-              </motion.div>
-            )}
+            {/* Tab content wrapped in AnimatePresence for proper enter/exit coordination */}
+            <AnimatePresence mode="wait">
+              {tab === 'desc' && (
+                <motion.div
+                  key="desc"
+                  className="pcard-tab-content"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <p className="pcard-description">{product.description}</p>
+                </motion.div>
+              )}
 
-            {/* Tab: Tallas y Material */}
-            {tab === 'sizes' && (
-              <motion.div
-                key="sizes"
-                className="pcard-tab-content"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                <div className="pcard-materials">
-                  <Layers size={14} />
-                  <span>{product.materials}</span>
-                </div>
-                <ul className="pcard-sizes">
-                  {product.sizes.map((size, i) => (
-                    <li key={i} className="pcard-size-item">
-                      <span className="pcard-size-label">{size.label}</span>
-                      <span className="pcard-size-detail">{size.detail}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
+              {tab === 'sizes' && (
+                <motion.div
+                  key="sizes"
+                  className="pcard-tab-content"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <div className="pcard-materials">
+                    <Layers size={14} />
+                    <span>{product.materials}</span>
+                  </div>
+                  <ul className="pcard-sizes">
+                    {product.sizes.map((size, i) => (
+                      <li key={i} className="pcard-size-item">
+                        <span className="pcard-size-label">{size.label}</span>
+                        <span className="pcard-size-detail">{size.detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
 
-            {/* Tab: Cuidados */}
-            {tab === 'care' && (
-              <motion.div
-                key="care"
-                className="pcard-tab-content"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                <ul className="pcard-care-list">
-                  {product.care.map((tip, i) => (
-                    <li key={i} className="pcard-care-item">
-                      <Shield size={13} className="care-icon" />
-                      <span>{tip}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
+              {tab === 'care' && (
+                <motion.div
+                  key="care"
+                  className="pcard-tab-content"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <ul className="pcard-care-list">
+                    {product.care.map((tip, i) => (
+                      <li key={i} className="pcard-care-item">
+                        <Shield size={13} className="care-icon" />
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* CTA */}
             <div className="pcard-cta">

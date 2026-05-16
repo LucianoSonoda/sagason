@@ -92,8 +92,8 @@ export function HowItWorks() {
                 {/* Trust Section - Styled like Home.jsx */}
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
                     className="glass-panel glow-card"
                     style={{ marginBottom: '80px', padding: '3rem', position: 'relative', overflow: 'hidden' }}
                 >
@@ -166,8 +166,7 @@ export function HowItWorks() {
                 <motion.div 
                     variants={containerVariants}
                     initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
+                    animate="visible"
                     className="steps-grid" 
                     style={{ 
                         display: 'grid', 
@@ -226,8 +225,8 @@ export function HowItWorks() {
                 {/* Info Alert */}
                 <motion.div 
                     initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
                     style={{ marginTop: '5rem' }}
                 >
                     <div className="glass-panel" style={{ 
@@ -254,8 +253,8 @@ export function HowItWorks() {
                 {/* Final CTA */}
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
                     style={{ textAlign: 'center', marginTop: '6rem' }}
                 >
                     <div className="glass-panel glow-card" style={{ padding: '4rem 2rem', maxWidth: '800px', margin: '0 auto' }}>
