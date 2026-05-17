@@ -1495,13 +1495,13 @@
                 <div style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:grid; grid-template-columns:1fr auto auto; gap:14px; align-items:center;">
                     <div>
                         <input type="text" id="label-${p.id}" value="${d.label || p.label}" style="background:transparent; border:none; border-bottom:1px dashed var(--border); font-weight:700; font-size:14px; color:#fff; margin-bottom:4px; width:100%; outline:none;" placeholder="Nombre del ítem">
-                        <div style="display:flex; gap:8px;">
+                        <div style="display:flex; gap:8px; flex-wrap: wrap;">
                             <input list="categorias-list" id="cat-${p.id}" value="${cat}" placeholder="Categoría"
                                 style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:100px; box-sizing:border-box; margin-top:4px;">
                             <input type="text" id="sku-${p.id}" value="${d.sku || ''}" placeholder="SKU"
                                 style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:80px; box-sizing:border-box; margin-top:4px;">
                             <input type="text" id="nota-${p.id}" value="${d.nota || ''}" placeholder="Nota breve (ej: Precio unitario)"
-                                style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; flex:1; box-sizing:border-box; margin-top:4px;">
+                                style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; flex:1; min-width: 150px; box-sizing:border-box; margin-top:4px;">
                         </div>
                     </div>
                     <div style="text-align:right;">
