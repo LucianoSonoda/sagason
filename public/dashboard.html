@@ -702,21 +702,21 @@
             <div style="display:flex; gap:10px; margin-top:20px; align-items:center; background:rgba(255,255,255,0.02); padding:15px; border-radius:14px; border:1px dashed var(--border); flex-wrap: wrap;">
                 <input type="text" id="new-prod-id" placeholder="ID corto (ej: polera)" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:8px; min-width: 150px; flex: 1;">
                 <input type="text" id="new-prod-label" placeholder="Nombre (ej: Polera)" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:8px; min-width: 150px; flex: 2;">
-                <select id="new-prod-category" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:8px; min-width: 150px; flex: 1;">
-                    <option value="" disabled selected>Categoría</option>
-                    <option value="Posavasos">Posavasos</option>
-                    <option value="Mousepad">Mousepad</option>
-                    <option value="Cuadro HD">Cuadro HD</option>
-                    <option value="Llaveros">Llaveros</option>
-                    <option value="ID Mascotas">ID Mascotas</option>
-                    <option value="ID Salud">ID Salud</option>
-                    <option value="Rompecabezas">Rompecabezas</option>
-                    <option value="Tazones">Tazones</option>
-                    <option value="Tumblers">Tumblers</option>
-                    <option value="Impresión 3D">Impresión 3D</option>
-                    <option value="Insignias">Insignias</option>
-                    <option value="Otros Ítems">Otro</option>
-                </select>
+                <input list="categorias-list" id="new-prod-category" placeholder="Categoría (ej: Tazones)" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:8px; min-width: 150px; flex: 1;">
+                <datalist id="categorias-list">
+                    <option value="Posavasos">
+                    <option value="Mousepad">
+                    <option value="Cuadro HD">
+                    <option value="Llaveros">
+                    <option value="ID Mascotas">
+                    <option value="ID Salud">
+                    <option value="Rompecabezas">
+                    <option value="Tazones">
+                    <option value="Tumblers">
+                    <option value="Impresión 3D">
+                    <option value="Insignias">
+                    <option value="Otros Ítems">
+                </datalist>
                 <button onclick="addNewPriceItem()" style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:bold;">+ Añadir Item</button>
             </div>
 
@@ -1464,8 +1464,11 @@
             const existing = ADMIN_PRODUCTS.find(p => p.id === key);
             if (existing) {
                 adminPrecios[key] = dynamoPrecios[key];
+                if (dynamoPrecios[key].category) {
+                    existing.category = dynamoPrecios[key].category;
+                }
             } else if (dynamoPrecios[key].label) {
-                ADMIN_PRODUCTS.push({ id: key, label: dynamoPrecios[key].label });
+                ADMIN_PRODUCTS.push({ id: key, label: dynamoPrecios[key].label, category: dynamoPrecios[key].category });
                 adminPrecios[key] = dynamoPrecios[key];
             }
         }
@@ -1493,6 +1496,8 @@
                     <div>
                         <input type="text" id="label-${p.id}" value="${d.label || p.label}" style="background:transparent; border:none; border-bottom:1px dashed var(--border); font-weight:700; font-size:14px; color:#fff; margin-bottom:4px; width:100%; outline:none;" placeholder="Nombre del ítem">
                         <div style="display:flex; gap:8px;">
+                            <input list="categorias-list" id="cat-${p.id}" value="${cat}" placeholder="Categoría"
+                                style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:100px; box-sizing:border-box; margin-top:4px;">
                             <input type="text" id="sku-${p.id}" value="${d.sku || ''}" placeholder="SKU"
                                 style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:80px; box-sizing:border-box; margin-top:4px;">
                             <input type="text" id="nota-${p.id}" value="${d.nota || ''}" placeholder="Nota breve (ej: Precio unitario)"
@@ -1542,7 +1547,9 @@
         btn.innerHTML = `<svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-opacity="0.3" stroke-width="4"/><path d="M12 2C6.47715 2 2 6.47715 2 12" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`;
 
         const product = ADMIN_PRODUCTS.find(p => p.id === id);
-        const category = product ? product.category : 'Otros Ítems';
+        
+        const catEl = document.getElementById(`cat-${id}`);
+        const categoryValue = catEl ? catEl.value.trim() : (product ? product.category : 'Otros Ítems');
         
         const labelEl = document.getElementById(`label-${id}`);
         const labelValue = labelEl ? labelEl.value.trim() : (product ? product.label : 'Sin Nombre');
@@ -1553,7 +1560,7 @@
             nota: document.getElementById(`nota-${id}`).value.trim(),
             sku: document.getElementById(`sku-${id}`).value.trim(),
             label: labelValue,
-            category: category
+            category: categoryValue || 'Otros Ítems'
         };
 
         try {
@@ -1589,7 +1596,8 @@
 
         const prices = {};
         ADMIN_PRODUCTS.forEach(p => {
-            const category = p.category || 'Otros Ítems';
+            const catEl = document.getElementById(`cat-${p.id}`);
+            const categoryValue = catEl ? catEl.value.trim() : (p.category || 'Otros Ítems');
             const labelEl = document.getElementById(`label-${p.id}`);
             const labelValue = labelEl ? labelEl.value.trim() : p.label;
             prices[p.id] = {
@@ -1597,7 +1605,7 @@
                 nota: document.getElementById(`nota-${p.id}`).value.trim(),
                 sku: document.getElementById(`sku-${p.id}`).value.trim(),
                 label: labelValue,
-                category: category
+                category: categoryValue || 'Otros Ítems'
             };
         });
 
