@@ -320,7 +320,7 @@ export function CustomForm() {
                                             let minPrecio = Infinity;
                                             let notaRef = '';
                                             for (const [key, value] of Object.entries(precios)) {
-                                                if (key.startsWith(`${p.id}-`) && value.desde > 0) {
+                                                if (key.startsWith(`${p.id}-`) && value.desde > 0 && value.active !== false) {
                                                     if (value.desde < minPrecio) {
                                                         minPrecio = value.desde;
                                                         notaRef = value.nota;
@@ -399,27 +399,31 @@ export function CustomForm() {
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category}</p>
 
                                     <div className="options-grid sizes-grid">
-                                        {SIZES[PRODUCTS.find(p => p.title === selections.product)?.id || 'otro'].map(s => {
-                                            const prodId = PRODUCTS.find(p => p.title === selections.product)?.id || 'otro';
-                                            const sizeId = `${prodId}-${s.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
-                                            const precioSize = precios[sizeId];
-                                            
-                                            return (
-                                                <div
-                                                    key={s}
-                                                    className={`option-card simple-card ${selections.size === s ? 'selected' : ''}`}
-                                                    onClick={() => handleSelectAndAdvance('size', s)}
-                                                >
-                                                    <h4>{s.toUpperCase()}</h4>
-                                                    {precioSize && precioSize.desde > 0 && (
-                                                        <span className="precio-desde" style={{display: 'block', marginTop: '8px', fontSize: '0.85rem', color: 'var(--color-primary)'}}>
-                                                            Desde {formatPrecio(precioSize.desde)}
-                                                            {precioSize.nota ? <span style={{fontSize: '0.75rem', opacity: 0.8, display:'block'}}>{precioSize.nota}</span> : null}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
+                                        {SIZES[PRODUCTS.find(p => p.title === selections.product)?.id || 'otro']
+                                            .map(s => {
+                                                const prodId = PRODUCTS.find(p => p.title === selections.product)?.id || 'otro';
+                                                const sizeId = `${prodId}-${s.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
+                                                const precioSize = precios[sizeId];
+                                                
+                                                if (precioSize && precioSize.active === false) return null;
+
+                                                return (
+                                                    <div
+                                                        key={s}
+                                                        className={`option-card simple-card ${selections.size === s ? 'selected' : ''}`}
+                                                        onClick={() => handleSelectAndAdvance('size', s)}
+                                                    >
+                                                        <h4>{s.toUpperCase()}</h4>
+                                                        {precioSize && precioSize.desde > 0 && (
+                                                            <span className="precio-desde" style={{display: 'block', marginTop: '8px', fontSize: '0.85rem', color: 'var(--color-primary)'}}>
+                                                                Desde {formatPrecio(precioSize.desde)}
+                                                                {precioSize.nota ? <span style={{fontSize: '0.75rem', opacity: 0.8, display:'block'}}>{precioSize.nota}</span> : null}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })
+                                            .filter(Boolean)}
                                     </div>
                                     <div className="step-actions">
                                         <button type="button" className="btn-prev" onClick={handlePrev}>
