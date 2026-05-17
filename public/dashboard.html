@@ -1586,10 +1586,13 @@
 
         const prices = {};
         ADMIN_PRODUCTS.forEach(p => {
+            const category = p.category || 'Otros Ítems';
             prices[p.id] = {
                 desde: parseInt(document.getElementById(`precio-${p.id}`).value) || 0,
                 nota: document.getElementById(`nota-${p.id}`).value.trim(),
-                label: p.label
+                sku: document.getElementById(`sku-${p.id}`).value.trim(),
+                label: p.label,
+                category: category
             };
         });
 
