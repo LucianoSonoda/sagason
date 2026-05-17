@@ -68,7 +68,7 @@ export function Warranty() {
             icon: Coffee,
             cohesion: 'Mugs de cerámica estándar, tazones mágicos termosensibles y metalizados.',
             specifications: [
-                'Área máxima imprimible de 205 mm x 95 mm.',
+                'Área máxima imprimible de 200 mm x 80 mm.',
                 'Los tazones mágicos funcionan por recubrimiento termosensible. Se imprimen sobre una base negra de polímero que se vuelve transparente con el calor.'
             ],
             exclusions: [
