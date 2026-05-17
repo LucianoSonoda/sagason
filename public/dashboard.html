@@ -1509,12 +1509,9 @@
                         <input type="number" id="precio-${p.id}" value="${d.desde || 0}" min="0" step="100"
                             style="background:rgba(14,165,233,0.08); border:1px solid rgba(14,165,233,0.3); color:var(--primary); font-size:16px; font-weight:700; padding:8px 12px; border-radius:10px; width:120px; text-align:right; box-sizing:border-box;">
                     </div>
-                    <div>
-                        <button onclick="saveSinglePrecio('${p.id}')" id="btn-save-${p.id}" style="background:var(--primary); color:#fff; border:none; border-radius:8px; padding:8px 12px; font-weight:600; cursor:pointer; font-size:12px; height: 100%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right: 4px;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                            Guardar
+                        <button onclick="saveSinglePrecio('${p.id}')" id="btn-save-${p.id}" title="Guardar cambios" style="background:var(--primary); color:#fff; border:none; border-radius:10px; width:44px; height:44px; cursor:pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
                         </button>
-                    </div>
                 </div>`;
             });
         }
@@ -1544,7 +1541,7 @@
         const btn = document.getElementById(`btn-save-${id}`);
         const originalHtml = btn.innerHTML;
         btn.disabled = true; 
-        btn.innerHTML = `<svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-opacity="0.3" stroke-width="4"/><path d="M12 2C6.47715 2 2 6.47715 2 12" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`;
+        btn.innerHTML = `<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-opacity="0.3" stroke-width="4"/><path d="M12 2C6.47715 2 2 6.47715 2 12" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`;
 
         const product = ADMIN_PRODUCTS.find(p => p.id === id);
         
@@ -1571,7 +1568,7 @@
             });
             if (res.ok) {
                 adminPrecios[id] = prices[id];
-                btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>`;
+                btn.innerHTML = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>`;
                 btn.style.background = "#22c55e"; // Success green
                 setTimeout(() => {
                     btn.innerHTML = originalHtml;
