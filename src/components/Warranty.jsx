@@ -205,6 +205,10 @@ export function Warranty() {
         {
             q: "Compré con factura para mi empresa. ¿Tengo los mismos 6 meses de la Ley del Consumidor?",
             a: "No. Las compras emitidas con Factura Comercial (con RUT de empresa) corresponden a transacciones comerciales B2B y no se rigen por la Ley N° 19.496 de Protección al Consumidor (la cual ampara exclusivamente al consumidor final). Estas compras se regulan por el Código de Comercio chileno. Según el Art. 154 de dicho código, el plazo para reclamar por defectos visibles o faltantes es de estrictamente 8 días contados desde la recepción del producto."
+        },
+        {
+            q: "¿Cuáles son las condiciones y medios de pago para los trabajos?",
+            a: "Para todo pedido personalizado, las condiciones de pago son de un 40% al momento de realizar el pedido (para iniciar el proceso de diseño y adquisición de insumos) y el 60% restante una vez aprobada la propuesta de arte por parte del cliente y antes de que el trabajo ingrese a la cola física de producción. Todos los pagos se realizan mediante transferencia bancaria electrónica a la cuenta formal a nombre de la empresa, cuyos datos específicos son informados de manera oportuna vía correo electrónico."
         }
     ];
 
