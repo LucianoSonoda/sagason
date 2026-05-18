@@ -55,7 +55,7 @@ export function Home() {
                     animate="visible"
                 >
                     <motion.div className="hero-label" variants={itemVariants}>
-                        <Zap size={14} /> <span>GRABADO LÁSER · HECHO CON ALMA</span>
+                        <Zap size={14} /> <span>SUBLIMACIÓN ALTA CALIDAD · GRABADO A LÁSER · HECHO CON ALMA</span>
                     </motion.div>
                     <motion.h1 className="hero-title" variants={itemVariants}>
                         LOS MOMENTOS QUE <br />
