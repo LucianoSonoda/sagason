@@ -87,11 +87,6 @@ export function Home() {
                             <span className="stat-value">100%</span>
                             <span className="stat-label">Personalizable</span>
                         </div>
-                        <div className="stat-divider"></div>
-                        <div className="stat-item">
-                            <span className="stat-value">∞</span>
-                            <span className="stat-label">Durabilidad</span>
-                        </div>
                     </motion.div>
                 </motion.div>
             </section>
