@@ -546,153 +546,300 @@ export function CustomForm() {
     );
 }
 
-// 🎨 ProductVisualizer Canvas - Simulación digital de grabado láser 4K
+// 🎨 ProductVisualizer - Simulación fotorrealista 3D interactiva del producto seleccionado
 function ProductVisualizer({ product, size, name, details }) {
-    const canvasRef = useRef(null);
+    const prodId = product?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'otro';
+    const isCircular = ['circular', 'circulares', 'redondo'].some(s => size?.toLowerCase().includes(s)) || prodId.includes('insignia');
+    const displayName = name ? name.toUpperCase() : 'TU NOMBRE AQUÍ';
+    const displayDetail = details ? (details.length > 32 ? details.substring(0, 30) + '...' : details).toUpperCase() : 'INSTRUCCIONES / DETALLES';
 
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+    // Determinar tipo de decoración y descripción
+    let decorType = 'SUBLIMACIÓN TÉRMICA 4K';
+    let decorDesc = 'Simulación fotorrealista del acabado sublimado sobre superficie premium.';
+    
+    if (['llaveros', 'id-mascotas', 'id-salud', 'tumblers', 'insignias'].some(p => prodId.includes(p))) {
+        decorType = 'GRABADO MICRO-LÁSER 4K';
+        decorDesc = 'Simulación fotorrealista de grabado láser de fibra de precisión a 1064nm.';
+    } else if (prodId.includes('impresion3d')) {
+        decorType = 'FABRICACIÓN ADITIVA 3D';
+        decorDesc = 'Simulación de extrusión por capas en filamento biodegradable premium.';
+    }
 
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Dimensions
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
-        const r = Math.min(cx, cy) - 20;
-
-        // Determine if circular or rectangular
-        const isCircular = ['posavasos circular', 'llaveros redondo', 'llaveros circular', 'id-mascotas círculo', 'insignias', 'llavero redondo', 'llaveros redondo'].some(t => 
-            product?.toLowerCase().includes('posavasos') && size?.toLowerCase().includes('circular') ||
-            product?.toLowerCase().includes('llaveros') && size?.toLowerCase().includes('redondo') ||
-            product?.toLowerCase().includes('llaveros') && size?.toLowerCase().includes('circular') ||
-            product?.toLowerCase().includes('mascotas') && size?.toLowerCase().includes('círculo') ||
-            product?.toLowerCase().includes('insignia') ||
-            product?.toLowerCase().includes('redondo')
-        ) || product === 'ID MASCOTAS' && size?.toLowerCase().includes('círculo') || product === 'LLAVEROS' && size?.toLowerCase().includes('redondo');
-
-        // Draw metal plate background with reflective gradients
-        const grad = ctx.createRadialGradient(cx - 30, cy - 30, 10, cx, cy, r + 40);
-        grad.addColorStop(0, '#ffffff'); // Shiny center reflection
-        grad.addColorStop(0.3, '#e2e8f0'); // Light metal gray
-        grad.addColorStop(0.7, '#64748b'); // Sleek slate steel
-        grad.addColorStop(1, '#0f172a'); // Dark edge drop shadow
-
-        ctx.save();
-        if (isCircular) {
-            // Draw circle
-            ctx.beginPath();
-            ctx.arc(cx, cy, r, 0, Math.PI * 2);
-            ctx.fillStyle = grad;
-            ctx.fill();
-
-            // Concentric metallic borders (Sagason 4K premium style)
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.arc(cx, cy, r - 6, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.arc(cx, cy, r - 8, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(14, 165, 233, 0.6)'; // Precise Blue accent ring
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-        } else {
-            // Draw rounded rectangle card
-            const w = r * 1.6;
-            const h = r * 1.15;
-            const x = cx - w / 2;
-            const y = cy - h / 2;
-            const rad = 14;
-
-            ctx.beginPath();
-            ctx.roundRect(x, y, w, h, rad);
-            ctx.fillStyle = grad;
-            ctx.fill();
-
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.roundRect(x + 5, y + 5, w - 10, h - 10, rad - 2);
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.roundRect(x + 7, y + 7, w - 14, h - 14, rad - 3);
-            ctx.strokeStyle = 'rgba(14, 165, 233, 0.6)'; // Precise Blue accent ring
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
+    const render3DObject = () => {
+        // 1. TAZONES (3D Cylinder Ceramic Mug)
+        if (prodId.includes('tazon') || prodId.includes('mug')) {
+            const isMagico = size?.toLowerCase().includes('mágico');
+            return (
+                <div className="mug-cylinder">
+                    <div className={`mug-handle ${isMagico ? 'mug-handle-magico' : ''}`} />
+                    {Array.from({ length: 12 }).map((_, idx) => {
+                        const rot = idx * 30;
+                        const rad = (rot * Math.PI) / 180;
+                        const shade = Math.floor((Math.sin(rad) + 1) * 35) + 15;
+                        const bg = isMagico 
+                            ? `rgb(${shade}, ${shade + 5}, ${shade + 12})` 
+                            : `rgb(${210 + shade * 0.45}, ${215 + shade * 0.45}, ${225 + shade * 0.45})`;
+                        return (
+                            <div 
+                                key={idx} 
+                                className={`mug-panel ${isMagico ? 'mug-panel-magico' : ''}`} 
+                                style={{ 
+                                    transform: `rotateY(${rot}deg) translateZ(48px)`,
+                                    background: bg,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                {idx === 6 && (
+                                    <div style={{ transform: 'scaleX(-1)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '28px', opacity: 0.95 }}>
+                                        <span style={{ fontSize: '8px', fontWeight: '900', color: isMagico ? '#60a5fa' : '#0ea5e9', writingMode: 'vertical-rl', textOrientation: 'mixed', height: '80px', letterSpacing: '2px' }}>
+                                            {displayName}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            );
         }
 
-        // Draw branding top text
-        ctx.fillStyle = '#0f172a'; // Laser deep etched dark color
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        ctx.font = '800 10px monospace';
-        ctx.fillText('SAGASON 4K SECURITY PLATFORM', cx, cy - r * 0.62);
+        // 2. TUMBLERS (Sleek tall cylinder)
+        if (prodId.includes('tumbler') || prodId.includes('vaso')) {
+            return (
+                <div className="tumbler-cylinder">
+                    <div className="tumbler-cap" />
+                    {Array.from({ length: 12 }).map((_, idx) => {
+                        const rot = idx * 30;
+                        const rad = (rot * Math.PI) / 180;
+                        const shade = Math.floor((Math.sin(rad) + 1) * 20);
+                        const bg = `rgb(${25 + shade}, ${30 + shade}, ${40 + shade})`; // Matte steel finish
+                        return (
+                            <div 
+                                key={idx} 
+                                className="tumbler-panel" 
+                                style={{ 
+                                    transform: `rotateY(${rot}deg) translateZ(38px)`,
+                                    background: bg,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                {idx === 6 && (
+                                    <span style={{ fontSize: '8px', fontWeight: '900', color: '#60a5fa', writingMode: 'vertical-rl', textOrientation: 'mixed', height: '100px', letterSpacing: '2.5px', textShadow: '0 0 4px rgba(14,165,233,0.5)' }}>
+                                        {displayName}
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        }
 
-        // QR Code mockup
-        const qrSize = 56;
-        const qrx = cx - qrSize / 2;
-        const qry = cy - qrSize / 2;
+        // 3. MOUSEPAD
+        if (prodId.includes('mousepad')) {
+            return (
+                <div className="object3d mousepad-card">
+                    <div className="face3d front mousepad-front">
+                        <span className="text-3d-title" style={{ color: 'var(--color-primary)' }}>SAGASON GAMING</span>
+                        <span className="text-3d-name" style={{ color: '#fff', fontSize: '13px', textShadow: '0 0 8px rgba(14, 165, 233, 0.8)' }}>{displayName}</span>
+                        <span className="text-3d-detail" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '7px' }}>{displayDetail}</span>
+                    </div>
+                    <div className="face3d back mousepad-back">
+                        <span style={{ fontSize: '9px', color: '#52525b', fontWeight: 'bold' }}>S4K ANTI-SLIP BASE</span>
+                    </div>
+                </div>
+            );
+        }
 
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(qrx, qry, qrSize, qrSize);
+        // 4. POSAVASOS (Coaster)
+        if (prodId.includes('posavasos')) {
+            const shapeClass = isCircular ? 'posavasos-round' : '';
+            return (
+                <div className="object3d">
+                    <div className={`face3d front posavasos-front ${shapeClass}`}>
+                        <span className="text-3d-title text-3d-sublimado" style={{ color: '#854d0e' }}>COASTER SERIES</span>
+                        <span className="text-3d-name text-3d-sublimado" style={{ color: '#1e1b4b', fontSize: '11px' }}>{displayName}</span>
+                        <span className="text-3d-detail text-3d-sublimado" style={{ color: '#854d0e', fontSize: '7.5px' }}>{displayDetail}</span>
+                    </div>
+                    <div className={`face3d back posavasos-back ${shapeClass}`}>
+                        <span style={{ fontSize: '14px', fontWeight: '800', color: '#5c3415' }}>SAGASON</span>
+                        <span style={{ fontSize: '7px', opacity: 0.8, color: '#5c3415', marginTop: '3px', fontWeight: '600' }}>CORK BACKING</span>
+                    </div>
+                    {isCircular && <div className="posavasos-side" />}
+                </div>
+            );
+        }
 
-        // Draw QR standard corner anchors
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(qrx + 4, qry + 4, 14, 14);
-        ctx.fillRect(qrx + qrSize - 18, qry + 4, 14, 14);
-        ctx.fillRect(qrx + 4, qry + qrSize - 18, 14, 14);
+        // 5. CUADRO HD (Metal poster)
+        if (prodId.includes('cuadro') || prodId.includes('foto')) {
+            return (
+                <div className="object3d cuadro-card">
+                    <div className="face3d front cuadro-front">
+                        <div className="cuadro-sheen" />
+                        <span className="text-3d-title" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '5px' }}>CUADRO HD CHROME</span>
+                        <span className="text-3d-name" style={{ color: '#f8fafc', fontSize: '11px', fontWeight: '900' }}>{displayName}</span>
+                        <span className="text-3d-detail" style={{ color: '#38bdf8', fontSize: '7px' }}>{displayDetail}</span>
+                    </div>
+                    <div className="face3d back cuadro-back">
+                        <div className="cuadro-hanger" />
+                        <span style={{ fontSize: '8px', color: '#475569', marginTop: '65px', fontWeight: 'bold' }}>SAGASON ART</span>
+                    </div>
+                </div>
+            );
+        }
 
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(qrx + 7, qry + 7, 8, 8);
-        ctx.fillRect(qrx + qrSize - 15, qry + 7, 8, 8);
-        ctx.fillRect(qrx + 7, qry + qrSize - 15, 8, 8);
+        // 6. LLAVEROS
+        if (prodId.includes('llavero')) {
+            const shapeClass = isCircular ? 'posavasos-round' : '';
+            return (
+                <div className="object3d llaveros-tag">
+                    <div className="llaveros-ring" />
+                    <div className="llaveros-chain" />
+                    <div className={`face3d front llaveros-front ${shapeClass}`}>
+                        <span className="text-3d-title text-3d-laser">LLAVERO SAGASON</span>
+                        <span className="text-3d-name text-3d-laser" style={{ fontSize: '10px' }}>{displayName}</span>
+                        <span className="text-3d-detail text-3d-laser" style={{ fontSize: '7px' }}>{displayDetail}</span>
+                    </div>
+                    <div className={`face3d back llaveros-back ${shapeClass}`}>
+                        <span style={{ fontSize: '8px', fontWeight: 'bold', color: '#cbd5e1' }}>4K MICRO-LÁSER</span>
+                    </div>
+                </div>
+            );
+        }
 
-        // Tiny pseudo random QR pixels
-        ctx.fillStyle = '#ffffff';
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                if (Math.random() > 0.4 && (i > 3 || j > 3) && (i < 6 || j > 3) && (i > 3 || j < 6)) {
-                    ctx.fillRect(qrx + 18 + i * 3.5, qry + 18 + j * 3.5, 3, 3);
-                }
+        // 7. ID MASCOTAS (Bone or circular tag)
+        if (prodId.includes('mascota')) {
+            const isBone = size?.toLowerCase().includes('hueso') || (!size);
+            if (isBone) {
+                return (
+                    <div className="object3d pet-bone">
+                        <div className="face3d front pet-front pet-bone">
+                            <div className="bone-node tl" />
+                            <div className="bone-node bl" />
+                            <div className="bone-node tr" />
+                            <div className="bone-node br" />
+                            <div className="bone-body" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                <span className="text-3d-title" style={{ fontSize: '5px', opacity: 0.9 }}>ID MASCOTA</span>
+                                <span className="text-3d-name" style={{ fontSize: '11px', color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>🐾 {displayName}</span>
+                                <span className="text-3d-detail" style={{ fontSize: '7.5px', color: '#e0f2fe' }}>{displayDetail}</span>
+                            </div>
+                        </div>
+                    </div>
+                );
+            } else {
+                return (
+                    <div className="object3d pet-circle">
+                        <div className="face3d front pet-front pet-circle">
+                            <span className="text-3d-title" style={{ opacity: 0.9 }}>ID MASCOTA</span>
+                            <span className="text-3d-name" style={{ fontSize: '12px', color: '#fff' }}>🐾 {displayName}</span>
+                            <span className="text-3d-detail" style={{ fontSize: '8px', color: '#e0f2fe' }}>{displayDetail}</span>
+                        </div>
+                        <div className="face3d back pet-back pet-circle">
+                            <span style={{ fontSize: '8px', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>LÁSER DE FIBRA</span>
+                            <div style={{ width: '34px', height: '34px', background: '#fff', padding: '2px', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: '30px', height: '30px', background: '#000' }} />
+                            </div>
+                        </div>
+                    </div>
+                );
             }
         }
 
-        // Draw User Personalizations
-        ctx.fillStyle = '#1e293b';
+        // 8. ID SALUD (Emergency bracelet/tag)
+        if (prodId.includes('salud') || prodId.includes('enfermedad')) {
+            return (
+                <div className="object3d salud-card">
+                    <div className="face3d front salud-front">
+                        <div className="salud-emblem" style={{ fontSize: '18px', marginBottom: '6px' }}>❤️</div>
+                        <span className="text-3d-title" style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '6px' }}>EMERGENCY MEDICAL ID</span>
+                        <span className="text-3d-name" style={{ fontSize: '10px', color: '#fff' }}>{displayName}</span>
+                        <span className="text-3d-detail" style={{ fontSize: '7.5px', color: '#fca5a5' }}>{displayDetail}</span>
+                    </div>
+                    <div className="face3d back salud-back">
+                        <span style={{ fontSize: '7px', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>SCAN FOR SOS</span>
+                        <div style={{ width: '38px', height: '38px', background: '#fff', padding: '2px', borderRadius: '3px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ width: '34px', height: '34px', background: '#000' }} />
+                        </div>
+                    </div>
+                </div>
+            );
+        }
 
-        // Draw Name text
-        const displayName = name ? name.toUpperCase() : 'TU NOMBRE AQUÍ';
-        ctx.font = 'bold 12px "Space Grotesk", sans-serif';
-        ctx.fillText(displayName, cx, cy + r * 0.38);
+        // 9. ROMPECABEZAS (Puzzle board)
+        if (prodId.includes('rompecabezas') || prodId.includes('puzzle')) {
+            return (
+                <div className="object3d cuadro-card">
+                    <div className="face3d front puzzle-front">
+                        <div className="puzzle-overlay" />
+                        <span className="text-3d-title">SAGASON PUZZLE</span>
+                        <span className="text-3d-name" style={{ fontSize: '12px', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>{displayName}</span>
+                        <span className="text-3d-detail" style={{ fontSize: '7px', opacity: 0.9 }}>{displayDetail}</span>
+                    </div>
+                    <div className="face3d back" style={{ background: '#b8b8b8', border: '1px solid #a3a3a3' }}>
+                        <span style={{ fontSize: '8px', color: '#4b5563', fontWeight: 'bold' }}>PUZZLE CARTÓN VIP</span>
+                    </div>
+                </div>
+            );
+        }
 
-        // Draw Message / Engrave Details text
-        ctx.font = '500 9.5px "Space Grotesk", sans-serif';
-        const displayDetails = details ? (details.length > 32 ? details.substring(0, 30) + '...' : details) : 'DETALLES DE PERSONALIZACIÓN';
-        ctx.fillText(displayDetails.toUpperCase(), cx, cy + r * 0.55);
+        // 10. IMPRESIÓN 3D (Extruding low poly prism)
+        if (prodId.includes('impresion3d') || prodId.includes('3d')) {
+            return (
+                <>
+                    <div className="print-bed" />
+                    <div className="print-nozzle" />
+                    <div className="print-beam" />
+                    <div className="print-object">
+                        <div className="box-3d" style={{ transform: 'scale3d(0.5, 0.5, 0.5)' }}>
+                            <div className="box-face box-front" style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', border: '1.5px solid #38bdf8' }} />
+                            <div className="box-face box-back" style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', border: '1.5px solid #38bdf8' }} />
+                            <div className="box-face box-left" style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', border: '1.5px solid #38bdf8' }} />
+                            <div className="box-face box-right" style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', border: '1.5px solid #38bdf8' }} />
+                            <div className="box-face box-top" style={{ background: '#38bdf8', border: '1.5px solid #7dd3fc' }} />
+                            <div className="box-face box-bottom" style={{ background: '#0284c7' }} />
+                        </div>
+                    </div>
+                </>
+            );
+        }
 
-        ctx.restore();
-    }, [product, size, name, details]);
+        // 11. FALLBACK / OTROS (Gift box with ribbon)
+        return (
+            <div className="box-3d">
+                <div className="box-face box-front">
+                    <div className="box-ribbon-v" />
+                    <div className="box-ribbon-h" />
+                    <span style={{ position: 'absolute', fontSize: '8px', fontWeight: 'bold', color: '#fff', textTransform: 'uppercase', top: '15px', width: '100%', textAlign: 'center' }}>SAGASON</span>
+                    <span style={{ position: 'absolute', fontSize: '9px', fontWeight: 'bold', color: '#fff', bottom: '15px', width: '100%', textAlign: 'center' }}>{displayName}</span>
+                </div>
+                <div className="box-face box-back"><div className="box-ribbon-v" /><div className="box-ribbon-h" /></div>
+                <div className="box-face box-left"><div className="box-ribbon-v" /><div className="box-ribbon-h" /></div>
+                <div className="box-face box-right"><div className="box-ribbon-v" /><div className="box-ribbon-h" /></div>
+                <div className="box-face box-top"><div className="box-ribbon-v" style={{ height: '20px', top: '40px' }} /><div className="box-ribbon-h" style={{ width: '20px', left: '40px' }} /></div>
+                <div className="box-face box-bottom" />
+            </div>
+        );
+    };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px auto', padding: '20px', backgroundColor: 'rgba(18, 18, 20, 0.45)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)', width: '100%', maxWidth: '300px' }}>
-            <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--color-primary)', fontWeight: 'bold', marginBottom: '12px', display: 'block' }}>⚡ RENDER DIGITAL LÁSER 4K</span>
-            <canvas ref={canvasRef} width={250} height={250} style={{ width: '220px', height: '220px', filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.6))', display: 'block' }} />
-            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginTop: '14px', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4' }}>Simulación fotorrealista de grabado láser en metal de tu pieza de {product || 'personalización'}.</span>
+        <div className="visualizer-container-3d">
+            <span className="visualizer-badge-3d">
+                <span>⚡</span> {decorType}
+            </span>
+            <div className="scene3d">
+                <div className="object3d" style={{ transformStyle: 'preserve-3d' }}>
+                    {render3DObject()}
+                </div>
+            </div>
+            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginTop: '20px', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4', maxWidth: '260px' }}>
+                {decorDesc}
+            </span>
         </div>
     );
 }
