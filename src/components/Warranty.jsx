@@ -5,9 +5,17 @@ import {
     Coffee, Cpu, Heart, Activity, Settings, HelpCircle, 
     Scale, Users, ChevronDown, RefreshCw, Layers, MousePointer
 } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 import '../styles/Warranty.css';
 
 export function Warranty() {
+    useSEO({
+        title: 'Garantía y Cobertura de Productos | Sagason SpA',
+        description: 'Conoce las políticas de garantía de Sagason SpA. Cobertura en cuadros de metal, placas de identificación, grabado láser, sublimación y envíos en todo Chile.',
+        keywords: 'garantías, retracto, términos comerciales, Sagason, sernac, reembolso, ley de consumidor, Chile',
+        canonicalPath: '/warranty'
+    });
+
     const [activeTab, setActiveTab] = useState('general');
     const [selectedProduct, setSelectedProduct] = useState('cuadros');
     const [faqOpen, setFaqOpen] = useState({});

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
 
-// Resolucion TopoJSON de paises
-const geoUrl = "https://unpkg.com/world-atlas@2.0.2/countries-50m.json";
+// Resolucion TopoJSON de paises alojada localmente
+const geoUrl = "/countries-50m.json";
 
 export function BackgroundMap() {
   const [location, setLocation] = useState(null);

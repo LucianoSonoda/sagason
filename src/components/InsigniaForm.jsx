@@ -114,6 +114,8 @@ export function InsigniaForm() {
                         <p style={{ fontSize: '0.85rem', color: '#ccc' }}>Al llenar esta ficha sin costo, nuestro equipo creará un boceto y procederá con cotización y validación manual.</p>
                     </div>
 
+                    <InsigniaVisualizer lugar={selections.lugar} fecha={selections.fecha} nombre={selections.nombre} tamano={selections.tamano} />
+
                     <iframe name="hidden_iframe_insignia" style={{display: "none"}}></iframe>
                     <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe_insignia" onSubmit={handleFormSubmit}>
                         <input type="hidden" name="_subject" value="⭐ Nueva Solicitud de Insignia Turística" />
@@ -221,5 +223,109 @@ export function InsigniaForm() {
                 </div>
             </div>
         </section>
+    );
+}
+
+// 🎨 InsigniaVisualizer Canvas - Grabado láser de precisión sobre acero circular
+function InsigniaVisualizer({ lugar, fecha, nombre, tamano }) {
+    const canvasRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const r = Math.min(cx, cy) - 20;
+
+        // Metal reflective gradient
+        const grad = ctx.createRadialGradient(cx - 30, cy - 30, 10, cx, cy, r + 40);
+        grad.addColorStop(0, '#ffffff'); // Center shine
+        grad.addColorStop(0.35, '#d1d5db'); // Sleek metal silver
+        grad.addColorStop(0.7, '#475569'); // Steel shading
+        grad.addColorStop(1, '#0f172a'); // Outer shadow
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Premium borders
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, r - 6, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, r - 8, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(14, 165, 233, 0.5)'; // Sagason precise blue
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Inner circular guideline for text path
+        ctx.beginPath();
+        ctx.arc(cx, cy, r - 25, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Central Star Emblem
+        ctx.fillStyle = '#0f172a'; // Etched color
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        ctx.font = '28px "Space Grotesk", sans-serif';
+        ctx.fillText('⭐', cx, cy - 10);
+
+        // Header Text
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '800 10px monospace';
+        ctx.fillText('SAGASON SOUVENIR LÍNEA VIP', cx, cy - r * 0.58);
+
+        // Location Visited
+        const displayLugar = lugar ? (lugar.length > 20 ? lugar.substring(0, 18) + '...' : lugar) : 'AVENTURA EXTREMA';
+        ctx.font = 'bold 12px "Space Grotesk", sans-serif';
+        ctx.fillText(displayLugar.toUpperCase(), cx, cy + 18);
+
+        // Date Visited
+        let displayFecha = 'FECHA DE VISITA';
+        if (fecha) {
+            const dateParts = fecha.split('-');
+            if (dateParts.length === 3) displayFecha = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+        }
+        ctx.font = 'bold 9px monospace';
+        ctx.fillText(displayFecha, cx, cy + 34);
+
+        // Family Name / Person Name
+        const displayNombre = nombre ? (nombre.length > 24 ? nombre.substring(0, 22) + '...' : nombre) : 'FAMILIA VIAJERA';
+        ctx.font = '800 10.5px "Space Grotesk", sans-serif';
+        ctx.fillText(displayNombre.toUpperCase(), cx, cy + 50);
+
+        // Badge size indicator
+        ctx.font = '800 8.5px "IBM Plex Mono", monospace';
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillText(`DIÁMETRO: ${tamano || '10MM'}`, cx, cy - r * 0.4);
+
+        ctx.restore();
+    }, [lugar, fecha, nombre, tamano]);
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px auto', padding: '20px', backgroundColor: 'rgba(18, 18, 20, 0.45)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)', width: '100%', maxWidth: '300px' }}>
+            <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--color-primary)', fontWeight: 'bold', marginBottom: '12px', display: 'block' }}>⭐ CONMEMORACIÓN ACERO LÁSER</span>
+            <canvas ref={canvasRef} width={250} height={250} style={{ width: '200px', height: '200px', filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.6))', display: 'block' }} />
+            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginTop: '14px', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4' }}>Insignia circular maciza grabada con micro-láser 4K.</span>
+        </div>
     );
 }

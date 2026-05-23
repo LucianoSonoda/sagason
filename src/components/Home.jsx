@@ -11,6 +11,7 @@ import sagasonSymbol from '/sagason-symbol.png';
 import { DiscoverCity } from './DiscoverCity';
 import { CustomForm } from './CustomForm';
 import { Gallery } from './Gallery';
+import { useSEO } from '../hooks/useSEO';
 
 function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth);
@@ -23,6 +24,12 @@ function useWindowWidth() {
 }
 
 export function Home() {
+    useSEO({
+        title: 'Sagason SpA | Sublimación, Personalización y Cuadros de Metal',
+        description: 'Especialistas en sublimación y personalización en Chile. Destaca con nuestros cuadros de metal, tazones, rompecabezas y más productos únicos. ¡Hazlo inolvidable!',
+        keywords: 'sublimación, personalización, cuadros metal, cuadros de metal, sublimación en metal, regalos personalizados, tazones, placas, Sagason, Chile',
+        canonicalPath: '/'
+    });
 
     const containerVariants = {
         hidden: { opacity: 0 },

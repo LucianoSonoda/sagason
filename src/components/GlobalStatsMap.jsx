@@ -9,7 +9,8 @@ import {
 import { Users, Award, Globe, Shield } from 'lucide-react';
 import './GlobalStatsMap.css';
 
-const geoUrl = "https://raw.githubusercontent.com/lotusms/world-map-data/main/world.json";
+// Resolucion TopoJSON de paises alojada localmente
+const geoUrl = "/world.json";
 
 const COUNTRY_COORDS = {
     "Brasil": [-51.9253, -14.235], "Brazil": [-51.9253, -14.235], "BR": [-51.9253, -14.235],

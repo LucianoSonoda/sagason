@@ -57,6 +57,8 @@ export function CustomForm() {
         size: ''
     });
     const [precios, setPrecios] = useState({});
+    const [nameText, setNameText] = useState('');
+    const [messageText, setMessageText] = useState('');
 
     const [fileName, setFileName] = useState('');
     const [fileError, setFileError] = useState('');
@@ -433,33 +435,35 @@ export function CustomForm() {
                                 </motion.div>
                             )}
 
-                            {/* STEP 4 */}
-                            {step === 4 && (
-                                <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
-                                    <h3 className="step-title">TUS DATOS Y DETALLES</h3>
-                                    <p className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
+                                    {/* STEP 4 */}
+                                    {step === 4 && (
+                                        <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                            <h3 className="step-title">TUS DATOS Y DETALLES</h3>
+                                            <p style={{ color: 'var(--color-primary)', fontWeight: 'bold' }} className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
 
-                                    <div className="fields-grid">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="name">NOMBRE COMPLETO *</label>
-                                            <input type="text" id="name" name="name" className="form-input" required />
-                                        </div>
+                                            <ProductVisualizer product={selections.product} size={selections.size} name={nameText} details={messageText} />
 
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="email">CORREO ELECTRÓNICO *</label>
-                                            <input type="email" id="email" name="email" className="form-input" required />
-                                        </div>
+                                            <div className="fields-grid">
+                                                <div className="form-group">
+                                                    <label className="form-label" htmlFor="name">NOMBRE COMPLETO *</label>
+                                                    <input type="text" id="name" name="name" className="form-input" required value={nameText} onChange={(e) => setNameText(e.target.value)} />
+                                                </div>
 
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="phone">TELÉFONO *</label>
-                                            <input type="tel" id="phone" name="phone" className="form-input" required />
-                                        </div>
-                                    </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" htmlFor="email">CORREO ELECTRÓNICO *</label>
+                                                    <input type="email" id="email" name="email" className="form-input" required />
+                                                </div>
 
-                                    <div className="form-group">
-                                        <label className="form-label" htmlFor="desc">DETALLES DEL DISEÑO / INSTRUCCIONES</label>
-                                        <textarea id="desc" name="message" className="form-textarea" rows="4"></textarea>
-                                    </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" htmlFor="phone">TELÉFONO *</label>
+                                                    <input type="tel" id="phone" name="phone" className="form-input" required />
+                                                </div>
+                                            </div>
+
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="desc">DETALLES DEL DISEÑO / INSTRUCCIONES</label>
+                                                <textarea id="desc" name="message" className="form-textarea" rows="4" value={messageText} onChange={(e) => setMessageText(e.target.value)}></textarea>
+                                            </div>
 
                                     <div className="form-group">
                                         <label className="form-label">SUBE TU IMAGEN (OPCIONAL)</label>
@@ -539,5 +543,156 @@ export function CustomForm() {
                 </div>
             </div>
         </section>
+    );
+}
+
+// 🎨 ProductVisualizer Canvas - Simulación digital de grabado láser 4K
+function ProductVisualizer({ product, size, name, details }) {
+    const canvasRef = useRef(null);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Dimensions
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const r = Math.min(cx, cy) - 20;
+
+        // Determine if circular or rectangular
+        const isCircular = ['posavasos circular', 'llaveros redondo', 'llaveros circular', 'id-mascotas círculo', 'insignias', 'llavero redondo', 'llaveros redondo'].some(t => 
+            product?.toLowerCase().includes('posavasos') && size?.toLowerCase().includes('circular') ||
+            product?.toLowerCase().includes('llaveros') && size?.toLowerCase().includes('redondo') ||
+            product?.toLowerCase().includes('llaveros') && size?.toLowerCase().includes('circular') ||
+            product?.toLowerCase().includes('mascotas') && size?.toLowerCase().includes('círculo') ||
+            product?.toLowerCase().includes('insignia') ||
+            product?.toLowerCase().includes('redondo')
+        ) || product === 'ID MASCOTAS' && size?.toLowerCase().includes('círculo') || product === 'LLAVEROS' && size?.toLowerCase().includes('redondo');
+
+        // Draw metal plate background with reflective gradients
+        const grad = ctx.createRadialGradient(cx - 30, cy - 30, 10, cx, cy, r + 40);
+        grad.addColorStop(0, '#ffffff'); // Shiny center reflection
+        grad.addColorStop(0.3, '#e2e8f0'); // Light metal gray
+        grad.addColorStop(0.7, '#64748b'); // Sleek slate steel
+        grad.addColorStop(1, '#0f172a'); // Dark edge drop shadow
+
+        ctx.save();
+        if (isCircular) {
+            // Draw circle
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // Concentric metallic borders (Sagason 4K premium style)
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, r - 6, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, r - 8, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(14, 165, 233, 0.6)'; // Precise Blue accent ring
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        } else {
+            // Draw rounded rectangle card
+            const w = r * 1.6;
+            const h = r * 1.15;
+            const x = cx - w / 2;
+            const y = cy - h / 2;
+            const rad = 14;
+
+            ctx.beginPath();
+            ctx.roundRect(x, y, w, h, rad);
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.roundRect(x + 5, y + 5, w - 10, h - 10, rad - 2);
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.roundRect(x + 7, y + 7, w - 14, h - 14, rad - 3);
+            ctx.strokeStyle = 'rgba(14, 165, 233, 0.6)'; // Precise Blue accent ring
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
+
+        // Draw branding top text
+        ctx.fillStyle = '#0f172a'; // Laser deep etched dark color
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        ctx.font = '800 10px monospace';
+        ctx.fillText('SAGASON 4K SECURITY PLATFORM', cx, cy - r * 0.62);
+
+        // QR Code mockup
+        const qrSize = 56;
+        const qrx = cx - qrSize / 2;
+        const qry = cy - qrSize / 2;
+
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(qrx, qry, qrSize, qrSize);
+
+        // Draw QR standard corner anchors
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(qrx + 4, qry + 4, 14, 14);
+        ctx.fillRect(qrx + qrSize - 18, qry + 4, 14, 14);
+        ctx.fillRect(qrx + 4, qry + qrSize - 18, 14, 14);
+
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(qrx + 7, qry + 7, 8, 8);
+        ctx.fillRect(qrx + qrSize - 15, qry + 7, 8, 8);
+        ctx.fillRect(qrx + 7, qry + qrSize - 15, 8, 8);
+
+        // Tiny pseudo random QR pixels
+        ctx.fillStyle = '#ffffff';
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                if (Math.random() > 0.4 && (i > 3 || j > 3) && (i < 6 || j > 3) && (i > 3 || j < 6)) {
+                    ctx.fillRect(qrx + 18 + i * 3.5, qry + 18 + j * 3.5, 3, 3);
+                }
+            }
+        }
+
+        // Draw User Personalizations
+        ctx.fillStyle = '#1e293b';
+
+        // Draw Name text
+        const displayName = name ? name.toUpperCase() : 'TU NOMBRE AQUÍ';
+        ctx.font = 'bold 12px "Space Grotesk", sans-serif';
+        ctx.fillText(displayName, cx, cy + r * 0.38);
+
+        // Draw Message / Engrave Details text
+        ctx.font = '500 9.5px "Space Grotesk", sans-serif';
+        const displayDetails = details ? (details.length > 32 ? details.substring(0, 30) + '...' : details) : 'DETALLES DE PERSONALIZACIÓN';
+        ctx.fillText(displayDetails.toUpperCase(), cx, cy + r * 0.55);
+
+        ctx.restore();
+    }, [product, size, name, details]);
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '20px auto', padding: '20px', backgroundColor: 'rgba(18, 18, 20, 0.45)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.06)', width: '100%', maxWidth: '300px' }}>
+            <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--color-primary)', fontWeight: 'bold', marginBottom: '12px', display: 'block' }}>⚡ RENDER DIGITAL LÁSER 4K</span>
+            <canvas ref={canvasRef} width={250} height={250} style={{ width: '220px', height: '220px', filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.6))', display: 'block' }} />
+            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginTop: '14px', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4' }}>Simulación fotorrealista de grabado láser en metal de tu pieza de {product || 'personalización'}.</span>
+        </div>
     );
 }

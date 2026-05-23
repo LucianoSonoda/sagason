@@ -3,11 +3,19 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import {jwtDecode} from 'jwt-decode';
 import { LaserSticker } from './LaserSticker';
 import { ShieldAlert, ShieldCheck } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 
 const CLIENT_ID = "309943165939-is4u5ga8gaehh7cp0ge9kt5pj8dbkqv2.apps.googleusercontent.com";
 const ADMIN_EMAIL = "brluson@gmail.com";
 
 export function LaserLock() {
+    useSEO({
+        title: 'Generador LaserSticker | Personalización 4K | Sagason',
+        description: 'Diseña y personaliza tus stickers grabados con láser de alta precisión. Elige iconos, fuentes, sube tus imágenes y crea un diseño único con resolución 4K.',
+        keywords: 'lasersticker, generador sticker, grabado láser, stickers personalizados, Sagason 4K',
+        canonicalPath: '/lasersticker'
+    });
+
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [authError, setAuthError] = useState("");
 

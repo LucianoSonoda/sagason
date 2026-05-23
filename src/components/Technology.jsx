@@ -14,6 +14,7 @@ import {
     Award
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 const TECH_FEATURES = [
     {
@@ -55,6 +56,13 @@ const TECH_FEATURES = [
 ];
 
 export function Technology() {
+    useSEO({
+        title: 'Tecnología de Grabado Láser y Sublimación 4K | Sagason',
+        description: 'Explora nuestra tecnología de punta en grabado láser de precisión y sublimación térmica sobre metales de alta resistencia. Calidad y durabilidad industrial.',
+        keywords: 'tecnología láser, grabado fibra, sublimación metal, 4K, Sagason',
+        canonicalPath: '/tecnologia'
+    });
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {

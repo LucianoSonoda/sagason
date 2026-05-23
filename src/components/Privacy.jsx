@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Trash2, MailCheck, AlertTriangle, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 const API_BASE = 'https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod';
 
 export function Privacy() {
+    useSEO({
+        title: 'Políticas de Privacidad y Seguridad | Sagason SpA',
+        description: 'En Sagason tu privacidad es nuestra prioridad absoluta. Conoce cómo protegemos tus datos de contacto y la información de tus placas inteligentes de seguridad.',
+        keywords: 'privacidad, seguridad, protección de datos, Sagason, elinar datos, borrar datos',
+        canonicalPath: '/privacidad'
+    });
+
     const [email, setEmail] = useState('');
     const [requestStatus, setRequestStatus] = useState('idle'); // idle | loading | sent | error
     const [confirmStatus, setConfirmStatus] = useState(null); // null | loading | success | expired | error
