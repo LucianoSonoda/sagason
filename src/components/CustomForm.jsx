@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle, Printer, Award } from 'lucide-react';
 import '../styles/CustomForm.css';
+import { Universal3DViewer } from './Universal3DViewer';
+import { Mockup2DViewer } from './Mockup2DViewer';
 
 const PRODUCTS = [
     { id: 'posavasos', icon: Coffee, title: 'POSAVASOS', desc: 'Set de posavasos de MDF con corcho' },
@@ -61,6 +63,7 @@ export function CustomForm() {
     const [messageText, setMessageText] = useState('');
 
     const [fileName, setFileName] = useState('');
+    const [fileUrl, setFileUrl] = useState(null);
     const [fileError, setFileError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
@@ -216,12 +219,15 @@ export function CustomForm() {
             if (file.size > 10 * 1024 * 1024) {
                 setFileError('El archivo es demasiado grande (> 10MB). Por favor, envía imágenes más pesadas a nuestro correo.');
                 setFileName('');
+                setFileUrl(null);
                 e.target.value = '';
             } else {
                 setFileName(file.name);
+                setFileUrl(URL.createObjectURL(file));
             }
         } else {
             setFileName('');
+            setFileUrl(null);
         }
     };
 
@@ -441,7 +447,7 @@ export function CustomForm() {
                                             <h3 className="step-title">TUS DATOS Y DETALLES</h3>
                                             <p style={{ color: 'var(--color-primary)', fontWeight: 'bold' }} className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
 
-                                            <ProductVisualizer product={selections.product} size={selections.size} name={nameText} details={messageText} />
+                                            <ProductVisualizer product={selections.product} size={selections.size} name={nameText} details={messageText} fileUrl={fileUrl} />
 
                                             <div className="fields-grid">
                                                 <div className="form-group">
@@ -546,13 +552,10 @@ export function CustomForm() {
     );
 }
 
-// 🎨 ProductVisualizer - Simulación fotorrealista 3D interactiva del producto seleccionado
-function ProductVisualizer({ product, size, name, details }) {
+// 🎨 ProductVisualizer - Wrapper para el nuevo visor 3D universal
+function ProductVisualizer({ product, size, name, details, fileUrl }) {
     const prodId = product?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'otro';
-    const isCircular = ['circular', 'circulares', 'redondo'].some(s => size?.toLowerCase().includes(s)) || prodId.includes('insignia');
-    const displayName = name ? name.toUpperCase() : 'TU NOMBRE AQUÍ';
-    const displayDetail = details ? (details.length > 32 ? details.substring(0, 30) + '...' : details).toUpperCase() : 'INSTRUCCIONES / DETALLES';
-
+    
     // Determinar tipo de decoración y descripción
     let decorType = 'SUBLIMACIÓN TÉRMICA 4K';
     let decorDesc = 'Simulación fotorrealista del acabado sublimado sobre superficie premium.';
@@ -565,279 +568,37 @@ function ProductVisualizer({ product, size, name, details }) {
         decorDesc = 'Simulación de extrusión por capas en filamento biodegradable premium.';
     }
 
-    const render3DObject = () => {
-        // 1. TAZONES (3D Cylinder Ceramic Mug)
-        if (prodId.includes('tazon') || prodId.includes('mug')) {
-            const isMagico = size?.toLowerCase().includes('mágico');
-            return (
-                <div className="mug-cylinder">
-                    <div className={`mug-handle ${isMagico ? 'mug-handle-magico' : ''}`} />
-                    {Array.from({ length: 12 }).map((_, idx) => {
-                        const rot = idx * 30;
-                        const rad = (rot * Math.PI) / 180;
-                        const shade = Math.floor((Math.sin(rad) + 1) * 35) + 15;
-                        const bg = isMagico 
-                            ? `rgb(${shade}, ${shade + 5}, ${shade + 12})` 
-                            : `rgb(${210 + shade * 0.45}, ${215 + shade * 0.45}, ${225 + shade * 0.45})`;
-                        return (
-                            <div 
-                                key={idx} 
-                                className={`mug-panel ${isMagico ? 'mug-panel-magico' : ''}`} 
-                                style={{ 
-                                    transform: `rotateY(${rot}deg) translateZ(48px)`,
-                                    background: bg,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                {idx === 6 && (
-                                    <div style={{ transform: 'scaleX(-1)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '28px', opacity: 0.95 }}>
-                                        <span style={{ fontSize: '8px', fontWeight: '900', color: isMagico ? '#60a5fa' : '#0ea5e9', writingMode: 'vertical-rl', textOrientation: 'mixed', height: '80px', letterSpacing: '2px' }}>
-                                            {displayName}
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            );
-        }
-
-        // 2. TUMBLERS (Sleek tall cylinder)
-        if (prodId.includes('tumbler') || prodId.includes('vaso')) {
-            return (
-                <div className="tumbler-cylinder">
-                    <div className="tumbler-cap" />
-                    {Array.from({ length: 12 }).map((_, idx) => {
-                        const rot = idx * 30;
-                        const rad = (rot * Math.PI) / 180;
-                        const shade = Math.floor((Math.sin(rad) + 1) * 20);
-                        const bg = `rgb(${25 + shade}, ${30 + shade}, ${40 + shade})`; // Matte steel finish
-                        return (
-                            <div 
-                                key={idx} 
-                                className="tumbler-panel" 
-                                style={{ 
-                                    transform: `rotateY(${rot}deg) translateZ(38px)`,
-                                    background: bg,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                            >
-                                {idx === 6 && (
-                                    <span style={{ fontSize: '8px', fontWeight: '900', color: '#60a5fa', writingMode: 'vertical-rl', textOrientation: 'mixed', height: '100px', letterSpacing: '2.5px', textShadow: '0 0 4px rgba(14,165,233,0.5)' }}>
-                                        {displayName}
-                                    </span>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            );
-        }
-
-        // 3. MOUSEPAD
-        if (prodId.includes('mousepad')) {
-            return (
-                <div className="object3d mousepad-card">
-                    <div className="face3d front mousepad-front">
-                        <span className="text-3d-title" style={{ color: 'var(--color-primary)' }}>SAGASON GAMING</span>
-                        <span className="text-3d-name" style={{ color: '#fff', fontSize: '13px', textShadow: '0 0 8px rgba(14, 165, 233, 0.8)' }}>{displayName}</span>
-                        <span className="text-3d-detail" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '7px' }}>{displayDetail}</span>
-                    </div>
-                    <div className="face3d back mousepad-back">
-                        <span style={{ fontSize: '9px', color: '#52525b', fontWeight: 'bold' }}>S4K ANTI-SLIP BASE</span>
-                    </div>
-                </div>
-            );
-        }
-
-        // 4. POSAVASOS (Coaster)
-        if (prodId.includes('posavasos')) {
-            const shapeClass = isCircular ? 'posavasos-round' : '';
-            return (
-                <div className="object3d">
-                    <div className={`face3d front posavasos-front ${shapeClass}`}>
-                        <span className="text-3d-title text-3d-sublimado" style={{ color: '#854d0e' }}>COASTER SERIES</span>
-                        <span className="text-3d-name text-3d-sublimado" style={{ color: '#1e1b4b', fontSize: '11px' }}>{displayName}</span>
-                        <span className="text-3d-detail text-3d-sublimado" style={{ color: '#854d0e', fontSize: '7.5px' }}>{displayDetail}</span>
-                    </div>
-                    <div className={`face3d back posavasos-back ${shapeClass}`}>
-                        <span style={{ fontSize: '14px', fontWeight: '800', color: '#5c3415' }}>SAGASON</span>
-                        <span style={{ fontSize: '7px', opacity: 0.8, color: '#5c3415', marginTop: '3px', fontWeight: '600' }}>CORK BACKING</span>
-                    </div>
-                    {isCircular && <div className="posavasos-side" />}
-                </div>
-            );
-        }
-
-        // 5. CUADRO HD (Metal poster)
-        if (prodId.includes('cuadro') || prodId.includes('foto')) {
-            return (
-                <div className="object3d cuadro-card">
-                    <div className="face3d front cuadro-front">
-                        <div className="cuadro-sheen" />
-                        <span className="text-3d-title" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '5px' }}>CUADRO HD CHROME</span>
-                        <span className="text-3d-name" style={{ color: '#f8fafc', fontSize: '11px', fontWeight: '900' }}>{displayName}</span>
-                        <span className="text-3d-detail" style={{ color: '#38bdf8', fontSize: '7px' }}>{displayDetail}</span>
-                    </div>
-                    <div className="face3d back cuadro-back">
-                        <div className="cuadro-hanger" />
-                        <span style={{ fontSize: '8px', color: '#475569', marginTop: '65px', fontWeight: 'bold' }}>SAGASON ART</span>
-                    </div>
-                </div>
-            );
-        }
-
-        // 6. LLAVEROS
-        if (prodId.includes('llavero')) {
-            const shapeClass = isCircular ? 'posavasos-round' : '';
-            return (
-                <div className="object3d llaveros-tag">
-                    <div className="llaveros-ring" />
-                    <div className="llaveros-chain" />
-                    <div className={`face3d front llaveros-front ${shapeClass}`}>
-                        <span className="text-3d-title text-3d-laser">LLAVERO SAGASON</span>
-                        <span className="text-3d-name text-3d-laser" style={{ fontSize: '10px' }}>{displayName}</span>
-                        <span className="text-3d-detail text-3d-laser" style={{ fontSize: '7px' }}>{displayDetail}</span>
-                    </div>
-                    <div className={`face3d back llaveros-back ${shapeClass}`}>
-                        <span style={{ fontSize: '8px', fontWeight: 'bold', color: '#cbd5e1' }}>4K MICRO-LÁSER</span>
-                    </div>
-                </div>
-            );
-        }
-
-        // 7. ID MASCOTAS (Bone or circular tag)
-        if (prodId.includes('mascota')) {
-            const isBone = size?.toLowerCase().includes('hueso') || (!size);
-            if (isBone) {
-                return (
-                    <div className="object3d pet-bone">
-                        <div className="face3d front pet-front pet-bone">
-                            <div className="bone-node tl" />
-                            <div className="bone-node bl" />
-                            <div className="bone-node tr" />
-                            <div className="bone-node br" />
-                            <div className="bone-body" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                <span className="text-3d-title" style={{ fontSize: '5px', opacity: 0.9 }}>ID MASCOTA</span>
-                                <span className="text-3d-name" style={{ fontSize: '11px', color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>🐾 {displayName}</span>
-                                <span className="text-3d-detail" style={{ fontSize: '7.5px', color: '#e0f2fe' }}>{displayDetail}</span>
-                            </div>
-                        </div>
-                    </div>
-                );
-            } else {
-                return (
-                    <div className="object3d pet-circle">
-                        <div className="face3d front pet-front pet-circle">
-                            <span className="text-3d-title" style={{ opacity: 0.9 }}>ID MASCOTA</span>
-                            <span className="text-3d-name" style={{ fontSize: '12px', color: '#fff' }}>🐾 {displayName}</span>
-                            <span className="text-3d-detail" style={{ fontSize: '8px', color: '#e0f2fe' }}>{displayDetail}</span>
-                        </div>
-                        <div className="face3d back pet-back pet-circle">
-                            <span style={{ fontSize: '8px', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>LÁSER DE FIBRA</span>
-                            <div style={{ width: '34px', height: '34px', background: '#fff', padding: '2px', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <div style={{ width: '30px', height: '30px', background: '#000' }} />
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
-        }
-
-        // 8. ID SALUD (Emergency bracelet/tag)
-        if (prodId.includes('salud') || prodId.includes('enfermedad')) {
-            return (
-                <div className="object3d salud-card">
-                    <div className="face3d front salud-front">
-                        <div className="salud-emblem" style={{ fontSize: '18px', marginBottom: '6px' }}>❤️</div>
-                        <span className="text-3d-title" style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '6px' }}>EMERGENCY MEDICAL ID</span>
-                        <span className="text-3d-name" style={{ fontSize: '10px', color: '#fff' }}>{displayName}</span>
-                        <span className="text-3d-detail" style={{ fontSize: '7.5px', color: '#fca5a5' }}>{displayDetail}</span>
-                    </div>
-                    <div className="face3d back salud-back">
-                        <span style={{ fontSize: '7px', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>SCAN FOR SOS</span>
-                        <div style={{ width: '38px', height: '38px', background: '#fff', padding: '2px', borderRadius: '3px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <div style={{ width: '34px', height: '34px', background: '#000' }} />
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        // 9. ROMPECABEZAS (Puzzle board)
-        if (prodId.includes('rompecabezas') || prodId.includes('puzzle')) {
-            return (
-                <div className="object3d cuadro-card">
-                    <div className="face3d front puzzle-front">
-                        <div className="puzzle-overlay" />
-                        <span className="text-3d-title">SAGASON PUZZLE</span>
-                        <span className="text-3d-name" style={{ fontSize: '12px', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>{displayName}</span>
-                        <span className="text-3d-detail" style={{ fontSize: '7px', opacity: 0.9 }}>{displayDetail}</span>
-                    </div>
-                    <div className="face3d back" style={{ background: '#b8b8b8', border: '1px solid #a3a3a3' }}>
-                        <span style={{ fontSize: '8px', color: '#4b5563', fontWeight: 'bold' }}>PUZZLE CARTÓN VIP</span>
-                    </div>
-                </div>
-            );
-        }
-
-        // 10. IMPRESIÓN 3D (Extruding low poly prism)
-        if (prodId.includes('impresion3d') || prodId.includes('3d')) {
-            return (
-                <>
-                    <div className="print-bed" />
-                    <div className="print-nozzle" />
-                    <div className="print-beam" />
-                    <div className="print-object">
-                        <div className="box-3d" style={{ transform: 'scale3d(0.5, 0.5, 0.5)' }}>
-                            <div className="box-face box-front" style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', border: '1.5px solid #38bdf8' }} />
-                            <div className="box-face box-back" style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', border: '1.5px solid #38bdf8' }} />
-                            <div className="box-face box-left" style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', border: '1.5px solid #38bdf8' }} />
-                            <div className="box-face box-right" style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)', border: '1.5px solid #38bdf8' }} />
-                            <div className="box-face box-top" style={{ background: '#38bdf8', border: '1.5px solid #7dd3fc' }} />
-                            <div className="box-face box-bottom" style={{ background: '#0284c7' }} />
-                        </div>
-                    </div>
-                </>
-            );
-        }
-
-        // 11. FALLBACK / OTROS (Gift box with ribbon)
-        return (
-            <div className="box-3d">
-                <div className="box-face box-front">
-                    <div className="box-ribbon-v" />
-                    <div className="box-ribbon-h" />
-                    <span style={{ position: 'absolute', fontSize: '8px', fontWeight: 'bold', color: '#fff', textTransform: 'uppercase', top: '15px', width: '100%', textAlign: 'center' }}>SAGASON</span>
-                    <span style={{ position: 'absolute', fontSize: '9px', fontWeight: 'bold', color: '#fff', bottom: '15px', width: '100%', textAlign: 'center' }}>{displayName}</span>
-                </div>
-                <div className="box-face box-back"><div className="box-ribbon-v" /><div className="box-ribbon-h" /></div>
-                <div className="box-face box-left"><div className="box-ribbon-v" /><div className="box-ribbon-h" /></div>
-                <div className="box-face box-right"><div className="box-ribbon-v" /><div className="box-ribbon-h" /></div>
-                <div className="box-face box-top"><div className="box-ribbon-v" style={{ height: '20px', top: '40px' }} /><div className="box-ribbon-h" style={{ width: '20px', left: '40px' }} /></div>
-                <div className="box-face box-bottom" />
-            </div>
-        );
-    };
+    const use2DMockup = ['tazones', 'rompecabezas', 'tumblers'].some(p => prodId.includes(p));
+    const isOtro = prodId === 'otro';
 
     return (
-        <div className="visualizer-container-3d">
-            <span className="visualizer-badge-3d">
+        <div className="visualizer-container-3d" style={{ padding: '0', background: 'transparent' }}>
+            <span className="visualizer-badge-3d" style={{ marginBottom: '10px' }}>
                 <span>⚡</span> {decorType}
             </span>
-            <div className="scene3d">
-                <div className="object3d" style={{ transformStyle: 'preserve-3d' }}>
-                    {render3DObject()}
+            
+            {isOtro ? (
+                <div style={{ width: '100%', height: '300px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #333', position: 'relative' }}>
+                    <img src="/products-composition.png" alt="Productos Personalizados" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, display: 'flex', gap: '8px' }}>
+                        <span style={{ background: 'var(--color-primary)', color: '#000', padding: '4px 8px', fontSize: '10px', fontWeight: 'bold', borderRadius: '4px' }}>
+                            MÚLTIPLES PRODUCTOS
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginTop: '20px', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4', maxWidth: '260px' }}>
+            ) : use2DMockup ? (
+                <Mockup2DViewer product={product} fileUrl={fileUrl} />
+            ) : (
+                <Universal3DViewer 
+                    product={product} 
+                    category={prodId} 
+                    size={size} 
+                    name={name || details}
+                    textureUrl={fileUrl}
+                />
+            )}
+            
+            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginTop: '20px', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4', maxWidth: '260px', display: 'inline-block' }}>
                 {decorDesc}
             </span>
         </div>

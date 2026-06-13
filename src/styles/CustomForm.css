@@ -904,4 +904,33 @@
 .text-3d-sublimado {
     color: inherit;
 }
-
+
+/* 📏 Responsive Mockup 2D Scaler */
+.mockup-scaler {
+    transform: scale(1);
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 850px) {
+    .mockup-scaler {
+        transform: scale(0.85);
+    }
+}
+
+@media (max-width: 768px) {
+    .mockup-scaler {
+        transform: scale(0.70);
+    }
+}
+
+@media (max-width: 500px) {
+    .mockup-scaler {
+        transform: scale(0.55);
+    }
+}
+
+@media (max-width: 400px) {
+    .mockup-scaler {
+        transform: scale(0.48);
+    }
+}

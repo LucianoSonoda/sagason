@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Image, PenTool, Truck, Shield, ChevronLeft, ChevronRight, Zap, Target, Cpu, X } from 'lucide-react';
+import { ArrowRight, Box, Shield, Zap, Search, Key, Smartphone, Lock, Eye, CheckCircle, Gift, Truck, Target, Cpu, MapPin, Sparkles, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../styles/Home.css';
 import imgKanji_Kaeru from '../assets/kanji_kaeru.png';
 import imgKanji_Kizuna from '../assets/kanji_kizuna.png';
@@ -13,15 +13,6 @@ import { CustomForm } from './CustomForm';
 import { Gallery } from './Gallery';
 import { useSEO } from '../hooks/useSEO';
 
-function useWindowWidth() {
-    const [width, setWidth] = useState(window.innerWidth);
-    useEffect(() => {
-        const onResize = () => setWidth(window.innerWidth);
-        window.addEventListener('resize', onResize);
-        return () => window.removeEventListener('resize', onResize);
-    }, []);
-    return width;
-}
 
 export function Home() {
     useSEO({
@@ -121,7 +112,6 @@ export function Home() {
 }
 
 function TrustSymbolSection() {
-    const isMobile = useWindowWidth() < 640;
     return (
         <motion.section
             initial={{ opacity: 0, scale: 0.95 }}
@@ -174,7 +164,7 @@ function ServicesCarousel() {
     const [[current, direction], setCurrent] = useState([0, 0]);
     const [paused, setPaused] = useState(false);
     const intervalRef = useRef(null);
-    const isMobile = useWindowWidth() < 640;
+
 
     const paginate = (dir) => {
         const next = (current + dir + SERVICIOS.length) % SERVICIOS.length;
@@ -252,16 +242,11 @@ const PILARES = [
 ];
 
 function S4KCarousel() {
-    const [[current, direction], setCurrent] = useState([0, 0]);
+    const [[current, _direction], setCurrent] = useState([0, 0]);
     const [paused, setPaused] = useState(false);
     const [isWaitlistOpen, setWaitlistOpen] = useState(false);
     const intervalRef = useRef(null);
-    const isMobile = useWindowWidth() < 640;
 
-    const paginate = (dir) => {
-        const next = (current + dir + PILARES.length) % PILARES.length;
-        setCurrent([next, dir]);
-    };
 
     useEffect(() => {
         if (paused) return;
@@ -272,9 +257,9 @@ function S4KCarousel() {
     }, [paused, current]);
 
     const variants = {
-        enter: (dir) => ({ opacity: 0, filter: 'blur(10px)' }),
+        enter: () => ({ opacity: 0, filter: 'blur(10px)' }),
         center: { opacity: 1, filter: 'blur(0px)' },
-        exit: (dir) => ({ opacity: 0, filter: 'blur(10px)' }),
+        exit: () => ({ opacity: 0, filter: 'blur(10px)' }),
     };
 
     const pilar = PILARES[current];
@@ -366,7 +351,8 @@ function WaitlistModal({ isOpen, onClose }) {
             } else {
                 throw new Error();
             }
-        } catch (err) {
+        } catch (e) {
+            console.error(e);
             setStatus('error');
             setMessage('Hubo un error. Inténtalo de nuevo.');
         }

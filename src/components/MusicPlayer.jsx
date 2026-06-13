@@ -9,7 +9,7 @@ import React, { useRef, useState, useEffect } from 'react';
 export function MusicPlayer() {
   const audioRef = useRef(null);
   const [playing, setPlaying]   = useState(false);
-  const [started, setStarted]   = useState(false); // ¿el usuario ya interactuó?
+
   const [visible, setVisible]   = useState(false); // mostrar player después de carga
   const [progress, setProgress] = useState(0);
 
@@ -44,7 +44,7 @@ export function MusicPlayer() {
       audio.pause();
       setPlaying(false);
     } else {
-      audio.play().then(() => { setPlaying(true); setStarted(true); });
+      audio.play().then(() => { setPlaying(true); });
     }
   };
 

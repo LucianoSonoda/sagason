@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, MapPin, Calendar, User, CheckCircle, Award } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { ThreeInsignia } from './ThreeInsignia';
 import '../styles/CustomForm.css';
 
 export function InsigniaForm() {
-    const [lugarInicial, setLugarInicial] = useState("");
+
     const [cachedDestinations, setCachedDestinations] = useState([]);
     
     const [selections, setSelections] = useState({
@@ -29,7 +30,7 @@ export function InsigniaForm() {
         const searchParams = new URLSearchParams(location.search);
         const lugar = searchParams.get('lugar');
         if (lugar) {
-            setLugarInicial(lugar);
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setSelections(prev => ({ ...prev, lugar: lugar }));
         }
 
@@ -68,8 +69,8 @@ export function InsigniaForm() {
                     category: selections.lugar,
                     size: selections.tamano
                 })
-            }).catch(() => {});
-        } catch (err) {}
+            }).catch((e) => { console.error(e); });
+        } catch (e) { console.error(e); }
 
         // Envío Nivel 2: Directo al correo via FormSubmit
         form.submit();
@@ -114,7 +115,9 @@ export function InsigniaForm() {
                         <p style={{ fontSize: '0.85rem', color: '#ccc' }}>Al llenar esta ficha sin costo, nuestro equipo creará un boceto y procederá con cotización y validación manual.</p>
                     </div>
 
-                    <InsigniaVisualizer lugar={selections.lugar} fecha={selections.fecha} nombre={selections.nombre} tamano={selections.tamano} />
+                    <React.Suspense fallback={<div style={{height: 250, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)'}}>Cargando visualizador 3D interactivo...</div>}>
+                        <ThreeInsignia lugar={selections.lugar} fecha={selections.fecha} nombre={selections.nombre} tamano={selections.tamano} />
+                    </React.Suspense>
 
                     <iframe name="hidden_iframe_insignia" style={{display: "none"}}></iframe>
                     <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe_insignia" onSubmit={handleFormSubmit}>

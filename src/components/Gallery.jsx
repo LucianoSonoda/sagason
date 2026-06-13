@@ -81,7 +81,7 @@ export function Gallery() {
             setCurrent(([c]) => [(c + 1) % total, 1]);
         }, 3000);
         return () => clearInterval(intervalRef.current);
-    }, [paused, current, activeCategory]);
+    }, [paused, current, activeCategory, total]);
 
     const getVisible = () => {
         if (visibleCount === 1) return [{ ...CATEGORIES[current], idx: current, offset: 0 }];
