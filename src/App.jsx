@@ -6,6 +6,7 @@ import { Home } from './components/Home';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { MusicPlayer } from './components/MusicPlayer';
 import { BackgroundMap } from './components/BackgroundMap';
+import { ParticleBackground } from './components/ParticleBackground';
 import { ScrollManager } from './components/ScrollManager';
 import './App.css';
 
@@ -61,6 +62,7 @@ function App() {
     <BrowserRouter>
       <ScrollManager />
       <BackgroundMap />
+      <ParticleBackground />
       <Header />
       <main style={{ minHeight: '80vh' }}>
         <Suspense fallback={<RouteLoader />}>
