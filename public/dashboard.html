@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow">
     <title>Sagason - Dashboard</title>
     <!-- qrcode-generator: genera QR; canvas2png para LP4 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -748,6 +749,18 @@
     const API = "https://s4k.sagason.cl";
     let ownerId = null; let userEmail = "";
 
+    async function authFetch(url, options = {}) {
+        const token = localStorage.getItem('sagason_token');
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers
+        };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        return fetch(url, { ...options, headers });
+    }
+
     function showTab(n) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -755,25 +768,115 @@
         document.getElementById(`btn-${n}`).classList.add('active');
     }
 
-    async function init() {
-        const hash = new URLSearchParams(window.location.hash.substring(1));
-        const token = hash.get('id_token') || localStorage.getItem('sagason_token');
-        if (!token) { window.location.href = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard"; return; }
-        localStorage.setItem('sagason_token', token);
-        const user = JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-        ownerId = user.sub; userEmail = user.email;
-        if (userEmail === "brluson@gmail.com") {
-            document.getElementById('btn-admin').style.display = "block";
-            document.getElementById('btn-precios').style.display = "block";
-            loadAdminPrecios();
+    function generateRandomString(length) {
+        const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+        let result = '';
+        const values = new Uint32Array(length);
+        window.crypto.getRandomValues(values);
+        for (let i = 0; i < length; i++) {
+            result += charset[values[i] % charset.length];
         }
-        loadTags();
-        loadProfile();
+        return result;
+    }
+
+    async function generateCodeChallenge(verifier) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(verifier);
+        const hash = await window.crypto.subtle.digest('SHA-256', data);
+        return btoa(String.fromCharCode.apply(null, new Uint8Array(hash)))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+    }
+
+    async function exchangeCodeForTokens(code, verifier) {
+        const domain = "sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com";
+        const clientId = "21upf33c48gca702vfdrf9aqji";
+        const redirectUri = "https://sagason.cl/dashboard";
+        
+        const details = {
+            'grant_type': 'authorization_code',
+            'client_id': clientId,
+            'code': code,
+            'redirect_uri': redirectUri,
+            'code_verifier': verifier
+        };
+
+        const formBody = Object.keys(details)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key]))
+            .join('&');
+
+        const res = await fetch(`https://${domain}/oauth2/token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formBody
+        });
+
+        if (!res.ok) {
+            throw new Error("Error intercambiando el código de autorización: " + await res.text());
+        }
+
+        return res.json();
+    }
+
+    async function redirectToLogin() {
+        const verifier = generateRandomString(64);
+        const challenge = await generateCodeChallenge(verifier);
+        sessionStorage.setItem('pkce_verifier', verifier);
+        
+        const loginUrl = `https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=code&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard&code_challenge_method=S256&code_challenge=${challenge}`;
+        window.location.href = loginUrl;
+    }
+
+    async function init() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        if (code) {
+            const verifier = sessionStorage.getItem('pkce_verifier');
+            if (verifier) {
+                try {
+                    const tokens = await exchangeCodeForTokens(code, verifier);
+                    localStorage.setItem('sagason_token', tokens.id_token);
+                    sessionStorage.removeItem('pkce_verifier');
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } catch (err) {
+                    console.error("Error en intercambio de código:", err);
+                    alert("Error al iniciar sesión. Serás redirigido al login.");
+                    await redirectToLogin();
+                    return;
+                }
+            }
+        }
+
+        const token = localStorage.getItem('sagason_token');
+        if (!token) { 
+            await redirectToLogin();
+            return; 
+        }
+        
+        try {
+            const user = JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+            ownerId = user.sub; userEmail = user.email;
+            if (userEmail === "brluson@gmail.com") {
+                document.getElementById('btn-admin').style.display = "block";
+                document.getElementById('btn-precios').style.display = "block";
+                loadAdminPrecios();
+            }
+            loadTags();
+            loadProfile();
+        } catch (e) {
+            console.error("Token inválido o corrupto, redirigiendo:", e);
+            localStorage.removeItem('sagason_token');
+            await redirectToLogin();
+        }
     }
 
     async function loadProfile() {
         try {
-            const res = await fetch(`${API}/user-profile?ownerId=${ownerId}`);
+            const res = await authFetch(`${API}/user-profile?ownerId=${ownerId}`);
             if(res.ok) {
                 const profile = await res.json();
                 document.getElementById('profile-name').value = profile.name || "";
@@ -795,9 +898,8 @@
         };
 
         try {
-            await fetch(`${API}/user-profile?ownerId=${ownerId}`, {
+            await authFetch(`${API}/user-profile?ownerId=${ownerId}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
             document.getElementById('profile-success').style.display = 'block';
@@ -848,7 +950,7 @@
     async function loadTags() {
         const cont = document.getElementById('tags-list-container');
         try {
-            const res = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
+            const res = await authFetch(`${API}/user-tags?ownerId=${ownerId}`);
             if (!res.ok) throw new Error('Error en API');
             const tags = await res.json();
             if (!tags || tags.length === 0) { cont.innerHTML = "<p style='text-align:center; padding:20px;'>No tienes placas registradas.</p>"; return; }
@@ -1027,9 +1129,8 @@
         btn.disabled = true;
 
         try {
-            const res = await fetch(`${API}/create-preference`, {
+            const res = await authFetch(`${API}/create-preference`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tagId, planName: plan, price: price, email: userEmail, gateway: gateway })
             });
 
@@ -1061,9 +1162,8 @@
             notify_scan: document.getElementById(`ns-${tagId}`).checked,
             notify_form: document.getElementById(`nf-${tagId}`).checked
         };
-        const res = await fetch(`${API}/user-tags`, { 
+        const res = await authFetch(`${API}/user-tags`, { 
             method: 'POST', 
-            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(payload) 
         });
         if (res.ok) { alert("✅ Guardado"); loadTags(); }
@@ -1278,9 +1378,8 @@
             const activationPIN = generatePin();
 
             try {
-                const res = await fetch(`${API}/admin-create-tag`, { 
+                const res = await authFetch(`${API}/admin-create-tag`, { 
                     method: 'POST', 
-                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ 
                         email: userEmail, 
                         nickname: nickname, 
@@ -1351,9 +1450,8 @@
                         `;
                     });
 
-                    fetch(`${API}/report`, {
+                    authFetch(`${API}/report`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
                             action: 'backup_batch', 
                             htmlContent: emailHtml,
@@ -1398,9 +1496,8 @@
         const nickname = document.getElementById('new-tag-nickname').value.trim();
         const category = document.getElementById('new-tag-category').value;
         const country = document.getElementById('new-tag-country').value;
-        const res = await fetch(`${API}/user-tags`, { 
+        const res = await authFetch(`${API}/user-tags`, { 
             method: 'POST', 
-            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ ownerId, tagId, activationCode: pin, nickname, category, country, email_1: userEmail }) 
         });
         if (res.ok) { alert("¡Producto Vinculado!"); location.reload(); }
@@ -1455,7 +1552,7 @@
     async function loadAdminPrecios() {
         let dynamoPrecios = {};
         try {
-            const res = await fetch(`${API}/user-tags?action=prices`);
+            const res = await authFetch(`${API}/user-tags?action=prices`);
             if (res.ok) {
                 const data = await res.json();
                 if (Object.keys(data).length > 0) dynamoPrecios = data;
@@ -1584,9 +1681,8 @@
         };
 
         try {
-            const res = await fetch(`${API}/user-tags?action=prices`, {
+            const res = await authFetch(`${API}/user-tags?action=prices`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ adminEmail: userEmail, prices })
             });
             if (res.ok) {
@@ -1631,9 +1727,8 @@
         });
 
         try {
-            const res = await fetch(`${API}/user-tags?action=prices`, {
+            const res = await authFetch(`${API}/user-tags?action=prices`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ adminEmail: userEmail, prices })
             });
             if (res.ok) {
@@ -1666,9 +1761,8 @@
         try {
             const prices = {};
             prices[id] = { _delete: true };
-            const res = await fetch(`${API}/user-tags?action=prices`, {
+            const res = await authFetch(`${API}/user-tags?action=prices`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ adminEmail: userEmail, prices })
             });
             if (res.ok) {

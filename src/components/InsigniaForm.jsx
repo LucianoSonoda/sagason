@@ -3,9 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, MapPin, Calendar, User, CheckCircle, Award } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { ThreeInsignia } from './ThreeInsignia';
+import { useSEO } from '../hooks/useSEO';
 import '../styles/CustomForm.css';
 
 export function InsigniaForm() {
+    useSEO({
+        title: 'Solicitar Insignia Turística Personalizada | Sagason SpA',
+        description: 'Personaliza y encarga tu insignia turística en acero inoxidable grabada con precisión láser. Guarda tus recuerdos y aventuras para siempre.',
+        keywords: 'insignia turística, placa personalizada, grabado láser, acero inoxidable, Sagason',
+        canonicalPath: '/insignia'
+    });
 
     const [cachedDestinations, setCachedDestinations] = useState([]);
     
@@ -103,7 +110,7 @@ export function InsigniaForm() {
         <section id="insignia" className="custom-section container" style={{ paddingTop: '100px', paddingBottom: '60px', position: 'relative', zIndex: 10 }}>
             <div className="section-header" style={{ marginBottom: '30px' }}>
                 <span className="promo-badge" style={{ marginBottom: '10px', display: 'inline-block' }}>LÍNEA CONMEMORATIVA</span>
-                <h2 className="section-title">INMORTALIZA TU <span style={{ color: 'var(--color-primary)' }}>AVENTURA</span></h2>
+                <h1 className="section-title">INMORTALIZA TU <span style={{ color: 'var(--color-primary)' }}>AVENTURA</span></h1>
                 <p className="section-subtitle" style={{ maxWidth: '600px', margin: '0 auto' }}>Insignias sólidas de Acero Inoxidable grabadas en precisión láser para recordar aquellos paseos familiares que dejan una huella imborrable.</p>
             </div>
 
