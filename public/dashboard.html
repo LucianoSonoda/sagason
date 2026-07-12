@@ -1564,11 +1564,7 @@
                             label: item.productName || item.name || '',
                             category: item.category || item.cat || '',
                             active: item.isActive !== false,
-                            fleteXS: item.fleteXS || 0,
-                            fleteS: item.fleteS || 0,
-                            fleteM: item.fleteM || 0,
-                            fleteL: item.fleteL || 0,
-                            fleteXL: item.fleteXL || 0,
+                            shippingSize: item.shippingSize || '',
                             cajaCustom: item.cajaCustom || 0
                         };
                     });
@@ -1652,24 +1648,15 @@
                     </div>
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:10px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1);">
                         <div>
-                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete XS</div>
-                            <input type="number" id="fleteXS-${p.id}" value="${d.fleteXS || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
-                        </div>
-                        <div>
-                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete S</div>
-                            <input type="number" id="fleteS-${p.id}" value="${d.fleteS || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
-                        </div>
-                        <div>
-                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete M</div>
-                            <input type="number" id="fleteM-${p.id}" value="${d.fleteM || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
-                        </div>
-                        <div>
-                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete L</div>
-                            <input type="number" id="fleteL-${p.id}" value="${d.fleteL || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
-                        </div>
-                        <div>
-                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete XL</div>
-                            <input type="number" id="fleteXL-${p.id}" value="${d.fleteXL || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
+                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Talla de Envío</div>
+                            <select id="shippingSize-${p.id}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box; appearance:none;">
+                                <option value="" ${!d.shippingSize ? 'selected' : ''}>No aplica</option>
+                                <option value="XS" ${d.shippingSize === 'XS' ? 'selected' : ''}>XS</option>
+                                <option value="S" ${d.shippingSize === 'S' ? 'selected' : ''}>S</option>
+                                <option value="M" ${d.shippingSize === 'M' ? 'selected' : ''}>M</option>
+                                <option value="L" ${d.shippingSize === 'L' ? 'selected' : ''}>L</option>
+                                <option value="XL" ${d.shippingSize === 'XL' ? 'selected' : ''}>XL</option>
+                            </select>
                         </div>
                         <div>
                             <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Caja Custom</div>
@@ -1723,18 +1710,24 @@
             label: labelValue,
             category: categoryValue || 'Otros Ítems',
             active: adminPrecios[id]?.active !== false,
-            fleteXS: parseInt(document.getElementById(`fleteXS-${id}`).value) || 0,
-            fleteS: parseInt(document.getElementById(`fleteS-${id}`).value) || 0,
-            fleteM: parseInt(document.getElementById(`fleteM-${id}`).value) || 0,
-            fleteL: parseInt(document.getElementById(`fleteL-${id}`).value) || 0,
-            fleteXL: parseInt(document.getElementById(`fleteXL-${id}`).value) || 0,
+            shippingSize: document.getElementById(`shippingSize-${id}`).value,
             cajaCustom: parseInt(document.getElementById(`cajaCustom-${id}`).value) || 0
         };
 
         try {
-            const res = await authFetch(`${API}/user-tags?action=prices`, {
-                method: 'POST',
-                body: JSON.stringify({ adminEmail: userEmail, prices })
+            const payload = {
+                productId: id,
+                basePrice: prices[id].desde,
+                notes: prices[id].nota,
+                name: prices[id].label,
+                cat: prices[id].category,
+                shippingSize: prices[id].shippingSize,
+                cajaCustom: prices[id].cajaCustom
+            };
+
+            const res = await authFetch(`${API}/price`, {
+                method: 'PUT',
+                body: JSON.stringify(payload)
             });
             if (res.ok) {
                 adminPrecios[id] = prices[id];
@@ -1774,11 +1767,7 @@
                 label: labelValue,
                 category: categoryValue || 'Otros Ítems',
                 active: adminPrecios[p.id]?.active !== false,
-                fleteXS: parseInt(document.getElementById(`fleteXS-${p.id}`).value) || 0,
-                fleteS: parseInt(document.getElementById(`fleteS-${p.id}`).value) || 0,
-                fleteM: parseInt(document.getElementById(`fleteM-${p.id}`).value) || 0,
-                fleteL: parseInt(document.getElementById(`fleteL-${p.id}`).value) || 0,
-                fleteXL: parseInt(document.getElementById(`fleteXL-${p.id}`).value) || 0,
+                shippingSize: document.getElementById(`shippingSize-${p.id}`).value,
                 cajaCustom: parseInt(document.getElementById(`cajaCustom-${p.id}`).value) || 0
             };
         });
@@ -1792,11 +1781,7 @@
                     notes: p.nota,
                     name: p.label,
                     cat: p.category,
-                    fleteXS: p.fleteXS,
-                    fleteS: p.fleteS,
-                    fleteM: p.fleteM,
-                    fleteL: p.fleteL,
-                    fleteXL: p.fleteXL,
+                    shippingSize: p.shippingSize,
                     cajaCustom: p.cajaCustom
                 };
                 return authFetch(`${API}/price`, {
