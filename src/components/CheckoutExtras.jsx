@@ -1,0 +1,144 @@
+import React, { useState, useEffect } from 'react';
+import { Truck, Sparkles, MessageSquare, Package } from 'lucide-react';
+
+export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalChange }) => {
+    const [customInstructions, setCustomInstructions] = useState('');
+    const [useAIArt, setUseAIArt] = useState(false);
+    const [useCustomPackaging, setUseCustomPackaging] = useState(false);
+    const [shippingRegion, setShippingRegion] = useState('metropolitana');
+
+    const REGIONES = [
+        { id: 'retiro', name: 'Retiro en Taller (Vitacura) - $0', cost: 0 },
+        { id: 'metropolitana', name: 'Región Metropolitana - $3.100', cost: 3100 },
+        { id: 'normal', name: 'Otras Regiones - $4.300', cost: 4300 },
+        { id: 'extrema', name: 'Regiones Extremas (Arica, Tarapacá, Aysén, Magallanes) - $5.200', cost: 5200 }
+    ];
+
+    useEffect(() => {
+        const shippingCost = REGIONES.find(r => r.id === shippingRegion)?.cost || 0;
+        const aiCost = useAIArt ? 5000 : 0;
+        const packagingCost = useCustomPackaging ? packagingPrice : 0;
+        
+        if (onTotalChange) {
+            onTotalChange(basePrice + shippingCost + aiCost + packagingCost);
+        }
+    }, [basePrice, useAIArt, shippingRegion, useCustomPackaging, packagingPrice]);
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
+            
+            {/* Instrucciones Adicionales */}
+            <div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>
+                    <MessageSquare size={16} /> Instrucciones Adicionales
+                </label>
+                <textarea 
+                    rows="3"
+                    value={customInstructions}
+                    onChange={(e) => setCustomInstructions(e.target.value)}
+                    placeholder="Escribe aquí si tienes alguna petición especial para tu diseño..."
+                    style={{ 
+                        width: '100%', 
+                        padding: '12px', 
+                        borderRadius: '8px', 
+                        border: '1px solid rgba(255,255,255,0.2)', 
+                        background: 'rgba(255,255,255,0.08)', 
+                        color: 'white',
+                        resize: 'vertical'
+                    }}
+                ></textarea>
+            </div>
+
+            {/* Arte con IA */}
+            <div 
+                style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '12px', 
+                    padding: '1rem', 
+                    background: useAIArt ? 'rgba(37, 99, 235, 0.15)' : 'rgba(255,255,255,0.03)', 
+                    border: `1px solid ${useAIArt ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)'}`,
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                }}
+                onClick={() => setUseAIArt(!useAIArt)}
+            >
+                <input 
+                    type="checkbox" 
+                    checked={useAIArt}
+                    readOnly
+                    style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: 'var(--color-primary)' }}
+                />
+                <div style={{ flex: 1 }}>
+                    <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.95rem' }}>
+                        <Sparkles size={16} color="var(--color-primary)" />
+                        Arte Personalizado con IA (+ $5.000)
+                    </h4>
+                    <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>
+                        Nuestros diseñadores utilizarán IA avanzada para crear una ilustración única basándose en tu idea.
+                    </p>
+                    {useAIArt && (
+                        <p style={{ margin: '8px 0 0 0', fontSize: '0.75rem', color: '#ffb300', fontStyle: 'italic' }}>
+                            * Nota: Dependiendo de la complejidad de la solicitud, el precio podría variar o la solicitud podría ser rechazada.
+                        </p>
+                    )}
+                </div>
+            </div>
+
+            {/* Embalaje Customizado */}
+            <div 
+                style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '12px', 
+                    padding: '1rem', 
+                    background: useCustomPackaging ? 'rgba(37, 99, 235, 0.15)' : 'rgba(255,255,255,0.03)', 
+                    border: `1px solid ${useCustomPackaging ? 'var(--color-primary)' : 'rgba(255,255,255,0.1)'}`,
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                }}
+                onClick={() => setUseCustomPackaging(!useCustomPackaging)}
+            >
+                <input 
+                    type="checkbox" 
+                    checked={useCustomPackaging}
+                    readOnly
+                    style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: 'var(--color-primary)' }}
+                />
+                <div style={{ flex: 1 }}>
+                    <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.95rem' }}>
+                        <Package size={16} color="var(--color-primary)" />
+                        Embalaje Customizado (+ ${packagingPrice.toLocaleString('es-CL')})
+                    </h4>
+                    <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>
+                        Caja de regalo personalizada y protección premium para una experiencia de unboxing inolvidable.
+                    </p>
+                </div>
+            </div>
+
+            {/* Envío */}
+            <div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>
+                    <Truck size={16} /> Envío vía Blue Express
+                </label>
+                <select 
+                    value={shippingRegion} 
+                    onChange={(e) => setShippingRegion(e.target.value)} 
+                    style={{ 
+                        width: '100%', 
+                        padding: '12px', 
+                        borderRadius: '8px', 
+                        border: '1px solid rgba(255,255,255,0.2)', 
+                        background: 'rgba(255,255,255,0.08)', 
+                        color: 'white' 
+                    }}
+                >
+                    {REGIONES.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+                </select>
+            </div>
+
+        </div>
+    );
+};

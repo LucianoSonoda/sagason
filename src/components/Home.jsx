@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Box, Shield, Zap, Search, Key, Smartphone, Lock, Eye, CheckCircle, Gift, Truck, Target, Cpu, MapPin, Sparkles, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Box, Shield, Zap, Search, Key, Smartphone, Lock, Eye, CheckCircle, Gift, Truck, Target, Cpu, MapPin, Sparkles, X, ChevronLeft, ChevronRight, Dog, Heart, Image as ImageIcon, Briefcase, Coffee, Puzzle, CupSoda, Printer } from 'lucide-react';
 import '../styles/Home.css';
 import imgKanji_Kaeru from '../assets/kanji_kaeru.png';
 import imgKanji_Kizuna from '../assets/kanji_kizuna.png';
@@ -9,7 +9,6 @@ import imgKanji_Kansha from '../assets/kanji_kansha.png';
 import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
 import sagasonSymbol from '/sagason-symbol.png';
 import { DiscoverCity } from './DiscoverCity';
-import { CustomForm } from './CustomForm';
 import { Gallery } from './Gallery';
 import { useSEO } from '../hooks/useSEO';
 
@@ -63,11 +62,11 @@ export function Home() {
                         Transformamos tus recuerdos más especiales en piezas de metal que duran toda la vida. Para tu hogar, tu mascota, las personas que más quieres.
                     </motion.p>
                     <motion.div className="cta-group" variants={itemVariants}>
-                        <Link to="/#custom" className="btn btn-primary magnetic">
-                            Crea tu pieza <ArrowRight size={20} />
+                        <Link to="/id-mascotas" className="btn btn-primary magnetic">
+                            ID Mascotas <ArrowRight size={20} />
                         </Link>
-                        <Link to="/#gallery" className="btn btn-glass">
-                            Ver inspiración
+                        <Link to="/cuadros-metal-hd" className="btn btn-glass">
+                            Cuadros HD
                         </Link>
                     </motion.div>
                     <motion.div className="hero-stats" variants={itemVariants}>
@@ -89,6 +88,9 @@ export function Home() {
                 </motion.div>
             </section>
 
+            {/* Catálogo de Productos (Silos) */}
+            <ProductsGrid />
+
             {/* Símbolo de confianza */}
             <TrustSymbolSection />
 
@@ -101,11 +103,6 @@ export function Home() {
             {/* Gallery Section */}
             <div id="gallery">
                 <Gallery />
-            </div>
-
-            {/* Customizer Section */}
-            <div id="custom">
-                <CustomForm />
             </div>
         </div>
     );
@@ -150,6 +147,49 @@ function TrustSymbolSection() {
                 </div>
             </div>
         </motion.section>
+    );
+}
+
+const PRODUCT_SILOS = [
+    { id: 'id-mascotas', title: 'ID Mascotas', desc: 'Placas QR de alta resistencia para tu mejor amigo.', icon: <Dog size={32} />, path: '/id-mascotas' },
+    { id: 'id-salud', title: 'ID Salud', desc: 'Protección de historial médico en emergencias.', icon: <Heart size={32} />, path: '/id-salud' },
+    { id: 'cuadros-metal', title: 'Cuadros HD', desc: 'Arte sublimado en metal. Durabilidad eterna.', icon: <ImageIcon size={32} />, path: '/cuadros-metal-hd' },
+    { id: 'llaveros', title: 'Llaveros Metálicos', desc: 'Grabado láser para tus llaves o patentes.', icon: <Key size={32} />, path: '/llaveros' },
+    { id: 'tazones', title: 'Mugs & Tazones', desc: 'Cerámica AAA para empezar tu día con estilo.', icon: <Coffee size={32} />, path: '/tazones' },
+    { id: 'tumblers', title: 'Tumblers Grabados', desc: 'Aislamiento térmico extremo y grabado permanente.', icon: <CupSoda size={32} />, path: '/tumblers' },
+    { id: 'rompecabezas', title: 'Rompecabezas', desc: 'Arma tus recuerdos. Sublimación brillante.', icon: <Puzzle size={32} />, path: '/rompecabezas' },
+    { id: 'impresion-3d', title: 'Impresión 3D', desc: 'Fabricación aditiva y repuestos a medida.', icon: <Printer size={32} />, path: '/impresion-3d' },
+    { id: 'corporativo', title: 'B2B & Empresas', desc: 'Merchandising premium en volumen.', icon: <Briefcase size={32} />, path: '/regalos-corporativos' }
+];
+
+function ProductsGrid() {
+    return (
+        <section className="container" style={{ padding: '6rem 1rem' }}>
+            <div className="section-header" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                <span className="section-label">NUESTRO CATÁLOGO</span>
+                <h2 className="section-title">DESCUBRE NUESTRAS <span className="text-primary">CATEGORÍAS</span></h2>
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+                {PRODUCT_SILOS.map((product) => (
+                    <motion.div 
+                        key={product.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        whileHover={{ y: -5 }}
+                    >
+                        <Link to={product.path} className="glass-panel glow-card" style={{ display: 'block', padding: '2rem', borderRadius: '16px', textDecoration: 'none', color: 'inherit', height: '100%' }}>
+                            <div style={{ color: 'var(--color-primary)', marginBottom: '1rem' }}>
+                                {product.icon}
+                            </div>
+                            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>{product.title}</h3>
+                            <p style={{ color: 'var(--color-text-dim)', fontSize: '0.95rem', lineHeight: '1.5' }}>{product.desc}</p>
+                        </Link>
+                    </motion.div>
+                ))}
+            </div>
+        </section>
     );
 }
 

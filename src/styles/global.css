@@ -197,3 +197,9 @@ button {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--color-primary);
 }
+
+/* Fix for Select Options readability */
+option {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}

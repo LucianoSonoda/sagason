@@ -45,6 +45,36 @@ function BoneGeometry({ args = [1] }) {
     return <extrudeGeometry args={[shape, extrudeSettings]} />;
 }
 
+// --- Geometría: Corazón para Llaveros e ID Mascotas ---
+function HeartGeometry({ args = [1] }) {
+    const scale = args[0];
+    const shape = useMemo(() => {
+        const heartShape = new THREE.Shape();
+        // A properly scaled and centered heart shape
+        // Width: approx 2.4, Height: approx 2.4 (radius ~ 1.2)
+        const x = 0, y = -0.4;
+        
+        heartShape.moveTo( x, y + 0.8 );
+        heartShape.bezierCurveTo( x, y + 0.8, x - 0.2, y + 1.8, x - 1.2, y + 1.8 );
+        heartShape.bezierCurveTo( x - 2.4, y + 1.8, x - 2.4, y + 0.2, x - 2.4, y + 0.2 );
+        heartShape.bezierCurveTo( x - 2.4, y - 0.8, x - 1.2, y - 1.6, x, y - 2.4 );
+        heartShape.bezierCurveTo( x + 1.2, y - 1.6, x + 2.4, y - 0.8, x + 2.4, y + 0.2 );
+        heartShape.bezierCurveTo( x + 2.4, y + 0.2, x + 2.4, y + 1.8, x + 1.2, y + 1.8 );
+        heartShape.bezierCurveTo( x + 0.2, y + 1.8, x, y + 0.8, x, y + 0.8 );
+        
+        return heartShape;
+    }, []);
+
+    // depth for ID Mascotas/Llaveros is usually 0.15
+    const extrudeSettings = { depth: 0.15, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.05, bevelThickness: 0.05 };
+    
+    return (
+        <group scale={[scale, scale, 1]}>
+            <extrudeGeometry args={[shape, extrudeSettings]} />
+        </group>
+    );
+}
+
 // --- Overlay de Rompecabezas (Cortes) ---
 function PuzzleOverlay({ args = [4, 3] }) {
     const tex = useMemo(() => {
@@ -234,9 +264,10 @@ function ProductModel({ productId, category, size, nameText, textureUrl }) {
             break;
 
         case productId.includes('cuadro'):
+            const isHorizontal = size?.toLowerCase().includes('30x20') || size?.toLowerCase().includes('40x30'); // Just in case
             geometry = (
                 <mesh castShadow receiveShadow>
-                    <boxGeometry args={[3, 4, 0.1]} />
+                    {isHorizontal ? <boxGeometry args={[4, 3, 0.1]} /> : <boxGeometry args={[3, 4, 0.1]} />}
                     <meshStandardMaterial key={userTexture ? userTexture.uuid : 'plain'} {...materialProps} map={userTexture} />
                 </mesh>
             );
@@ -244,9 +275,13 @@ function ProductModel({ productId, category, size, nameText, textureUrl }) {
             break;
 
         case productId.includes('id-mascotas'):
+            const isCircle = size?.toLowerCase().includes('círculo') || size?.toLowerCase().includes('circulo');
+            const isHeart = size?.toLowerCase().includes('corazón') || size?.toLowerCase().includes('corazon');
             geometry = (
                 <mesh castShadow receiveShadow>
-                    <BoneGeometry args={[1]} />
+                    {isCircle ? <cylinderGeometry args={[1.5, 1.5, 0.15, 64]} rotation={[Math.PI/2, 0, 0]} /> : 
+                     isHeart ? <HeartGeometry args={[1]} /> :
+                     <BoneGeometry args={[1]} />}
                     <meshStandardMaterial key={userTexture ? userTexture.uuid : 'plain'} {...materialProps} map={userTexture} />
                 </mesh>
             );
@@ -254,13 +289,19 @@ function ProductModel({ productId, category, size, nameText, textureUrl }) {
             break;
 
         case productId.includes('llavero'):
+            const isRound = size?.toLowerCase().includes('redondo');
+            const isHeartLlavero = size?.toLowerCase().includes('corazón') || size?.toLowerCase().includes('corazon');
+            const isSquareLlavero = size?.toLowerCase().includes('cuadrado');
             geometry = (
                 <group>
-                    <mesh castShadow receiveShadow rotation={[Math.PI/2, 0, 0]}>
-                        <cylinderGeometry args={[1.2, 1.2, 0.15, 64]} />
+                    <mesh castShadow receiveShadow rotation={isHeartLlavero ? [0,0,0] : [Math.PI/2, 0, 0]}>
+                        {isRound ? <cylinderGeometry args={[1.2, 1.2, 0.15, 64]} /> :
+                         isSquareLlavero ? <boxGeometry args={[2, 0.15, 2]} /> :
+                         isHeartLlavero ? <HeartGeometry args={[0.8]} /> :
+                         <boxGeometry args={[2.5, 0.15, 1.2]} /> /* Rectangular default */}
                         <meshStandardMaterial key={userTexture ? userTexture.uuid : 'plain'} {...materialProps} map={userTexture} />
                     </mesh>
-                    <mesh position={[0, 1.4, 0]} castShadow receiveShadow>
+                    <mesh position={[0, 1.5, 0]} castShadow receiveShadow>
                         <torusGeometry args={[0.3, 0.05, 16, 64]} />
                         <meshStandardMaterial color="#cccccc" metalness={0.9} roughness={0.2} />
                     </mesh>
@@ -293,9 +334,14 @@ function ProductModel({ productId, category, size, nameText, textureUrl }) {
             break;
 
         case productId.includes('id-salud'):
+            const isPulsera = size?.toLowerCase().includes('pulsera');
+            const isTarjeta = size?.toLowerCase().includes('tarjeta');
+            const isMedallon = size?.toLowerCase().includes('medallón') || size?.toLowerCase().includes('medallon');
             geometry = (
                 <mesh castShadow receiveShadow>
-                    <boxGeometry args={[2, 1.2, 0.1]} />
+                    {isPulsera ? <boxGeometry args={[3, 0.4, 0.05]} /> :
+                     isTarjeta ? <boxGeometry args={[3, 1.8, 0.05]} /> :
+                     <boxGeometry args={[1.5, 1.5, 0.1]} /> /* Medallon default */}
                     <meshStandardMaterial key={userTexture ? userTexture.uuid : 'plain'} {...materialProps} map={userTexture} />
                 </mesh>
             );

@@ -19,6 +19,17 @@ const Technology = lazy(() => import('./components/Technology').then(module => (
 const InsigniaForm = lazy(() => import('./components/InsigniaForm').then(module => ({ default: module.InsigniaForm })));
 const LaserLock = lazy(() => import('./components/LaserLock').then(module => ({ default: module.LaserLock })));
 const Tags4K = lazy(() => import('./pages/Tags4K').then(module => ({ default: module.Tags4K })));
+const IdMascotas = lazy(() => import('./pages/IdMascotas').then(module => ({ default: module.default })));
+const IdSalud = lazy(() => import('./pages/IdSalud').then(module => ({ default: module.default })));
+const CuadrosMetal = lazy(() => import('./pages/CuadrosMetal').then(module => ({ default: module.default })));
+const RegalosCorporativos = lazy(() => import('./pages/RegalosCorporativos').then(module => ({ default: module.default })));
+const GaleriaArtistas = lazy(() => import('./pages/GaleriaArtistas').then(module => ({ default: module.default })));
+const Blog = lazy(() => import('./pages/Blog').then(module => ({ default: module.default })));
+const Llaveros = lazy(() => import('./pages/Llaveros').then(module => ({ default: module.default })));
+const Rompecabezas = lazy(() => import('./pages/Rompecabezas').then(module => ({ default: module.default })));
+const Tazones = lazy(() => import('./pages/Tazones').then(module => ({ default: module.default })));
+const Tumblers = lazy(() => import('./pages/Tumblers').then(module => ({ default: module.default })));
+const Impresion3D = lazy(() => import('./pages/Impresion3D').then(module => ({ default: module.default })));
 
 function MainContent() {
   return (
@@ -76,6 +87,20 @@ function App() {
             <Route path="/insignia/*" element={<InsigniaForm />} />
             <Route path="/lasersticker" element={<LaserLock />} />
             <Route path="/tags-4k" element={<Tags4K />} />
+            
+            {/* New Silo Architecture Routes */}
+            <Route path="/id-mascotas" element={<IdMascotas />} />
+            <Route path="/id-salud" element={<IdSalud />} />
+            <Route path="/cuadros-metal-hd" element={<CuadrosMetal />} />
+            <Route path="/regalos-corporativos" element={<RegalosCorporativos />} />
+            <Route path="/galeria-artistas" element={<GaleriaArtistas />} />
+            <Route path="/blog/*" element={<Blog />} />
+            
+            <Route path="/llaveros" element={<Llaveros />} />
+            <Route path="/rompecabezas" element={<Rompecabezas />} />
+            <Route path="/tazones" element={<Tazones />} />
+            <Route path="/tumblers" element={<Tumblers />} />
+            <Route path="/impresion-3d" element={<Impresion3D />} />
           </Routes>
         </Suspense>
       </main>

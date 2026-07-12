@@ -57,7 +57,7 @@ const PuzzleLinesSVG = () => {
 };
 
 // Componente individual de Taza CSS
-const CssMug = ({ fileUrl, view, zIndex, transform }) => {
+const CssMug = ({ fileUrl, text, view, zIndex, transform }) => {
     // view puede ser 'left', 'center', 'right'
     const backgroundPosition = view === 'left' ? '0% 50%' : view === 'center' ? '50% 50%' : '100% 50%';
     
@@ -108,7 +108,7 @@ const CssMug = ({ fileUrl, view, zIndex, transform }) => {
                 border: '1px solid #e0e0e0',
                 borderTop: '2px solid #ffffff'
             }}>
-                {/* Diseño del usuario */}
+                {/* Diseño del usuario o Texto */}
                 {fileUrl ? (
                     <div style={{
                         position: 'absolute',
@@ -121,13 +121,30 @@ const CssMug = ({ fileUrl, view, zIndex, transform }) => {
                         backgroundPosition: backgroundPosition,
                         backgroundRepeat: 'no-repeat'
                     }} />
+                ) : text ? (
+                    <div style={{
+                        position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        backgroundColor: '#fff',
+                    }}>
+                        <span style={{
+                            color: '#333', // Grabado oscuro/sublimación
+                            fontSize: view === 'center' ? '1rem' : '0.8rem',
+                            fontWeight: 'bold',
+                            letterSpacing: '1px',
+                            textTransform: 'uppercase',
+                            textAlign: 'center',
+                            padding: '0 10px',
+                            wordBreak: 'break-word',
+                        }}>{text}</span>
+                    </div>
                 ) : (
                     <div style={{
                         position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#999', fontSize: '0.8rem', textAlign: 'center', padding: '20px',
+                        color: '#999', fontSize: '0.8rem', textAlign: 'center', padding: '10px',
                         backgroundColor: '#fff'
-                    }}>Sube tu diseño</div>
+                    }}>Sube tu diseño<br/>o escribe texto</div>
                 )}
 
                 {/* Sombra volumétrica (Multiplicar) */}
@@ -162,7 +179,7 @@ const CssMug = ({ fileUrl, view, zIndex, transform }) => {
 };
 
 // Componente individual de Tumbler CSS
-const CssTumbler = ({ fileUrl, view, zIndex, transform }) => {
+const CssTumbler = ({ fileUrl, text, view, zIndex, transform }) => {
     // view puede ser 'left', 'center', 'right'
     const backgroundPosition = view === 'left' ? '0% 50%' : view === 'center' ? '50% 50%' : '100% 50%';
     
@@ -203,7 +220,7 @@ const CssTumbler = ({ fileUrl, view, zIndex, transform }) => {
                 // Hacerlo ligeramente cónico (opcional, con clip-path)
                 clipPath: 'polygon(0 0, 100% 0, 95% 100%, 5% 100%)'
             }}>
-                {/* Diseño del usuario */}
+                {/* Diseño del usuario o Texto */}
                 {fileUrl ? (
                     <div style={{
                         position: 'absolute',
@@ -216,13 +233,31 @@ const CssTumbler = ({ fileUrl, view, zIndex, transform }) => {
                         backgroundPosition: backgroundPosition,
                         backgroundRepeat: 'no-repeat'
                     }} />
+                ) : text ? (
+                    <div style={{
+                        position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        backgroundColor: '#1a1a1a', // Simula el vaso oscuro por defecto para destacar el grabado
+                    }}>
+                        <span style={{
+                            color: '#e0e0e0', // Plata brillante (acero expuesto)
+                            fontSize: view === 'center' ? '1rem' : '0.8rem', // Más pequeño a los lados
+                            fontWeight: 'bold',
+                            letterSpacing: '1px',
+                            textTransform: 'uppercase',
+                            textAlign: 'center',
+                            padding: '0 10px',
+                            wordBreak: 'break-word',
+                            textShadow: '0px 1px 1px rgba(255,255,255,0.6), 0px -1px 1px rgba(0,0,0,0.8)'
+                        }}>{text}</span>
+                    </div>
                 ) : (
                     <div style={{
                         position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         color: '#999', fontSize: '0.8rem', textAlign: 'center', padding: '10px',
                         backgroundColor: '#fff'
-                    }}>Sube tu diseño</div>
+                    }}>Sube tu diseño<br/>o escribe texto</div>
                 )}
 
                 {/* Sombra volumétrica (Multiplicar) */}
@@ -256,7 +291,7 @@ const CssTumbler = ({ fileUrl, view, zIndex, transform }) => {
     );
 };
 
-export function Mockup2DViewer({ product, fileUrl }) {
+export function Mockup2DViewer({ product, fileUrl, text }) {
     const isPuzzle = product.toLowerCase().includes('rompecabezas');
     const isTumbler = product.toLowerCase().includes('tumbler');
 
@@ -315,9 +350,9 @@ export function Mockup2DViewer({ product, fileUrl }) {
                         transform: 'scale(0.85)',
                         transformOrigin: 'center center'
                     }}>
-                        <CssTumbler fileUrl={fileUrl} view="left" zIndex={1} transform="translateX(-95px) scale(0.85) rotateY(15deg)" />
-                        <CssTumbler fileUrl={fileUrl} view="right" zIndex={1} transform="translateX(95px) scale(0.85) rotateY(-15deg)" />
-                        <CssTumbler fileUrl={fileUrl} view="center" zIndex={2} transform="translateZ(30px) scale(1.1)" />
+                        <CssTumbler fileUrl={fileUrl} text={text} view="left" zIndex={1} transform="translateX(-95px) scale(0.85) rotateY(15deg)" />
+                        <CssTumbler fileUrl={fileUrl} text={text} view="right" zIndex={1} transform="translateX(95px) scale(0.85) rotateY(-15deg)" />
+                        <CssTumbler fileUrl={fileUrl} text={text} view="center" zIndex={2} transform="translateZ(30px) scale(1.1)" />
                     </div>
                 </div>
             ) : (
@@ -342,9 +377,9 @@ export function Mockup2DViewer({ product, fileUrl }) {
                         transform: 'scale(0.70)',
                         transformOrigin: 'center center'
                     }}>
-                        <CssMug fileUrl={fileUrl} view="left" zIndex={1} transform="translateX(-115px) scale(0.85) rotateY(15deg)" />
-                        <CssMug fileUrl={fileUrl} view="right" zIndex={1} transform="translateX(115px) scale(0.85) rotateY(-15deg)" />
-                        <CssMug fileUrl={fileUrl} view="center" zIndex={2} transform="translateZ(30px) scale(1.1)" />
+                        <CssMug fileUrl={fileUrl} text={text} view="left" zIndex={1} transform="translateX(-115px) scale(0.85) rotateY(15deg)" />
+                        <CssMug fileUrl={fileUrl} text={text} view="right" zIndex={1} transform="translateX(115px) scale(0.85) rotateY(-15deg)" />
+                        <CssMug fileUrl={fileUrl} text={text} view="center" zIndex={2} transform="translateZ(30px) scale(1.1)" />
                     </div>
                 </div>
             )}
