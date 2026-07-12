@@ -1552,10 +1552,27 @@
     async function loadAdminPrecios() {
         let dynamoPrecios = {};
         try {
-            const res = await authFetch(`${API}/user-tags?action=prices`);
+            const res = await authFetch(`${API}/prices`);
             if (res.ok) {
-                const data = await res.json();
-                if (Object.keys(data).length > 0) dynamoPrecios = data;
+                const result = await res.json();
+                if (result.success && Array.isArray(result.data)) {
+                    result.data.forEach(item => {
+                        dynamoPrecios[item.productId] = {
+                            desde: item.basePrice || 0,
+                            nota: item.notes || '',
+                            sku: item.sku || '',
+                            label: item.productName || item.name || '',
+                            category: item.category || item.cat || '',
+                            active: item.isActive !== false,
+                            fleteXS: item.fleteXS || 0,
+                            fleteS: item.fleteS || 0,
+                            fleteM: item.fleteM || 0,
+                            fleteL: item.fleteL || 0,
+                            fleteXL: item.fleteXL || 0,
+                            cajaCustom: item.cajaCustom || 0
+                        };
+                    });
+                }
             }
         } catch (_) {}
 
@@ -1601,35 +1618,63 @@
             products.forEach(p => {
                 const d = adminPrecios[p.id] || { desde: 0, nota: '' };
                 html += `
-                <div id="row-${p.id}" style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:grid; grid-template-columns:1fr auto auto; gap:14px; align-items:center; transition: opacity 0.3s; ${d.active === false ? 'opacity: 0.4;' : ''}">
-                    <div>
-                        <input type="text" id="label-${p.id}" value="${d.label || p.label}" style="background:transparent; border:none; border-bottom:1px dashed var(--border); font-weight:700; font-size:14px; color:#fff; margin-bottom:4px; width:100%; outline:none;" placeholder="Nombre del ítem">
-                        <div style="display:flex; gap:8px; flex-wrap: wrap;">
-                            <input list="categorias-list" id="cat-${p.id}" value="${cat}" placeholder="Categoría"
-                                style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:100px; box-sizing:border-box; margin-top:4px;">
-                            <input type="text" id="sku-${p.id}" value="${d.sku || ''}" placeholder="SKU"
-                                style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:80px; box-sizing:border-box; margin-top:4px;">
-                            <input type="text" id="nota-${p.id}" value="${d.nota || ''}" placeholder="Nota breve (ej: Precio unitario)"
-                                style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; flex:1; min-width: 150px; box-sizing:border-box; margin-top:4px;">
+                <div id="row-${p.id}" style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:flex; flex-direction:column; gap:14px; transition: opacity 0.3s; ${d.active === false ? 'opacity: 0.4;' : ''}">
+                    <div style="display:grid; grid-template-columns:1fr auto auto; gap:14px; align-items:center;">
+                        <div>
+                            <input type="text" id="label-${p.id}" value="${d.label || p.label}" style="background:transparent; border:none; border-bottom:1px dashed var(--border); font-weight:700; font-size:14px; color:#fff; margin-bottom:4px; width:100%; outline:none;" placeholder="Nombre del ítem">
+                            <div style="display:flex; gap:8px; flex-wrap: wrap;">
+                                <input list="categorias-list" id="cat-${p.id}" value="${cat}" placeholder="Categoría"
+                                    style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:100px; box-sizing:border-box; margin-top:4px;">
+                                <input type="text" id="sku-${p.id}" value="${d.sku || ''}" placeholder="SKU"
+                                    style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:80px; box-sizing:border-box; margin-top:4px;">
+                                <input type="text" id="nota-${p.id}" value="${d.nota || ''}" placeholder="Nota breve (ej: Precio unitario)"
+                                    style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; flex:1; min-width: 150px; box-sizing:border-box; margin-top:4px;">
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Desde $</div>
+                            <input type="number" id="precio-${p.id}" value="${d.desde || 0}" min="0" step="100"
+                                style="background:rgba(14,165,233,0.08); border:1px solid rgba(14,165,233,0.3); color:var(--primary); font-size:16px; font-weight:700; padding:8px 12px; border-radius:10px; width:120px; text-align:right; box-sizing:border-box;">
+                        </div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <div style="display:flex; flex-direction:column; gap:4px;">
+                                <button onclick="toggleActiveItem('${p.id}')" title="${d.active === false ? 'Activar ítem' : 'Desactivar ítem'}" style="background:rgba(255,255,255,0.05); color:${d.active === false ? '#ef4444' : '#22c55e'}; border:none; border-radius:6px; width:28px; height:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;">
+                                    ${d.active === false ? '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>' : '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>'}
+                                </button>
+                                <button onclick="deleteItem('${p.id}')" title="Borrar ítem permanentemente" style="background:rgba(239,68,68,0.1); color:#ef4444; border:none; border-radius:6px; width:28px; height:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;">
+                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                            <button onclick="saveSinglePrecio('${p.id}')" id="btn-save-${p.id}" title="Guardar cambios" style="background:var(--primary); color:#fff; border:none; border-radius:10px; width:44px; height:44px; cursor:pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                            </button>
                         </div>
                     </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Desde $</div>
-                        <input type="number" id="precio-${p.id}" value="${d.desde || 0}" min="0" step="100"
-                            style="background:rgba(14,165,233,0.08); border:1px solid rgba(14,165,233,0.3); color:var(--primary); font-size:16px; font-weight:700; padding:8px 12px; border-radius:10px; width:120px; text-align:right; box-sizing:border-box;">
-                    </div>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        <div style="display:flex; flex-direction:column; gap:4px;">
-                            <button onclick="toggleActiveItem('${p.id}')" title="${d.active === false ? 'Activar ítem' : 'Desactivar ítem'}" style="background:rgba(255,255,255,0.05); color:${d.active === false ? '#ef4444' : '#22c55e'}; border:none; border-radius:6px; width:28px; height:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;">
-                                ${d.active === false ? '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>' : '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>'}
-                            </button>
-                            <button onclick="deleteItem('${p.id}')" title="Borrar ítem permanentemente" style="background:rgba(239,68,68,0.1); color:#ef4444; border:none; border-radius:6px; width:28px; height:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                            </button>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:10px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1);">
+                        <div>
+                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete XS</div>
+                            <input type="number" id="fleteXS-${p.id}" value="${d.fleteXS || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
                         </div>
-                        <button onclick="saveSinglePrecio('${p.id}')" id="btn-save-${p.id}" title="Guardar cambios" style="background:var(--primary); color:#fff; border:none; border-radius:10px; width:44px; height:44px; cursor:pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                        </button>
+                        <div>
+                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete S</div>
+                            <input type="number" id="fleteS-${p.id}" value="${d.fleteS || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete M</div>
+                            <input type="number" id="fleteM-${p.id}" value="${d.fleteM || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete L</div>
+                            <input type="number" id="fleteL-${p.id}" value="${d.fleteL || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Flete XL</div>
+                            <input type="number" id="fleteXL-${p.id}" value="${d.fleteXL || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
+                        </div>
+                        <div>
+                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Caja Custom</div>
+                            <input type="number" id="cajaCustom-${p.id}" value="${d.cajaCustom || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
+                        </div>
                     </div>
                 </div>`;
             });
@@ -1677,7 +1722,13 @@
             sku: document.getElementById(`sku-${id}`).value.trim(),
             label: labelValue,
             category: categoryValue || 'Otros Ítems',
-            active: adminPrecios[id]?.active !== false
+            active: adminPrecios[id]?.active !== false,
+            fleteXS: parseInt(document.getElementById(`fleteXS-${id}`).value) || 0,
+            fleteS: parseInt(document.getElementById(`fleteS-${id}`).value) || 0,
+            fleteM: parseInt(document.getElementById(`fleteM-${id}`).value) || 0,
+            fleteL: parseInt(document.getElementById(`fleteL-${id}`).value) || 0,
+            fleteXL: parseInt(document.getElementById(`fleteXL-${id}`).value) || 0,
+            cajaCustom: parseInt(document.getElementById(`cajaCustom-${id}`).value) || 0
         };
 
         try {
@@ -1722,21 +1773,47 @@
                 sku: document.getElementById(`sku-${p.id}`).value.trim(),
                 label: labelValue,
                 category: categoryValue || 'Otros Ítems',
-                active: adminPrecios[p.id]?.active !== false
+                active: adminPrecios[p.id]?.active !== false,
+                fleteXS: parseInt(document.getElementById(`fleteXS-${p.id}`).value) || 0,
+                fleteS: parseInt(document.getElementById(`fleteS-${p.id}`).value) || 0,
+                fleteM: parseInt(document.getElementById(`fleteM-${p.id}`).value) || 0,
+                fleteL: parseInt(document.getElementById(`fleteL-${p.id}`).value) || 0,
+                fleteXL: parseInt(document.getElementById(`fleteXL-${p.id}`).value) || 0,
+                cajaCustom: parseInt(document.getElementById(`cajaCustom-${p.id}`).value) || 0
             };
         });
 
         try {
-            const res = await authFetch(`${API}/user-tags?action=prices`, {
-                method: 'POST',
-                body: JSON.stringify({ adminEmail: userEmail, prices })
+            const updatePromises = Object.keys(prices).map(id => {
+                const p = prices[id];
+                const payload = {
+                    productId: id,
+                    basePrice: p.desde,
+                    notes: p.nota,
+                    name: p.label,
+                    cat: p.category,
+                    fleteXS: p.fleteXS,
+                    fleteS: p.fleteS,
+                    fleteM: p.fleteM,
+                    fleteL: p.fleteL,
+                    fleteXL: p.fleteXL,
+                    cajaCustom: p.cajaCustom
+                };
+                return authFetch(`${API}/price`, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
             });
-            if (res.ok) {
+
+            const results = await Promise.all(updatePromises);
+            const allOk = results.every(res => res.ok);
+
+            if (allOk) {
                 document.getElementById('precios-success').style.display = 'block';
                 setTimeout(() => document.getElementById('precios-success').style.display = 'none', 3500);
                 adminPrecios = prices;
             } else {
-                alert('Error al guardar precios: ' + await res.text());
+                alert('Hubo errores al guardar algunos precios. Revisa tu conexión.');
             }
         } catch(e) {
             alert('Error de conexión: ' + e.message);
@@ -1759,11 +1836,17 @@
         if(btn) btn.innerHTML = `<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-opacity="0.3" stroke-width="4"/><path d="M12 2C6.47715 2 2 6.47715 2 12" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`;
         
         try {
-            const prices = {};
-            prices[id] = { _delete: true };
-            const res = await authFetch(`${API}/user-tags?action=prices`, {
-                method: 'POST',
-                body: JSON.stringify({ adminEmail: userEmail, prices })
+            // Soft delete by sending basePrice 0 or active flag if API supported it
+            const payload = {
+                productId: id,
+                basePrice: 0,
+                notes: "ELIMINADO",
+                name: "ELIMINADO",
+                cat: "Otros Ítems"
+            };
+            const res = await authFetch(`${API}/price`, {
+                method: 'PUT',
+                body: JSON.stringify(payload)
             });
             if (res.ok) {
                 delete adminPrecios[id];
