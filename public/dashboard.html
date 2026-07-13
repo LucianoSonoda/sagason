@@ -1649,13 +1649,13 @@
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:10px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1);">
                         <div>
                             <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Talla de Envío</div>
-                            <select id="shippingSize-${p.id}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box; appearance:none;">
-                                <option value="" ${!d.shippingSize ? 'selected' : ''}>No aplica</option>
-                                <option value="XS" ${d.shippingSize === 'XS' ? 'selected' : ''}>XS</option>
-                                <option value="S" ${d.shippingSize === 'S' ? 'selected' : ''}>S</option>
-                                <option value="M" ${d.shippingSize === 'M' ? 'selected' : ''}>M</option>
-                                <option value="L" ${d.shippingSize === 'L' ? 'selected' : ''}>L</option>
-                                <option value="XL" ${d.shippingSize === 'XL' ? 'selected' : ''}>XL</option>
+                            <select id="shippingSize-${p.id}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
+                                <option value="" style="background:#1e293b; color:#fff;" ${!d.shippingSize ? 'selected' : ''}>No aplica</option>
+                                <option value="XS" style="background:#1e293b; color:#fff;" ${d.shippingSize === 'XS' ? 'selected' : ''}>XS</option>
+                                <option value="S" style="background:#1e293b; color:#fff;" ${d.shippingSize === 'S' ? 'selected' : ''}>S</option>
+                                <option value="M" style="background:#1e293b; color:#fff;" ${d.shippingSize === 'M' ? 'selected' : ''}>M</option>
+                                <option value="L" style="background:#1e293b; color:#fff;" ${d.shippingSize === 'L' ? 'selected' : ''}>L</option>
+                                <option value="XL" style="background:#1e293b; color:#fff;" ${d.shippingSize === 'XL' ? 'selected' : ''}>XL</option>
                             </select>
                         </div>
                         <div>
