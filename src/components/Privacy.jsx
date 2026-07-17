@@ -105,14 +105,30 @@ export function Privacy() {
 
             {/* Texto de políticas */}
             <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2.5rem', lineHeight: 1.8 }}>
+                <h3>1. Información que recopilamos</h3>
                 <p>
                     Nuestra política de privacidad se rige por los más altos estándares de protección de datos personales. 
+                    Podemos recopilar tu nombre completo, número de teléfono y dirección de correo electrónico cuando interactúas con nuestro sitio web o <strong>nuestro número oficial de WhatsApp</strong>.
+                </p>
+                
+                <h3 style={{ marginTop: '2rem' }}>2. Uso de Inteligencia Artificial (WhatsApp)</h3>
+                <p>
+                    Nuestro canal de WhatsApp utiliza herramientas de Inteligencia Artificial para responder consultas frecuentes de manera automatizada y procesar tus pedidos de grabado láser. <strong>No utilizamos el contenido de tus mensajes privados ni tus fotografías para entrenar modelos de IA públicos.</strong> Las imágenes y diseños enviados para fabricación son conservados únicamente el tiempo necesario para completar tu orden.
+                </p>
+
+                <h3 style={{ marginTop: '2rem' }}>3. Compartir información con terceros</h3>
+                <p>
+                    Tus datos nunca son vendidos ni comercializados. Solo compartimos datos estrictamente necesarios con proveedores de servicios esenciales (ej. empresas de logística para el despacho de tus productos, y Meta Platforms Inc. como proveedor de la infraestructura técnica de WhatsApp).
+                </p>
+
+                <h3 style={{ marginTop: '2rem' }}>4. Tus Derechos (ARCO)</h3>
+                <p>
                     Si deseas ejercer tus derechos de acceso, rectificación, cancelación u oposición (ARCO), 
                     puedes hacerlo directamente desde tu <strong>Panel de Control</strong> tras iniciar sesión.
                 </p>
-                <p style={{ marginTop: '1rem' }}>
+                <p style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                     Si tienes dudas sobre el tratamiento de tu información, escríbenos a 
-                    <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)', marginLeft: '5px' }}>ventas@sagason.cl</a>.
+                    <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)', marginLeft: '5px', fontWeight: 'bold' }}>ventas@sagason.cl</a>.
                 </p>
             </div>
 
