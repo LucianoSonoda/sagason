@@ -5,6 +5,7 @@ import { Universal3DViewer } from '../components/Universal3DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
+import { submitOrder } from '../utils/orderHandler';
 import '../styles/Home.css';
 
 export default function IdSalud() {
@@ -20,16 +21,35 @@ export default function IdSalud() {
     const [size, setSize] = useState('Pulsera / Brazalete');
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [totalPrice, setTotalPrice] = useState(8990);
+    const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = ['Salud Impresa', 'Ficha en Código QR', 'Ficha Editable en Línea'];
     const SIZES = ['Pulsera / Brazalete', 'Medallón / Tag', 'Tarjeta de Cartera', 'Formato Personalizado'];
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         setIsCheckingOut(true);
-        setTimeout(() => {
-            alert('Redirigiendo a Webpay Plus / Flow para pago seguro...');
+        try {
+            const orderPayload = {
+                product: 'ID Salud: ' + (userName || 'Sin nombre'),
+                category,
+                size,
+                basePrice: 8990,
+                ...checkoutData
+            };
+
+                        const data = await submitOrder(orderPayload);
+            
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            } else {
+                alert('�Pedido registrado! (Pago pendiente)');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error al conectar con el servidor.');
+        } finally {
             setIsCheckingOut(false);
-        }, 1500);
+        }
     };
 
     const containerVariants = {
@@ -101,6 +121,7 @@ export default function IdSalud() {
                                 <CheckoutExtras 
                                     basePrice={8990} 
                                     onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
+                                    onDataChange={(data) => setCheckoutData(data)}
                                 />
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', marginBottom: '1.5rem', marginTop: '1.5rem' }}>
@@ -154,3 +175,5 @@ export default function IdSalud() {
         </div>
     );
 }
+
+

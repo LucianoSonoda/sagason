@@ -9,7 +9,7 @@ import imgKanji_Kansha from '../assets/kanji_kansha.png';
 import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
 import sagasonSymbol from '/sagason-symbol.png';
 import { DiscoverCity } from './DiscoverCity';
-import { Gallery } from './Gallery';
+
 import { useSEO } from '../hooks/useSEO';
 
 
@@ -100,10 +100,6 @@ export function Home() {
             {/* Services Overview - Carrusel */}
             <ServicesCarousel />
 
-            {/* Gallery Section */}
-            <div id="gallery">
-                <Gallery />
-            </div>
         </div>
     );
 }

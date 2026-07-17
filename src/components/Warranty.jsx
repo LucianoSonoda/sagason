@@ -340,7 +340,7 @@ export function Warranty() {
                                     <div className="step">
                                         <div className="step-num">2</div>
                                         <h4>Evidencia</h4>
-                                        <p>Enviar fotografías o video nítido de la falla a <strong>ventas@sagason.cl</strong>.</p>
+                                        <p>Enviar fotografías o video nítido de la falla a <strong>sagason@sagason.cl</strong>.</p>
                                     </div>
                                     <div className="step">
                                         <div className="step-num">3</div>
@@ -552,7 +552,7 @@ export function Warranty() {
                     <motion.p variants={itemVariants}>
                         Nuestro equipo de soporte técnico resolverá tu inconveniente en el menor plazo posible.
                     </motion.p>
-                    <motion.a href="mailto:ventas@sagason.cl" className="btn-primary" variants={itemVariants} style={{ padding: '15px 40px' }}>
+                    <motion.a href="mailto:sagason@sagason.cl" className="btn-primary" variants={itemVariants} style={{ padding: '15px 40px' }}>
                         <Mail size={20} style={{ marginRight: '12px' }} />
                         Contactar Soporte Técnico
                     </motion.a>
@@ -561,3 +561,4 @@ export function Warranty() {
         </div>
     );
 }
+

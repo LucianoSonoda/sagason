@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Puzzle, ArrowRight, Upload, Image as ImageIcon } from 'lucide-react';
 import { Mockup2DViewer } from '../components/Mockup2DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
+import { submitOrder } from '../utils/orderHandler';
 import '../styles/Home.css';
 
 export default function Rompecabezas() {
@@ -17,10 +18,12 @@ export default function Rompecabezas() {
 
     const [fileUrl, setFileUrl] = useState(null);
     const [fileName, setFileName] = useState('');
+    const [fileDataUrl, setFileDataUrl] = useState(null);
     const [category, setCategory] = useState('Personalización & Ambiente');
     const [size, setSize] = useState('A4 (120 piezas)');
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [totalPrice, setTotalPrice] = useState(12990);
+    const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = [
         'Personalización & Ambiente',
@@ -39,15 +42,40 @@ export default function Rompecabezas() {
         if (file) {
             setFileName(file.name);
             setFileUrl(URL.createObjectURL(file));
+            const reader = new FileReader();
+            reader.onloadend = () => setFileDataUrl(reader.result);
+            reader.readAsDataURL(file);
         }
     };
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         setIsCheckingOut(true);
-        setTimeout(() => {
-            alert('Redirigiendo a la pasarela de pago seguro y subida de archivos...');
+        try {
+            const orderPayload = {
+                product: 'Rompecabezas Personalizado',
+                category,
+                size,
+                basePrice: 12990,
+                ...checkoutData
+            };
+            if (fileDataUrl && !orderPayload.attachedFile) {
+                orderPayload.attachedFile = fileDataUrl;
+                orderPayload.attachedFileName = fileName;
+            }
+
+                        const data = await submitOrder(orderPayload);
+            
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            } else {
+                alert('�Pedido registrado! (Pago pendiente)');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error al conectar con el servidor.');
+        } finally {
             setIsCheckingOut(false);
-        }, 1500);
+        }
     };
 
     const containerVariants = {
@@ -117,6 +145,7 @@ export default function Rompecabezas() {
                                 <CheckoutExtras 
                                     basePrice={12990} 
                                     onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
+                                    onDataChange={(data) => setCheckoutData(data)}
                                 />
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', marginBottom: '1.5rem', marginTop: '1.5rem' }}>
@@ -163,3 +192,6 @@ export default function Rompecabezas() {
         </div>
     );
 }
+
+
+

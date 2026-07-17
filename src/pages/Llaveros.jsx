@@ -5,6 +5,7 @@ import { Universal3DViewer } from '../components/Universal3DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
+import { submitOrder } from '../utils/orderHandler';
 import '../styles/Home.css';
 
 export default function Llaveros() {
@@ -20,6 +21,7 @@ export default function Llaveros() {
     const [size, setSize] = useState('Rectangular');
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [totalPrice, setTotalPrice] = useState(4990);
+    const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = [
         'Personalización & Ambiente',
@@ -33,12 +35,30 @@ export default function Llaveros() {
     
     const SIZES = ['Redondo', 'Cuadrado', 'Rectangular', 'Corazón', 'Otro'];
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         setIsCheckingOut(true);
-        setTimeout(() => {
-            alert('Redirigiendo a la pasarela de pago seguro...');
+        try {
+            const orderPayload = {
+                product: 'Llavero Metálico ' + (customText || 'Sin texto'),
+                category,
+                size,
+                basePrice: 4990,
+                ...checkoutData
+            };
+
+                        const data = await submitOrder(orderPayload);
+            
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            } else {
+                alert('�Pedido registrado! (Pago pendiente)');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error al conectar con el servidor.');
+        } finally {
             setIsCheckingOut(false);
-        }, 1500);
+        }
     };
 
     const containerVariants = {
@@ -101,6 +121,7 @@ export default function Llaveros() {
                                 <CheckoutExtras 
                                     basePrice={4990} 
                                     onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
+                                    onDataChange={(data) => setCheckoutData(data)}
                                 />
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', marginBottom: '1.5rem', marginTop: '1.5rem' }}>
@@ -154,3 +175,5 @@ export default function Llaveros() {
         </div>
     );
 }
+
+

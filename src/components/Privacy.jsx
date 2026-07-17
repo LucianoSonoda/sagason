@@ -82,7 +82,7 @@ export function Privacy() {
                 <CenteredBox color="#ff4d4f">
                     <XCircle size={72} />
                     <h2 style={{ color: '#ff4d4f' }}>Error al Procesar</h2>
-                    <p>Hubo un problema al ejecutar el borrado. Por favor contáctanos directamente a <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)' }}>ventas@sagason.cl</a>.</p>
+                    <p>Hubo un problema al ejecutar el borrado. Por favor contáctanos directamente a <a href="mailto:sagason@sagason.cl" style={{ color: 'var(--color-primary)' }}>sagason@sagason.cl</a>.</p>
                 </CenteredBox>
             </PrivacyShell>
         );
@@ -128,7 +128,7 @@ export function Privacy() {
                 </p>
                 <p style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                     Si tienes dudas sobre el tratamiento de tu información, escríbenos a 
-                    <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)', marginLeft: '5px', fontWeight: 'bold' }}>ventas@sagason.cl</a>.
+                    <a href="mailto:sagason@sagason.cl" style={{ color: 'var(--color-primary)', marginLeft: '5px', fontWeight: 'bold' }}>sagason@sagason.cl</a>.
                 </p>
             </div>
 
@@ -157,3 +157,4 @@ function CenteredBox({ children, color }) {
         </div>
     );
 }
+

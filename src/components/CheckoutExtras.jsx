@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Truck, Sparkles, MessageSquare, Package } from 'lucide-react';
 
-export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalChange }) => {
+export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalChange, onDataChange }) => {
     const [customInstructions, setCustomInstructions] = useState('');
     const [useAIArt, setUseAIArt] = useState(false);
     const [useCustomPackaging, setUseCustomPackaging] = useState(false);
     const [shippingRegion, setShippingRegion] = useState('metropolitana');
+    const [attachedFile, setAttachedFile] = useState(null);
+    const [attachedFileName, setAttachedFileName] = useState('');
 
     const REGIONES = [
         { id: 'retiro', name: 'Retiro en Taller (Vitacura) - $0', cost: 0 },
@@ -18,11 +20,39 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
         const shippingCost = REGIONES.find(r => r.id === shippingRegion)?.cost || 0;
         const aiCost = useAIArt ? 5000 : 0;
         const packagingCost = useCustomPackaging ? packagingPrice : 0;
+        const total = basePrice + shippingCost + aiCost + packagingCost;
         
         if (onTotalChange) {
-            onTotalChange(basePrice + shippingCost + aiCost + packagingCost);
+            onTotalChange(total);
         }
-    }, [basePrice, useAIArt, shippingRegion, useCustomPackaging, packagingPrice]);
+
+        if (onDataChange) {
+            onDataChange({
+                customInstructions,
+                useAIArt,
+                useCustomPackaging,
+                shippingRegion,
+                totalPrice: total,
+                attachedFile,
+                attachedFileName
+            });
+        }
+    }, [basePrice, useAIArt, shippingRegion, useCustomPackaging, packagingPrice, customInstructions, attachedFile, attachedFileName]);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setAttachedFileName(file.name);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setAttachedFile(reader.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setAttachedFile(null);
+            setAttachedFileName('');
+        }
+    };
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
@@ -47,6 +77,27 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
                         resize: 'vertical'
                     }}
                 ></textarea>
+            </div>
+
+            {/* Adjuntar Archivo */}
+            <div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>
+                    <Sparkles size={16} /> Adjuntar Imagen/Diseño (Opcional)
+                </label>
+                <input 
+                    type="file" 
+                    accept="image/*,.pdf"
+                    onChange={handleFileChange}
+                    style={{ 
+                        width: '100%', 
+                        padding: '12px', 
+                        borderRadius: '8px', 
+                        border: '1px dashed rgba(255,255,255,0.3)', 
+                        background: 'rgba(255,255,255,0.05)', 
+                        color: 'white',
+                        cursor: 'pointer'
+                    }}
+                />
             </div>
 
             {/* Arte con IA */}

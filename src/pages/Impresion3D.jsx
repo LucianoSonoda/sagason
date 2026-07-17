@@ -5,6 +5,7 @@ import { Universal3DViewer } from '../components/Universal3DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
+import { submitOrder } from '../utils/orderHandler';
 import '../styles/Home.css';
 
 export default function Impresion3D() {
@@ -19,18 +20,37 @@ export default function Impresion3D() {
     const [size, setSize] = useState('PLA');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = ['1 Color', '2 Colores', '3 Colores'];
     const SIZES = ['PLA', 'ABS', 'Ambos', 'Otro'];
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        setTimeout(() => {
-            alert('¡Cotización solicitada! Te contactaremos con la viabilidad y el precio.');
-            setIsSubmitting(false);
+        try {
+            const orderPayload = {
+                product: 'Cotización Impresión 3D',
+                category,
+                size,
+                basePrice: 0,
+                ...checkoutData
+            };
+
+                        const data = await submitOrder(orderPayload);
+            
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            } else {
+                alert('�Pedido registrado! (Pago pendiente)');
+            }
             e.target.reset();
-        }, 1500);
+        } catch (error) {
+            console.error(error);
+            alert('Error al conectar con el servidor.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const containerVariants = {
@@ -101,6 +121,7 @@ export default function Impresion3D() {
                                     <CheckoutExtras 
                                         basePrice={0} 
                                         onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
+                                        onDataChange={(data) => setCheckoutData(data)}
                                     />
 
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', marginBottom: '0.5rem', marginTop: '0.5rem' }}>
@@ -164,3 +185,5 @@ export default function Impresion3D() {
         </div>
     );
 }
+
+

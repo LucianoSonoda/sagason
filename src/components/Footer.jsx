@@ -38,7 +38,7 @@ export function Footer() {
 
                 <div className="footer-links-col contact-col">
                     <h3 className="footer-title">Contacto</h3>
-                    <a href="mailto:ventas@sagason.cl" className="social-link"><Mail size={18} /> ventas@sagason.cl</a>
+                    <a href="mailto:sagason@sagason.cl" className="social-link"><Mail size={18} /> sagason@sagason.cl</a>
                     <a href="https://www.instagram.com/sagasoncl/" target="_blank" rel="noopener noreferrer" className="social-link"><Instagram size={18} /> @sagason.cl</a>
                     <span className="social-link" style={{ cursor: 'default' }}><MapPin size={18} /> Envíos a todo Chile</span>
                 </div>
@@ -66,3 +66,4 @@ export function Footer() {
         </footer>
     );
 }
+

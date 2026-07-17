@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Coffee, ArrowRight, Upload, Droplet } from 'lucide-react';
 import { Mockup2DViewer } from '../components/Mockup2DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
+import { submitOrder } from '../utils/orderHandler';
 import '../styles/Home.css';
 
 export default function Tazones() {
@@ -17,10 +18,12 @@ export default function Tazones() {
 
     const [fileUrl, setFileUrl] = useState(null);
     const [fileName, setFileName] = useState('');
+    const [fileDataUrl, setFileDataUrl] = useState(null);
     const [category, setCategory] = useState('Personalización & Ambiente');
     const [size, setSize] = useState('11oz Blanco');
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [totalPrice, setTotalPrice] = useState(9990);
+    const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = [
         'Personalización & Ambiente',
@@ -39,15 +42,40 @@ export default function Tazones() {
         if (file) {
             setFileName(file.name);
             setFileUrl(URL.createObjectURL(file));
+            const reader = new FileReader();
+            reader.onloadend = () => setFileDataUrl(reader.result);
+            reader.readAsDataURL(file);
         }
     };
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         setIsCheckingOut(true);
-        setTimeout(() => {
-            alert('Redirigiendo a la pasarela de pago seguro y subida de archivos...');
+        try {
+            const orderPayload = {
+                product: 'Tazón Personalizado/Mágico',
+                category,
+                size,
+                basePrice: 9990,
+                ...checkoutData
+            };
+            if (fileDataUrl && !orderPayload.attachedFile) {
+                orderPayload.attachedFile = fileDataUrl;
+                orderPayload.attachedFileName = fileName;
+            }
+
+                        const data = await submitOrder(orderPayload);
+            
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            } else {
+                alert('�Pedido registrado! (Pago pendiente)');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error al conectar con el servidor.');
+        } finally {
             setIsCheckingOut(false);
-        }, 1500);
+        }
     };
 
     const containerVariants = {
@@ -117,6 +145,7 @@ export default function Tazones() {
                                 <CheckoutExtras 
                                     basePrice={9990} 
                                     onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
+                                    onDataChange={(data) => setCheckoutData(data)}
                                 />
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', marginBottom: '1.5rem', marginTop: '1.5rem' }}>
@@ -163,3 +192,6 @@ export default function Tazones() {
         </div>
     );
 }
+
+
+

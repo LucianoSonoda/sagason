@@ -19,6 +19,7 @@ export default function CuadrosMetal() {
     const [size, setSize] = useState('10x15 cm');
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [totalPrice, setTotalPrice] = useState(14990);
+    const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = [
         'Personalización & Ambiente',
@@ -32,12 +33,30 @@ export default function CuadrosMetal() {
     
     const SIZES = ['10x15 cm', '20x28 cm', 'Personalizado'];
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         setIsCheckingOut(true);
-        setTimeout(() => {
-            alert('Redirigiendo a pasarela de pago / Carga de Archivos...');
+        try {
+            const orderPayload = {
+                product: 'Cuadro de Metal HD',
+                category,
+                size,
+                basePrice: 14990,
+                ...checkoutData
+            };
+
+            await fetch('https://n8n.sagason.cl/webhook/nuevo-pedido', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderPayload)
+            });
+
+            alert('¡Pedido registrado! Redirigiendo a pasarela de pago / Carga de Archivos...');
+        } catch (error) {
+            console.error(error);
+            alert('Error al conectar con el servidor.');
+        } finally {
             setIsCheckingOut(false);
-        }, 1500);
+        }
     };
 
     const containerVariants = {
@@ -104,6 +123,7 @@ export default function CuadrosMetal() {
                                 <CheckoutExtras 
                                     basePrice={14990} 
                                     onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
+                                    onDataChange={(data) => setCheckoutData(data)}
                                 />
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', marginBottom: '1.5rem', marginTop: '1.5rem' }}>

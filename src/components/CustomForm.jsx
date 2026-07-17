@@ -302,7 +302,7 @@ export function CustomForm() {
 
                 <div className="form-content-panel glass-panel">
                     <iframe name="hidden_iframe" style={{display: "none"}}></iframe>
-                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit} className="custom-form">
+                    <form action="https://formsubmit.co/sagason@sagason.cl" method="POST" target="hidden_iframe" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit} className="custom-form">
                         <input type="file" name="qr_code" ref={qrInputRef} style={{display: 'none'}} />
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                         <input type="hidden" name="_captcha" value="false" />
@@ -539,7 +539,7 @@ export function CustomForm() {
                                     {submitStatus === 'error' && (
                                         <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: 'rgba(255, 77, 79, 0.1)', border: '1px solid #ff4d4f', borderRadius: '4px', textAlign: 'center' }}>
                                             <p style={{ color: '#ff4d4f', margin: 0, fontWeight: 'bold' }}>Hubo un error al procesar tu archivo.</p>
-                                            <p style={{ color: 'white', margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>Nuestro servidor tuvo problemas con la foto adjunta. Por favor, <strong>envía tu formulario sin la foto</strong> y luego envíanos la imagen directamente a <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)' }}>ventas@sagason.cl</a>.</p>
+                                            <p style={{ color: 'white', margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>Nuestro servidor tuvo problemas con la foto adjunta. Por favor, <strong>envía tu formulario sin la foto</strong> y luego envíanos la imagen directamente a <a href="mailto:sagason@sagason.cl" style={{ color: 'var(--color-primary)' }}>sagason@sagason.cl</a>.</p>
                                         </div>
                                     )}
                                 </motion.div>
@@ -604,3 +604,4 @@ function ProductVisualizer({ product, size, name, details, fileUrl }) {
         </div>
     );
 }
+

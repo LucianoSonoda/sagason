@@ -127,7 +127,7 @@ export function InsigniaForm() {
                     </React.Suspense>
 
                     <iframe name="hidden_iframe_insignia" style={{display: "none"}}></iframe>
-                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe_insignia" onSubmit={handleFormSubmit}>
+                    <form action="https://formsubmit.co/sagason@sagason.cl" method="POST" target="hidden_iframe_insignia" onSubmit={handleFormSubmit}>
                         <input type="hidden" name="_subject" value="⭐ Nueva Solicitud de Insignia Turística" />
                         <input type="hidden" name="_captcha" value="false" />
                         <input type="hidden" name="Tipo Pedido" value="Insignia Circular Acero Inox" />
@@ -339,3 +339,4 @@ function InsigniaVisualizer({ lugar, fecha, nombre, tamano }) {
         </div>
     );
 }
+

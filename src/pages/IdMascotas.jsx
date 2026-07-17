@@ -5,6 +5,7 @@ import { Universal3DViewer } from '../components/Universal3DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
+import { submitOrder } from '../utils/orderHandler';
 import '../styles/Home.css'; 
 
 export default function IdMascotas() {
@@ -21,6 +22,7 @@ export default function IdMascotas() {
     const [material, setMaterial] = useState('aluminio');
     const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [totalPrice, setTotalPrice] = useState(9599);
+    const [checkoutData, setCheckoutData] = useState({});
 
     const MATERIALS = [
         { id: 'aluminio', name: 'Aluminio Sublimado', price: 9599 },
@@ -41,13 +43,30 @@ export default function IdMascotas() {
     
     const SIZES = ['Hueso', 'Círculo', 'Corazón', 'Otro'];
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         setIsCheckingOut(true);
-        // Simulated checkout flow
-        setTimeout(() => {
-            alert('Redirigiendo a Webpay Plus / Flow para pago seguro...');
+        try {
+            const orderPayload = {
+                product: 'ID Mascota: ' + (petName || 'Sin nombre'),
+                category,
+                size,
+                basePrice,
+                ...checkoutData
+            };
+
+                        const data = await submitOrder(orderPayload);
+            
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            } else {
+                alert('�Pedido registrado! (Pago pendiente)');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error al conectar con el servidor.');
+        } finally {
             setIsCheckingOut(false);
-        }, 1500);
+        }
     };
 
     const containerVariants = {
@@ -129,6 +148,7 @@ export default function IdMascotas() {
                                 <CheckoutExtras 
                                     basePrice={basePrice} 
                                     onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
+                                    onDataChange={(data) => setCheckoutData(data)}
                                 />
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', marginBottom: '1.5rem', marginTop: '1.5rem' }}>
@@ -184,3 +204,5 @@ export default function IdMascotas() {
         </div>
     );
 }
+
+
