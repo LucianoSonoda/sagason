@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import { compressImage } from '../utils/imageCompressor';
 import { Truck, Sparkles, MessageSquare, Package } from 'lucide-react';
 
 export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalChange, onDataChange }) => {
@@ -43,11 +44,7 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
         const file = e.target.files[0];
         if (file) {
             setAttachedFileName(file.name);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setAttachedFile(reader.result);
-            };
-            reader.readAsDataURL(file);
+            compressImage(file).then(base64 => setAttachedFile(base64)).catch(console.error);
         } else {
             setAttachedFile(null);
             setAttachedFileName('');
@@ -193,3 +190,4 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
         </div>
     );
 };
+

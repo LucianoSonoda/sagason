@@ -5,6 +5,7 @@ import { Mockup2DViewer } from '../components/Mockup2DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
+import { compressImage } from '../utils/imageCompressor';
 import { submitOrder } from '../utils/orderHandler';
 import '../styles/Home.css';
 
@@ -192,6 +193,7 @@ export default function Tazones() {
         </div>
     );
 }
+
 
 
 
