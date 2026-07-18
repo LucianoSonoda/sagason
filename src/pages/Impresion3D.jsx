@@ -23,6 +23,7 @@ export default function Impresion3D() {
     const [totalPrice, setTotalPrice] = useState(0);
     const { addToCart, setIsDrawerOpen } = useCart();
     const [checkoutData, setCheckoutData] = useState({});
+    const isSubmitting = false;
 
     const CATEGORIES = ['1 Color', '2 Colores', '3 Colores'];
     const SIZES = ['PLA', 'ABS', 'Ambos', 'Otro'];
