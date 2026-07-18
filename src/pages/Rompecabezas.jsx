@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 import { Puzzle, ArrowRight, Upload, Image as ImageIcon } from 'lucide-react';
@@ -40,16 +40,7 @@ export default function Rompecabezas() {
     
     const SIZES = ['A4 (120 piezas)', 'A5 (30 o 36 piezas)', 'Otro'];
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFileName(file.name);
-            setFileUrl(URL.createObjectURL(file));
-            const reader = new FileReader();
-            reader.onloadend = () => setFileDataUrl(reader.result);
-            reader.readAsDataURL(file);
-        }
-    };
+    // File handling is now managed by CheckoutExtras
 
     const handleAddToCart = () => {
         const cartItem = {
@@ -113,25 +104,9 @@ export default function Rompecabezas() {
                                     </select>
                                 </div>
                                 
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>Sube tu Fotografía</label>
-                                    <div className="file-upload" style={{ position: 'relative', background: 'rgba(0,0,0,0.3)', padding: '20px', borderRadius: '8px', border: '1px dashed var(--color-primary)', textAlign: 'center' }}>
-                                        <input
-                                            type="file"
-                                            accept="image/png, image/jpeg"
-                                            onChange={handleFileChange}
-                                            style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, opacity: 0, cursor: 'pointer' }}
-                                        />
-                                        <Upload size={24} style={{ margin: '0 auto 0.5rem auto', color: fileName ? 'var(--color-primary)' : 'inherit' }} />
-                                        {fileName ? (
-                                            <p style={{ color: 'var(--color-primary)', fontWeight: 'bold', margin: '0', fontSize: '0.9rem' }}>{fileName}</p>
-                                        ) : (
-                                            <p style={{ margin: '0', fontSize: '0.9rem' }}>Haz clic o arrastra tu foto aquí</p>
-                                        )}
-                                    </div>
-                                </div>
+                                {/* The upload field was moved to CheckoutExtras */}
 
-                                <CheckoutExtras hideUpload={true} 
+                                <CheckoutExtras hideUpload={false} 
                                     basePrice={12990} 
                                     onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
                                     onDataChange={(data) => setCheckoutData(data)}
@@ -160,7 +135,7 @@ export default function Rompecabezas() {
                                         Comprar Ahora
                                     </button>
                                 </div>
-                                {!fileUrl && <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#ff4d4f', marginTop: '1rem' }}>Por favor sube una imagen para continuar.</p>}
+                                {!checkoutData?.attachedFile && <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#ff4d4f', marginTop: '1rem' }}>Por favor sube una imagen para continuar.</p>}
                             </div>
                         </div>
 
@@ -170,7 +145,7 @@ export default function Rompecabezas() {
                             <p style={{ fontSize: '0.9rem', color: 'var(--color-text-dim)', marginBottom: '1rem' }}>Simulación 2D del corte de piezas sobre tu fotografía.</p>
                             
                             <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '1rem', border: '1px solid rgba(255,255,255,0.2)' }}>
-                                <Mockup2DViewer product="rompecabezas" fileUrl={fileUrl} />
+                                <Mockup2DViewer product="rompecabezas" fileUrl={checkoutData?.attachedFile} />
                             </div>
 
                             <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { compressImage } from '../utils/imageCompressor';
-import { Sparkles, MessageSquare, Package } from 'lucide-react';
+import { Sparkles, MessageSquare, Package, Upload } from 'lucide-react';
 
 export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalChange, onDataChange, hideUpload = false }) => {
     const [customInstructions, setCustomInstructions] = useState('');
@@ -68,24 +68,24 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
 
             {/* Adjuntar Archivo */}
             {!hideUpload && (
-            <div>
+            <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>
-                    <Sparkles size={16} /> Adjuntar Imagen/Diseño (Opcional)
+                    <Sparkles size={16} /> Sube tu Fotografía
                 </label>
-                <input 
-                    type="file" 
-                    accept="image/*,.pdf"
-                    onChange={handleFileChange}
-                    style={{ 
-                        width: '100%', 
-                        padding: '12px', 
-                        borderRadius: '8px', 
-                        border: '1px dashed rgba(255,255,255,0.3)', 
-                        background: 'rgba(255,255,255,0.05)', 
-                        color: 'white',
-                        cursor: 'pointer'
-                    }}
-                />
+                <div className="file-upload" style={{ position: 'relative', background: 'rgba(0,0,0,0.3)', padding: '20px', borderRadius: '8px', border: '1px dashed var(--color-primary)', textAlign: 'center' }}>
+                    <input
+                        type="file"
+                        accept="image/*,.pdf"
+                        onChange={handleFileChange}
+                        style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, opacity: 0, cursor: 'pointer' }}
+                    />
+                    <Upload size={24} style={{ margin: '0 auto 0.5rem auto', color: attachedFileName ? 'var(--color-primary)' : 'inherit' }} />
+                    {attachedFileName ? (
+                        <p style={{ color: 'var(--color-primary)', fontWeight: 'bold', margin: '0', fontSize: '0.9rem' }}>{attachedFileName}</p>
+                    ) : (
+                        <p style={{ margin: '0', fontSize: '0.9rem' }}>Haz clic o arrastra tu foto aquí</p>
+                    )}
+                </div>
             </div>
             )}
 
