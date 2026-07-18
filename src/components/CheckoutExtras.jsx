@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { compressImage } from '../utils/imageCompressor';
 import { Truck, Sparkles, MessageSquare, Package } from 'lucide-react';
 
@@ -73,24 +73,24 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Nombre Completo *</label>
-                        <input type="text" value={customer_name} onChange={(e) => setCustomerName(e.target.value)} placeholder="Ej: Juan Prez" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
+                        <input type="text" value={customer_name} onChange={(e) => setCustomerName(e.target.value)} placeholder="Ej: Juan Pérez" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
                     </div>
                     <div>
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>RUT / Pasaporte *</label>
                         <input type="text" value={customer_rut} onChange={(e) => setCustomerRut(e.target.value)} placeholder="Ej: 12.345.678-9" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Correo Electrnico *</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Correo Electrónico *</label>
                         <input type="email" value={customer_email} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="Ej: juan@correo.com" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Telfono / WhatsApp *</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Teléfono / WhatsApp *</label>
                         <input type="text" value={customer_phone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="Ej: +56 9 1234 5678" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
                     </div>
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Direccin de Envo completa *</label>
-                    <input type="text" value={customer_address} onChange={(e) => setCustomerAddress(e.target.value)} placeholder="Calle, Nmero, Depto, Comuna, Ciudad" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Dirección de Envío completa *</label>
+                    <input type="text" value={customer_address} onChange={(e) => setCustomerAddress(e.target.value)} placeholder="Calle, Número, Depto, Comuna, Ciudad" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
                 </div>
             </div>
 
