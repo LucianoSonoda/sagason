@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 import { Image as ImageIcon, ArrowRight, ShieldCheck, Sun, Droplets } from 'lucide-react';
 import { Universal3DViewer } from '../components/Universal3DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
-import { submitOrder } from '../utils/orderHandler';
 import '../styles/Home.css';
 
 export default function CuadrosMetal() {
@@ -18,9 +18,9 @@ export default function CuadrosMetal() {
 
     const [category, setCategory] = useState('Personalización & Ambiente');
     const [size, setSize] = useState('10x15 cm');
-    const [isCheckingOut, setIsCheckingOut] = useState(false);
     const [totalPrice, setTotalPrice] = useState(14990);
     const [checkoutData, setCheckoutData] = useState({});
+    const { addToCart, setIsDrawerOpen } = useCart();
 
     const CATEGORIES = [
         'Personalización & Ambiente',
@@ -34,30 +34,20 @@ export default function CuadrosMetal() {
     
     const SIZES = ['10x15 cm', '20x28 cm', 'Personalizado'];
 
-    const handleCheckout = async () => {
-        setIsCheckingOut(true);
-        try {
-            const orderPayload = {
-                product: 'Cuadro de Metal HD',
-                category,
-                size,
-                basePrice: 14990,
-                ...checkoutData
-            };
+    const handleAddToCart = () => {
+        const cartItem = {
+            productId: Date.now().toString(),
+            name: 'Cuadro de Metal HD', 
+            price: totalPrice,
+            quantity: 1,
+            options: checkoutData || {}
+        };
+        addToCart(cartItem);
+    };
 
-            const data = await submitOrder(orderPayload);
-            
-            if (data && data.paymentUrl) {
-                window.location.href = data.paymentUrl;
-            } else {
-                alert('¡Pedido registrado! (Pago pendiente)');
-            }
-        } catch (error) {
-            console.error(error);
-            // Error handling is managed by submitOrder, but we catch it here to reset loading state
-        } finally {
-            setIsCheckingOut(false);
-        }
+    const handleBuyNow = () => {
+        handleAddToCart();
+        setIsDrawerOpen(true);
     };
 
     const containerVariants = {
@@ -107,7 +97,7 @@ export default function CuadrosMetal() {
                                 </div>
 
                                 <div style={{ marginBottom: '2rem', background: 'rgba(37, 99, 235, 0.05)', padding: '1rem', borderRadius: '8px' }}>
-                                    <p style={{ fontSize: '0.85rem', color: 'var(--color-text-dim)', marginBottom: '10px' }}>Podrás subir tu fotografía en alta resolución en el siguiente paso, luego de confirmar tu pago seguro.</p>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--color-text-dim)', marginBottom: '10px' }}>Si tu fotografía en alta resolución es mayor a 25MB, puedes enviarla vía correo o compartir un enlace para bajarla en las instrucciones al confirmar el carrito. Es <strong>obligatorio</strong> adjuntar al menos una imagen de muestra reducida allí junto a la solicitud.</p>
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -132,14 +122,22 @@ export default function CuadrosMetal() {
                                     <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>${totalPrice.toLocaleString('es-CL')}</span>
                                 </div>
 
-                                <button 
-                                    onClick={handleCheckout}
-                                    disabled={isCheckingOut}
-                                    className="btn btn-primary" 
-                                    style={{ width: '100%', padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1.1rem' }}
-                                >
-                                    {isCheckingOut ? 'Procesando...' : <>Continuar <ArrowRight size={20} /></>}
-                                </button>
+                                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                    <button 
+                                        onClick={handleAddToCart}
+                                        className="btn btn-secondary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', border: '1px solid var(--color-primary)', background: 'transparent', color: 'var(--color-primary)', cursor: 'pointer', borderRadius: '8px' }}
+                                    >
+                                        Agregar al Carrito
+                                    </button>
+                                    <button 
+                                        onClick={handleBuyNow}
+                                        className="btn btn-primary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', borderRadius: '8px' }}
+                                    >
+                                        Comprar Ahora
+                                    </button>
+                                </div>
                             </div>
                         </div>
 

@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DB_HOST=db
+      - DB_USER=sagason
+      - DB_PASS=sagason_secret
+      - DB_NAME=sagason_cart
+      - JWT_SECRET=super_secret_jwt_key_for_sagason
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USER=sagason@gmail.com
+      - SMTP_PASS=Tobi.1976#
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=sagason
+      - POSTGRES_PASSWORD=YcmfdqzPieN9vyY#
+      - POSTGRES_DB=sagason_cart
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  pgdata:

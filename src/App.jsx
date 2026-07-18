@@ -70,48 +70,64 @@ function RouteLoader() {
   );
 }
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import { CartDrawer } from './components/CartDrawer';
+import { GDPRConsent } from './components/GDPRConsent';
+
+const CLIENT_ID = "309943165939-is4u5ga8gaehh7cp0ge9kt5pj8dbkqv2.apps.googleusercontent.com";
+
 function App() {
   return (
-    <BrowserRouter>
-      <ScrollManager />
-      <BackgroundMap />
-      <ParticleBackground />
-      <Header />
-      <main style={{ minHeight: '80vh' }}>
-        <Suspense fallback={<RouteLoader />}>
-          <Routes>
-            <Route path="/" element={<MainContent />} />
-            <Route path="/warranty" element={<Warranty />} />
-            <Route path="/privacidad" element={<Privacy />} />
-            <Route path="/aventuras" element={<DiscoverCity />} />
-            <Route path="/como-funciona" element={<HowItWorks />} />
-            <Route path="/tecnologia" element={<Technology />} />
-            <Route path="/insignia/*" element={<InsigniaForm />} />
-            <Route path="/lasersticker" element={<LaserLock />} />
-            <Route path="/tags-4k" element={<Tags4K />} />
-            
-            {/* New Silo Architecture Routes */}
-            <Route path="/id-mascotas" element={<IdMascotas />} />
-            <Route path="/id-salud" element={<IdSalud />} />
-            <Route path="/cuadros-metal-hd" element={<CuadrosMetal />} />
-            <Route path="/regalos-corporativos" element={<RegalosCorporativos />} />
-            <Route path="/galeria-artistas" element={<GaleriaArtistas />} />
-            <Route path="/blog/*" element={<Blog />} />
-            
-            <Route path="/llaveros" element={<Llaveros />} />
-            <Route path="/rompecabezas" element={<Rompecabezas />} />
-            <Route path="/tazones" element={<Tazones />} />
-            <Route path="/tumblers" element={<Tumblers />} />
-            <Route path="/impresion-3d" element={<Impresion3D />} />
-            <Route path="/exito" element={<Exito />} />
-            <Route path="/pago-fallido" element={<PagoFallido />} />
-          </Routes>
-        </Suspense>
-      </main>
-      <Footer />
-      <WhatsAppButton />
-      <MusicPlayer />
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={CLIENT_ID}>
+      <AuthProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <ScrollManager />
+            <BackgroundMap />
+            <ParticleBackground />
+            <Header />
+            <CartDrawer />
+            <GDPRConsent />
+            <main style={{ minHeight: '80vh' }}>
+              <Suspense fallback={<RouteLoader />}>
+                <Routes>
+                  <Route path="/" element={<MainContent />} />
+                  <Route path="/warranty" element={<Warranty />} />
+                  <Route path="/privacidad" element={<Privacy />} />
+                  <Route path="/aventuras" element={<DiscoverCity />} />
+                  <Route path="/como-funciona" element={<HowItWorks />} />
+                  <Route path="/tecnologia" element={<Technology />} />
+                  <Route path="/insignia/*" element={<InsigniaForm />} />
+                  <Route path="/lasersticker" element={<LaserLock />} />
+                  <Route path="/tags-4k" element={<Tags4K />} />
+                  
+                  {/* New Silo Architecture Routes */}
+                  <Route path="/id-mascotas" element={<IdMascotas />} />
+                  <Route path="/id-salud" element={<IdSalud />} />
+                  <Route path="/cuadros-metal-hd" element={<CuadrosMetal />} />
+                  <Route path="/regalos-corporativos" element={<RegalosCorporativos />} />
+                  <Route path="/galeria-artistas" element={<GaleriaArtistas />} />
+                  <Route path="/blog/*" element={<Blog />} />
+                  
+                  <Route path="/llaveros" element={<Llaveros />} />
+                  <Route path="/rompecabezas" element={<Rompecabezas />} />
+                  <Route path="/tazones" element={<Tazones />} />
+                  <Route path="/tumblers" element={<Tumblers />} />
+                  <Route path="/impresion-3d" element={<Impresion3D />} />
+                  <Route path="/exito" element={<Exito />} />
+                  <Route path="/pago-fallido" element={<PagoFallido />} />
+                </Routes>
+              </Suspense>
+            </main>
+            <Footer />
+            <WhatsAppButton />
+            <MusicPlayer />
+          </BrowserRouter>
+        </CartProvider>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 
