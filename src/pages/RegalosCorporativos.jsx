@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 import { Briefcase, ArrowRight, Package, Truck, Award } from 'lucide-react';
 import { useSEO } from '../hooks/useSEO';

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 import { Key, ArrowRight, ShieldCheck, Star } from 'lucide-react';
 import { Universal3DViewer } from '../components/Universal3DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
-import { submitOrder } from '../utils/orderHandler';
+
 import '../styles/Home.css';
 
 export default function Llaveros() {
@@ -19,8 +20,9 @@ export default function Llaveros() {
     const [customText, setCustomText] = useState('');
     const [category, setCategory] = useState('Personalización & Ambiente');
     const [size, setSize] = useState('Rectangular');
-    const [isCheckingOut, setIsCheckingOut] = useState(false);
+    
     const [totalPrice, setTotalPrice] = useState(4990);
+    const { addToCart, setIsDrawerOpen } = useCart();
     const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = [
@@ -35,30 +37,20 @@ export default function Llaveros() {
     
     const SIZES = ['Redondo', 'Cuadrado', 'Rectangular', 'Corazón', 'Otro'];
 
-    const handleCheckout = async () => {
-        setIsCheckingOut(true);
-        try {
-            const orderPayload = {
-                product: 'Llavero Metálico ' + (customText || 'Sin texto'),
-                category,
-                size,
-                basePrice: 4990,
-                ...checkoutData
-            };
+    const handleAddToCart = () => {
+        const cartItem = {
+            productId: Date.now().toString(),
+            name: 'Llavero Metálico ' + (customText || 'Sin texto'), 
+            price: totalPrice || 0,
+            quantity: 1,
+            options: typeof checkoutData !== 'undefined' ? checkoutData : {}
+        };
+        addToCart(cartItem);
+    };
 
-                        const data = await submitOrder(orderPayload);
-            
-            if (data.paymentUrl) {
-                window.location.href = data.paymentUrl;
-            } else {
-                alert('�Pedido registrado! (Pago pendiente)');
-            }
-        } catch (error) {
-            console.error(error);
-            alert('Error al conectar con el servidor.');
-        } finally {
-            setIsCheckingOut(false);
-        }
+    const handleBuyNow = () => {
+        handleAddToCart();
+        setIsDrawerOpen(true);
     };
 
     const containerVariants = {
@@ -129,14 +121,24 @@ export default function Llaveros() {
                                     <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>${totalPrice.toLocaleString('es-CL')}</span>
                                 </div>
 
-                                <button 
-                                    onClick={handleCheckout}
-                                    disabled={isCheckingOut}
-                                    className="btn btn-primary" 
-                                    style={{ width: '100%', padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1.1rem' }}
-                                >
-                                    {isCheckingOut ? 'Cargando...' : <>Comprar Ahora <ArrowRight size={20} /></>}
-                                </button>
+                                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                    <button 
+                                        type="button"
+                                        onClick={handleAddToCart}
+                                        className="btn btn-secondary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', border: '1px solid var(--color-primary)', background: 'transparent', color: 'var(--color-primary)', cursor: 'pointer', borderRadius: '8px' }}
+                                    >
+                                        Agregar al Carrito
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={handleBuyNow}
+                                        className="btn btn-primary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', borderRadius: '8px', color: 'white', background: 'var(--color-primary)', border: 'none' }}
+                                    >
+                                        Comprar Ahora
+                                    </button>
+                                </div>
                                 <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--color-text-dim)', marginTop: '1rem' }}>
                                     Pagos procesados por Webpay / Flow
                                 </p>

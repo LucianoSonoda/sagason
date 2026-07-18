@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 import { CupSoda, ArrowRight, ShieldCheck, Thermometer } from 'lucide-react';
 import { Mockup2DViewer } from '../components/Mockup2DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
-import { submitOrder } from '../utils/orderHandler';
+
 import '../styles/Home.css';
 
 export default function Tumblers() {
@@ -19,8 +20,9 @@ export default function Tumblers() {
     const [customText, setCustomText] = useState('');
     const [category, setCategory] = useState('PersonalizaciÃ³n & Ambiente');
     const [size, setSize] = useState('20 oz');
-    const [isCheckingOut, setIsCheckingOut] = useState(false);
+    
     const [totalPrice, setTotalPrice] = useState(19990);
+    const { addToCart, setIsDrawerOpen } = useCart();
     const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = [
@@ -35,30 +37,20 @@ export default function Tumblers() {
     
     const SIZES = ['20 oz', '30 oz', 'Otro'];
 
-    const handleCheckout = async () => {
-        setIsCheckingOut(true);
-        try {
-            const orderPayload = {
-                product: 'Tumbler Grabado: ' + (customText || 'Sin texto'),
-                category,
-                size,
-                basePrice: 19990,
-                ...checkoutData
-            };
+    const handleAddToCart = () => {
+        const cartItem = {
+            productId: Date.now().toString(),
+            name: 'Tumbler Grabado: ' + (customText || 'Sin texto'), 
+            price: totalPrice || 0,
+            quantity: 1,
+            options: typeof checkoutData !== 'undefined' ? checkoutData : {}
+        };
+        addToCart(cartItem);
+    };
 
-                        const data = await submitOrder(orderPayload);
-            
-            if (data.paymentUrl) {
-                window.location.href = data.paymentUrl;
-            } else {
-                alert('¡Pedido registrado! (Pago pendiente)');
-            }
-        } catch (error) {
-            console.error(error);
-            alert('Error al conectar con el servidor.');
-        } finally {
-            setIsCheckingOut(false);
-        }
+    const handleBuyNow = () => {
+        handleAddToCart();
+        setIsDrawerOpen(true);
     };
 
     const containerVariants = {
@@ -130,14 +122,24 @@ export default function Tumblers() {
                                     <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>${totalPrice.toLocaleString('es-CL')}</span>
                                 </div>
 
-                                <button 
-                                    onClick={handleCheckout}
-                                    disabled={isCheckingOut || !customText}
-                                    className="btn btn-primary" 
-                                    style={{ width: '100%', padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1.1rem', opacity: (!customText && !isCheckingOut) ? 0.5 : 1 }}
-                                >
-                                    {isCheckingOut ? 'Cargando...' : <>Comprar Ahora <ArrowRight size={20} /></>}
-                                </button>
+                                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                    <button 
+                                        type="button"
+                                        onClick={handleAddToCart}
+                                        className="btn btn-secondary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', border: '1px solid var(--color-primary)', background: 'transparent', color: 'var(--color-primary)', cursor: 'pointer', borderRadius: '8px' }}
+                                    >
+                                        Agregar al Carrito
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={handleBuyNow}
+                                        className="btn btn-primary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', borderRadius: '8px', color: 'white', background: 'var(--color-primary)', border: 'none' }}
+                                    >
+                                        Comprar Ahora
+                                    </button>
+                                </div>
                                 {!customText && <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#ff4d4f', marginTop: '1rem' }}>Escribe un texto para habilitar la compra.</p>}
                             </div>
                         </div>

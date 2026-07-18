@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 import { Printer, ArrowRight, Cog, Cuboid } from 'lucide-react';
 import { Universal3DViewer } from '../components/Universal3DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
-import { submitOrder } from '../utils/orderHandler';
+
 import '../styles/Home.css';
 
 export default function Impresion3D() {
@@ -20,6 +21,7 @@ export default function Impresion3D() {
     const [size, setSize] = useState('PLA');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
+    const { addToCart, setIsDrawerOpen } = useCart();
     const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = ['1 Color', '2 Colores', '3 Colores'];
@@ -27,30 +29,16 @@ export default function Impresion3D() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsSubmitting(true);
-        try {
-            const orderPayload = {
-                product: 'Cotizaci贸n Impresi贸n 3D',
-                category,
-                size,
-                basePrice: 0,
-                ...checkoutData
-            };
-
-                        const data = await submitOrder(orderPayload);
-            
-            if (data.paymentUrl) {
-                window.location.href = data.paymentUrl;
-            } else {
-                alert('edido registrado! (Pago pendiente)');
-            }
-            e.target.reset();
-        } catch (error) {
-            console.error(error);
-            alert('Error al conectar con el servidor.');
-        } finally {
-            setIsSubmitting(false);
-        }
+        const cartItem = {
+            productId: Date.now().toString(),
+            name: 'Cotizaci贸n Impresi贸n 3D',
+            price: 0,
+            quantity: 1,
+            options: { category, size, ...(typeof checkoutData !== 'undefined' ? checkoutData : {}) }
+        };
+        addToCart(cartItem);
+        setIsDrawerOpen(true);
+        e.target.reset();
     };
 
     const containerVariants = {

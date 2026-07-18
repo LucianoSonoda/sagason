@@ -1,4 +1,5 @@
 ﻿import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 import { Puzzle, ArrowRight, Upload, Image as ImageIcon } from 'lucide-react';
 import { Mockup2DViewer } from '../components/Mockup2DViewer';
@@ -6,7 +7,7 @@ import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
 import { compressImage } from '../utils/imageCompressor';
-import { submitOrder } from '../utils/orderHandler';
+
 import '../styles/Home.css';
 
 export default function Rompecabezas() {
@@ -22,8 +23,9 @@ export default function Rompecabezas() {
     const [fileDataUrl, setFileDataUrl] = useState(null);
     const [category, setCategory] = useState('Personalización & Ambiente');
     const [size, setSize] = useState('A4 (120 piezas)');
-    const [isCheckingOut, setIsCheckingOut] = useState(false);
+    
     const [totalPrice, setTotalPrice] = useState(12990);
+    const { addToCart, setIsDrawerOpen } = useCart();
     const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = [
@@ -49,34 +51,20 @@ export default function Rompecabezas() {
         }
     };
 
-    const handleCheckout = async () => {
-        setIsCheckingOut(true);
-        try {
-            const orderPayload = {
-                product: 'Rompecabezas Personalizado',
-                category,
-                size,
-                basePrice: 12990,
-                ...checkoutData
-            };
-            if (fileDataUrl && !orderPayload.attachedFile) {
-                orderPayload.attachedFile = fileDataUrl;
-                orderPayload.attachedFileName = fileName;
-            }
+    const handleAddToCart = () => {
+        const cartItem = {
+            productId: Date.now().toString(),
+            name: 'Rompecabezas Personalizado', 
+            price: totalPrice || 0,
+            quantity: 1,
+            options: typeof checkoutData !== 'undefined' ? checkoutData : {}
+        };
+        addToCart(cartItem);
+    };
 
-                        const data = await submitOrder(orderPayload);
-            
-            if (data.paymentUrl) {
-                window.location.href = data.paymentUrl;
-            } else {
-                alert('�Pedido registrado! (Pago pendiente)');
-            }
-        } catch (error) {
-            console.error(error);
-            alert('Error al conectar con el servidor.');
-        } finally {
-            setIsCheckingOut(false);
-        }
+    const handleBuyNow = () => {
+        handleAddToCart();
+        setIsDrawerOpen(true);
     };
 
     const containerVariants = {
@@ -154,14 +142,24 @@ export default function Rompecabezas() {
                                     <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>${totalPrice.toLocaleString('es-CL')}</span>
                                 </div>
 
-                                <button 
-                                    onClick={handleCheckout}
-                                    disabled={isCheckingOut || !fileUrl}
-                                    className="btn btn-primary" 
-                                    style={{ width: '100%', padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1.1rem', opacity: (!fileUrl && !isCheckingOut) ? 0.5 : 1 }}
-                                >
-                                    {isCheckingOut ? 'Cargando...' : <>Comprar Ahora <ArrowRight size={20} /></>}
-                                </button>
+                                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                    <button 
+                                        type="button"
+                                        onClick={handleAddToCart}
+                                        className="btn btn-secondary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', border: '1px solid var(--color-primary)', background: 'transparent', color: 'var(--color-primary)', cursor: 'pointer', borderRadius: '8px' }}
+                                    >
+                                        Agregar al Carrito
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={handleBuyNow}
+                                        className="btn btn-primary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', borderRadius: '8px', color: 'white', background: 'var(--color-primary)', border: 'none' }}
+                                    >
+                                        Comprar Ahora
+                                    </button>
+                                </div>
                                 {!fileUrl && <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#ff4d4f', marginTop: '1rem' }}>Por favor sube una imagen para continuar.</p>}
                             </div>
                         </div>

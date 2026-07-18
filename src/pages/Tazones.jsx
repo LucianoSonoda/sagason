@@ -1,4 +1,5 @@
 ﻿import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
 import { motion } from 'framer-motion';
 import { Coffee, ArrowRight, Upload, Droplet } from 'lucide-react';
 import { Mockup2DViewer } from '../components/Mockup2DViewer';
@@ -6,7 +7,7 @@ import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
 import { compressImage } from '../utils/imageCompressor';
-import { submitOrder } from '../utils/orderHandler';
+
 import '../styles/Home.css';
 
 export default function Tazones() {
@@ -22,8 +23,9 @@ export default function Tazones() {
     const [fileDataUrl, setFileDataUrl] = useState(null);
     const [category, setCategory] = useState('Personalización & Ambiente');
     const [size, setSize] = useState('11oz Blanco');
-    const [isCheckingOut, setIsCheckingOut] = useState(false);
+    
     const [totalPrice, setTotalPrice] = useState(9990);
+    const { addToCart, setIsDrawerOpen } = useCart();
     const [checkoutData, setCheckoutData] = useState({});
 
     const CATEGORIES = [
@@ -49,34 +51,20 @@ export default function Tazones() {
         }
     };
 
-    const handleCheckout = async () => {
-        setIsCheckingOut(true);
-        try {
-            const orderPayload = {
-                product: 'Tazón Personalizado/Mágico',
-                category,
-                size,
-                basePrice: 9990,
-                ...checkoutData
-            };
-            if (fileDataUrl && !orderPayload.attachedFile) {
-                orderPayload.attachedFile = fileDataUrl;
-                orderPayload.attachedFileName = fileName;
-            }
+    const handleAddToCart = () => {
+        const cartItem = {
+            productId: Date.now().toString(),
+            name: 'Tazón Personalizado/Mágico', 
+            price: totalPrice || 0,
+            quantity: 1,
+            options: typeof checkoutData !== 'undefined' ? checkoutData : {}
+        };
+        addToCart(cartItem);
+    };
 
-                        const data = await submitOrder(orderPayload);
-            
-            if (data.paymentUrl) {
-                window.location.href = data.paymentUrl;
-            } else {
-                alert('�Pedido registrado! (Pago pendiente)');
-            }
-        } catch (error) {
-            console.error(error);
-            alert('Error al conectar con el servidor.');
-        } finally {
-            setIsCheckingOut(false);
-        }
+    const handleBuyNow = () => {
+        handleAddToCart();
+        setIsDrawerOpen(true);
     };
 
     const containerVariants = {
@@ -154,14 +142,24 @@ export default function Tazones() {
                                     <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>${totalPrice.toLocaleString('es-CL')}</span>
                                 </div>
 
-                                <button 
-                                    onClick={handleCheckout}
-                                    disabled={isCheckingOut || !fileUrl}
-                                    className="btn btn-primary" 
-                                    style={{ width: '100%', padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1.1rem', opacity: (!fileUrl && !isCheckingOut) ? 0.5 : 1 }}
-                                >
-                                    {isCheckingOut ? 'Cargando...' : <>Comprar Ahora <ArrowRight size={20} /></>}
-                                </button>
+                                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                    <button 
+                                        type="button"
+                                        onClick={handleAddToCart}
+                                        className="btn btn-secondary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', border: '1px solid var(--color-primary)', background: 'transparent', color: 'var(--color-primary)', cursor: 'pointer', borderRadius: '8px' }}
+                                    >
+                                        Agregar al Carrito
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={handleBuyNow}
+                                        className="btn btn-primary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', borderRadius: '8px', color: 'white', background: 'var(--color-primary)', border: 'none' }}
+                                    >
+                                        Comprar Ahora
+                                    </button>
+                                </div>
                                 {!fileUrl && <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#ff4d4f', marginTop: '1rem' }}>Sube una imagen para habilitar el botón.</p>}
                             </div>
                         </div>
