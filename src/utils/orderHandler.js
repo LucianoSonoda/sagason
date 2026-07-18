@@ -5,13 +5,41 @@
         throw new Error("Faltan datos de contacto obligatorios");
     }
 
+        // Inyectar color de categoría para Vikunja basado en el producto
+    const productLower = (orderPayload.product || '').toLowerCase();
+    let hexColor = '#808080'; // Gris por defecto
+    if (productLower.includes('rompecabezas')) hexColor = '#1e6fd9'; // Azul
+    else if (productLower.includes('taz')) hexColor = '#f44336'; // Rojo
+    else if (productLower.includes('tumbler')) hexColor = '#9c27b0'; // Morado
+    else if (productLower.includes('llavero')) hexColor = '#ff9800'; // Naranja
+    else if (productLower.includes('mascota')) hexColor = '#4caf50'; // Verde
+    else if (productLower.includes('salud')) hexColor = '#e91e63'; // Rosado
+    else if (productLower.includes('cuadro')) hexColor = '#607d8b'; // Azul grisáceo
+    else if (productLower.includes('3d')) hexColor = '#00bcd4'; // Cyan
+
+    orderPayload.hexColor = hexColor;
+
     try {
         // Setup a 30-second timeout for the local n8n server (to allow image uploads)
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000);
         
         let response;
-        try {
+            // Inyectar color de categoría para Vikunja basado en el producto
+    const productLower = (orderPayload.product || '').toLowerCase();
+    let hexColor = '#808080'; // Gris por defecto
+    if (productLower.includes('rompecabezas')) hexColor = '#1e6fd9'; // Azul
+    else if (productLower.includes('taz')) hexColor = '#f44336'; // Rojo
+    else if (productLower.includes('tumbler')) hexColor = '#9c27b0'; // Morado
+    else if (productLower.includes('llavero')) hexColor = '#ff9800'; // Naranja
+    else if (productLower.includes('mascota')) hexColor = '#4caf50'; // Verde
+    else if (productLower.includes('salud')) hexColor = '#e91e63'; // Rosado
+    else if (productLower.includes('cuadro')) hexColor = '#607d8b'; // Azul grisáceo
+    else if (productLower.includes('3d')) hexColor = '#00bcd4'; // Cyan
+
+    orderPayload.hexColor = hexColor;
+
+    try {
             response = await fetch('https://n8n.sagason.cl/webhook/nuevo-pedido', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -29,7 +57,21 @@
                 delete fallbackPayload.attachedFileName;
                 fallbackPayload.customInstructions = (fallbackPayload.customInstructions || "") + "\n\n[SISTEMA]: El cliente subio una imagen, pero el servidor la rechazo por ser demasiado pesada. Contactalo (via WhatsApp o Correo) para solicitarle la imagen original.";
                 
-                try {
+                    // Inyectar color de categoría para Vikunja basado en el producto
+    const productLower = (orderPayload.product || '').toLowerCase();
+    let hexColor = '#808080'; // Gris por defecto
+    if (productLower.includes('rompecabezas')) hexColor = '#1e6fd9'; // Azul
+    else if (productLower.includes('taz')) hexColor = '#f44336'; // Rojo
+    else if (productLower.includes('tumbler')) hexColor = '#9c27b0'; // Morado
+    else if (productLower.includes('llavero')) hexColor = '#ff9800'; // Naranja
+    else if (productLower.includes('mascota')) hexColor = '#4caf50'; // Verde
+    else if (productLower.includes('salud')) hexColor = '#e91e63'; // Rosado
+    else if (productLower.includes('cuadro')) hexColor = '#607d8b'; // Azul grisáceo
+    else if (productLower.includes('3d')) hexColor = '#00bcd4'; // Cyan
+
+    orderPayload.hexColor = hexColor;
+
+    try {
                     const controller2 = new AbortController();
                     const timeoutId2 = setTimeout(() => controller2.abort(), 10000);
                     response = await fetch('https://n8n.sagason.cl/webhook/nuevo-pedido', {
@@ -74,4 +116,5 @@
         throw error;
     }
 }
+
 
