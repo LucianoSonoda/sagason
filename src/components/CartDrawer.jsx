@@ -23,7 +23,6 @@ export const CartDrawer = () => {
 
   const REGIONES = [
       { id: 'retiro', name: 'Retiro en Taller (Vitacura) - $0', cost: 0 },
-      { id: 'vitacura', name: 'Despacho Gratis en Vitacura - $0', cost: 0 },
       { id: 'metropolitana', name: 'Región Metropolitana - $3.100', cost: 3100 },
       { id: 'normal', name: 'Otras Regiones - $4.300', cost: 4300 },
       { id: 'extrema', name: 'Regiones Extremas (Arica, Tarapacá, Aysén, Magallanes) - $5.200', cost: 5200 }
