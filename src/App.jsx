@@ -30,6 +30,7 @@ const Rompecabezas = lazy(() => import('./pages/Rompecabezas').then(module => ({
 const Tazones = lazy(() => import('./pages/Tazones').then(module => ({ default: module.default })));
 const Tumblers = lazy(() => import('./pages/Tumblers').then(module => ({ default: module.default })));
 const Impresion3D = lazy(() => import('./pages/Impresion3D').then(module => ({ default: module.default })));
+const Exito = lazy(() => import('./pages/Exito').then(module => ({ default: module.default })));
 
 function MainContent() {
   return (
@@ -101,6 +102,7 @@ function App() {
             <Route path="/tazones" element={<Tazones />} />
             <Route path="/tumblers" element={<Tumblers />} />
             <Route path="/impresion-3d" element={<Impresion3D />} />
+            <Route path="/exito" element={<Exito />} />
           </Routes>
         </Suspense>
       </main>
