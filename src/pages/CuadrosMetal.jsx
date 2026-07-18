@@ -5,6 +5,7 @@ import { Universal3DViewer } from '../components/Universal3DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
+import { submitOrder } from '../utils/orderHandler';
 import '../styles/Home.css';
 
 export default function CuadrosMetal() {
@@ -44,16 +45,16 @@ export default function CuadrosMetal() {
                 ...checkoutData
             };
 
-            await fetch('https://n8n.sagason.cl/webhook/nuevo-pedido', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderPayload)
-            });
-
-            alert('¡Pedido registrado! Redirigiendo a pasarela de pago / Carga de Archivos...');
+            const data = await submitOrder(orderPayload);
+            
+            if (data && data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            } else {
+                alert('¡Pedido registrado! (Pago pendiente)');
+            }
         } catch (error) {
             console.error(error);
-            alert('Error al conectar con el servidor.');
+            // Error handling is managed by submitOrder, but we catch it here to reset loading state
         } finally {
             setIsCheckingOut(false);
         }
