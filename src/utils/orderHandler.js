@@ -1,4 +1,4 @@
-﻿export async function submitOrder(orderPayload) {
+export async function submitOrder(orderPayload) {
     // Validate mandatory contact fields
     if (!orderPayload.customer_name || !orderPayload.customer_rut || !orderPayload.customer_email || !orderPayload.customer_address || !orderPayload.customer_phone) {
         alert("Por favor completa todos los datos de contacto obligatorios (Nombre, RUT, Correo, Direccin y Telfono) en la seccin de Extras antes de comprar.");
@@ -109,7 +109,13 @@
             }
         }
 
-        const data = await response.json();
+        let data = {};
+        const text = await response.text();
+        try {
+            data = text ? JSON.parse(text) : {};
+        } catch (e) {
+            console.warn("Respuesta no JSON del webhook:", text);
+        }
         return data;
     } catch (error) {
         console.error('Error general al enviar pedido:', error);
