@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { compressImage } from '../utils/imageCompressor';
 import { Truck, Sparkles, MessageSquare, Package } from 'lucide-react';
 
-export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalChange, onDataChange }) => {
+export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalChange, onDataChange, hideUpload = false }) => {
         const [customer_name, setCustomerName] = useState('');
     const [customer_rut, setCustomerRut] = useState('');
     const [customer_email, setCustomerEmail] = useState('');
@@ -117,6 +117,7 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
             </div>
 
             {/* Adjuntar Archivo */}
+            {!hideUpload && (
             <div>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>
                     <Sparkles size={16} /> Adjuntar Imagen/Diseño (Opcional)
@@ -136,6 +137,7 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
                     }}
                 />
             </div>
+            )}
 
             {/* Arte con IA */}
             <div 
@@ -230,5 +232,6 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
         </div>
     );
 };
+
 
 

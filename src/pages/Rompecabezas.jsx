@@ -143,7 +143,7 @@ export default function Rompecabezas() {
                                     </div>
                                 </div>
 
-                                <CheckoutExtras 
+                                <CheckoutExtras hideUpload={true} 
                                     basePrice={12990} 
                                     onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
                                     onDataChange={(data) => setCheckoutData(data)}
@@ -193,6 +193,7 @@ export default function Rompecabezas() {
         </div>
     );
 }
+
 
 
 

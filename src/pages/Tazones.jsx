@@ -143,7 +143,7 @@ export default function Tazones() {
                                     </div>
                                 </div>
 
-                                <CheckoutExtras 
+                                <CheckoutExtras hideUpload={true} 
                                     basePrice={9990} 
                                     onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
                                     onDataChange={(data) => setCheckoutData(data)}
@@ -193,6 +193,7 @@ export default function Tazones() {
         </div>
     );
 }
+
 
 
 
