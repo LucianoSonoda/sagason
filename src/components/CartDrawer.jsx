@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { X, Trash2, ShoppingCart, MessageSquare, Truck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { submitOrder } from '../utils/orderHandler';
 
 export const CartDrawer = () => {
   const { cart, removeFromCart, updateQuantity, isDrawerOpen, setIsDrawerOpen, cartTotal, clearCart } = useCart();
@@ -18,9 +19,11 @@ export const CartDrawer = () => {
   const [customerAddress, setCustomerAddress] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [shippingRegion, setShippingRegion] = useState('metropolitana');
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const REGIONES = [
       { id: 'retiro', name: 'Retiro en Taller (Vitacura) - $0', cost: 0 },
+      { id: 'vitacura', name: 'Despacho Gratis en Vitacura - $0', cost: 0 },
       { id: 'metropolitana', name: 'Región Metropolitana - $3.100', cost: 3100 },
       { id: 'normal', name: 'Otras Regiones - $4.300', cost: 4300 },
       { id: 'extrema', name: 'Regiones Extremas (Arica, Tarapacá, Aysén, Magallanes) - $5.200', cost: 5200 }
@@ -32,7 +35,7 @@ export const CartDrawer = () => {
       if (!customerName) setCustomerName(user.name || '');
       if (!customerEmail) setCustomerEmail(user.email || '');
     }
-  }, [user]);
+  }, [user, customerName, customerEmail]);
 
   // Reset mode when drawer closes
   useEffect(() => {
@@ -46,31 +49,43 @@ export const CartDrawer = () => {
   const shippingCost = REGIONES.find(r => r.id === shippingRegion)?.cost || 0;
   const grandTotal = cartTotal + shippingCost;
 
-  const handleCheckoutSubmit = (e) => {
+  const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
+    setIsCheckingOut(true);
     
-    // In a real application, you would integrate Webpay/Flow here.
-    // For now, we simulate a successful order and clear the cart.
-    const orderData = {
-      items: cart,
-      customer: {
-        name: customerName,
-        rut: customerRut,
-        email: customerEmail,
-        phone: customerPhone,
-        address: customerAddress
-      },
-      shipping: shippingRegion,
-      total: grandTotal
-    };
+    try {
+      const orderPayload = {
+        customer_name: customerName,
+        customer_rut: customerRut,
+        customer_email: customerEmail,
+        customer_phone: customerPhone,
+        customer_address: customerAddress,
+        product: 'Carrito Sagason (' + cart.length + ' items)',
+        cartItems: cart,
+        shippingRegion: shippingRegion,
+        totalPrice: grandTotal
+      };
 
-    console.log("Procesando Orden:", orderData);
-    
-    // Mock successful checkout
-    alert('¡Orden enviada con éxito por un total de: $' + grandTotal.toLocaleString());
-    clearCart();
-    setIsDrawerOpen(false);
-    navigate('/exito');
+      console.log("Procesando Orden:", orderPayload);
+      
+      const data = await submitOrder(orderPayload);
+      
+      if (data && data.paymentUrl) {
+          clearCart(); // Clear cart before redirecting
+          setIsDrawerOpen(false);
+          window.location.href = data.paymentUrl;
+      } else {
+          // Fallback or no URL returned
+          clearCart();
+          setIsDrawerOpen(false);
+          navigate('/exito');
+      }
+    } catch (error) {
+      console.error("Error en checkout:", error);
+      alert('Hubo un error al procesar el pago. Por favor intenta de nuevo.');
+    } finally {
+      setIsCheckingOut(false);
+    }
   };
 
   return (
@@ -249,19 +264,20 @@ export const CartDrawer = () => {
                 <button 
                   type="submit"
                   form="checkout-form"
+                  disabled={isCheckingOut}
                   style={{
                     flex: 2,
                     padding: '15px',
-                    backgroundColor: '#10B981', // green for pay
+                    backgroundColor: isCheckingOut ? '#555' : '#10B981', // green for pay
                     color: '#fff',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '1.1rem',
                     fontWeight: 'bold',
-                    cursor: 'pointer'
+                    cursor: isCheckingOut ? 'not-allowed' : 'pointer'
                   }}
                 >
-                  Pagar Ahora
+                  {isCheckingOut ? 'Procesando...' : 'Pagar Ahora'}
                 </button>
               </div>
             )}
