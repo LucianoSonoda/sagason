@@ -3,6 +3,11 @@ import { compressImage } from '../utils/imageCompressor';
 import { Truck, Sparkles, MessageSquare, Package } from 'lucide-react';
 
 export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalChange, onDataChange }) => {
+        const [customer_name, setCustomerName] = useState('');
+    const [customer_rut, setCustomerRut] = useState('');
+    const [customer_email, setCustomerEmail] = useState('');
+    const [customer_address, setCustomerAddress] = useState('');
+    const [customer_phone, setCustomerPhone] = useState('');
     const [customInstructions, setCustomInstructions] = useState('');
     const [useAIArt, setUseAIArt] = useState(false);
     const [useCustomPackaging, setUseCustomPackaging] = useState(false);
@@ -28,7 +33,12 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
         }
 
         if (onDataChange) {
-            onDataChange({
+                        onDataChange({
+                customer_name,
+                customer_rut,
+                customer_email,
+                customer_address,
+                customer_phone,
                 customInstructions,
                 useAIArt,
                 useCustomPackaging,
@@ -38,7 +48,7 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
                 attachedFileName
             });
         }
-    }, [basePrice, useAIArt, shippingRegion, useCustomPackaging, packagingPrice, customInstructions, attachedFile, attachedFileName]);
+    }, [basePrice, useAIArt, shippingRegion, useCustomPackaging, packagingPrice, customInstructions, attachedFile, attachedFileName, customer_name, customer_rut, customer_email, customer_address, customer_phone]);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -54,6 +64,36 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
             
+                        {/* Datos de Contacto (Obligatorios) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <h4 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-primary)' }}>
+                    <MessageSquare size={18} /> Datos de Contacto (Obligatorios)
+                </h4>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Nombre Completo *</label>
+                        <input type="text" value={customer_name} onChange={(e) => setCustomerName(e.target.value)} placeholder="Ej: Juan Prez" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>RUT / Pasaporte *</label>
+                        <input type="text" value={customer_rut} onChange={(e) => setCustomerRut(e.target.value)} placeholder="Ej: 12.345.678-9" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Correo Electrnico *</label>
+                        <input type="email" value={customer_email} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="Ej: juan@correo.com" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Telfono / WhatsApp *</label>
+                        <input type="text" value={customer_phone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="Ej: +56 9 1234 5678" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
+                    </div>
+                </div>
+                <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-dim)' }}>Direccin de Envo completa *</label>
+                    <input type="text" value={customer_address} onChange={(e) => setCustomerAddress(e.target.value)} placeholder="Calle, Nmero, Depto, Comuna, Ciudad" required style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.05)', color: 'white' }} />
+                </div>
+            </div>
+
             {/* Instrucciones Adicionales */}
             <div>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>
@@ -190,4 +230,5 @@ export const CheckoutExtras = ({ basePrice = 0, packagingPrice = 4000, onTotalCh
         </div>
     );
 };
+
 

@@ -1,4 +1,10 @@
-export async function submitOrder(orderPayload) {
+﻿export async function submitOrder(orderPayload) {
+    // Validate mandatory contact fields
+    if (!orderPayload.customer_name || !orderPayload.customer_rut || !orderPayload.customer_email || !orderPayload.customer_address || !orderPayload.customer_phone) {
+        alert("Por favor completa todos los datos de contacto obligatorios (Nombre, RUT, Correo, Direccin y Telfono) en la seccin de Extras antes de comprar.");
+        throw new Error("Faltan datos de contacto obligatorios");
+    }
+
     try {
         // Setup a 30-second timeout for the local n8n server (to allow image uploads)
         const controller = new AbortController();
@@ -68,3 +74,4 @@ export async function submitOrder(orderPayload) {
         throw error;
     }
 }
+
