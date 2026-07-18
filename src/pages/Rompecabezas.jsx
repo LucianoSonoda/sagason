@@ -6,7 +6,7 @@ import { Mockup2DViewer } from '../components/Mockup2DViewer';
 import { CheckoutExtras } from '../components/CheckoutExtras';
 import { ProductGallery } from '../components/ProductGallery';
 import { useSEO } from '../hooks/useSEO';
-import { compressImage } from '../utils/imageCompressor';
+
 
 import '../styles/Home.css';
 
@@ -20,7 +20,7 @@ export default function Rompecabezas() {
 
     const [fileUrl, setFileUrl] = useState(null);
     const [fileName, setFileName] = useState('');
-    const [fileDataUrl, setFileDataUrl] = useState(null);
+    
     const [category, setCategory] = useState('Personalización & Ambiente');
     const [size, setSize] = useState('A4 (120 piezas)');
     

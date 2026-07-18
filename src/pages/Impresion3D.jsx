@@ -19,7 +19,7 @@ export default function Impresion3D() {
 
     const [category, setCategory] = useState('1 Color');
     const [size, setSize] = useState('PLA');
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    
     const [totalPrice, setTotalPrice] = useState(0);
     const { addToCart, setIsDrawerOpen } = useCart();
     const [checkoutData, setCheckoutData] = useState({});
