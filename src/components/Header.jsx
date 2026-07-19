@@ -33,6 +33,10 @@ export function Header() {
         { name: 'Personalizar', href: '/#custom' },
         { name: 'Contacto', href: '/#contact' },
     ];
+    
+    if (user) {
+        navLinks.splice(2, 0, { name: 'Mis Pedidos', href: '/mis-pedidos' });
+    }
 
     const cartItemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 

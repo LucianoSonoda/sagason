@@ -32,6 +32,7 @@ const Tumblers = lazy(() => import('./pages/Tumblers').then(module => ({ default
 const Impresion3D = lazy(() => import('./pages/Impresion3D').then(module => ({ default: module.default })));
 const Exito = lazy(() => import('./pages/Exito').then(module => ({ default: module.default })));
 const PagoFallido = lazy(() => import('./pages/PagoFallido').then(module => ({ default: module.default })));
+const MisPedidos = lazy(() => import('./components/MisPedidos').then(module => ({ default: module.default })));
 
 function MainContent() {
   return (
@@ -118,6 +119,7 @@ function App() {
                   <Route path="/impresion-3d" element={<Impresion3D />} />
                   <Route path="/exito" element={<Exito />} />
                   <Route path="/pago-fallido" element={<PagoFallido />} />
+                  <Route path="/mis-pedidos" element={<MisPedidos />} />
                 </Routes>
               </Suspense>
             </main>

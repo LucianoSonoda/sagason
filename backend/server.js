@@ -6,6 +6,8 @@ const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 const cron = require('node-cron');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const axios = require('axios'); // Asegurar tener axios instalado o usar fetch
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -93,6 +95,174 @@ app.get('/api/cart', authenticateToken, async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// Get Prices (Syncs from ERP)
+app.get('/api/prices', async (req, res) => {
+  try {
+    const erpUrl = process.env.ERP_URL || 'http://localhost:4000';
+    const erpRes = await fetch(`${erpUrl}/api/recipes/export-prices`);
+    if (!erpRes.ok) {
+      throw new Error('No se pudo contactar al ERP');
+    }
+    const data = await erpRes.json();
+    res.json(data);
+  } catch (err) {
+    console.error('Error fetching prices from ERP:', err.message);
+    res.status(500).json({ error: 'Failed to fetch prices' });
+  }
+});
+
+// Forward Website Orders to ERP
+app.post('/api/website-order', async (req, res) => {
+  try {
+    const erpUrl = process.env.ERP_URL || 'http://localhost:4000';
+    const erpRes = await fetch(`${erpUrl}/api/sales/website-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req.body)
+    });
+    
+    if (!erpRes.ok) {
+      throw new Error(`ERP returned ${erpRes.status}`);
+    }
+    
+    const data = await erpRes.json();
+    res.status(201).json(data);
+  } catch (err) {
+    console.error('Error forwarding order to ERP:', err.message);
+    res.status(500).json({ error: 'Failed to forward order' });
+  }
+});
+
+// Flow Integration Helpers
+const FLOW_API_KEY = process.env.FLOW_API_KEY || '';
+const FLOW_SECRET_KEY = process.env.FLOW_SECRET_KEY || '';
+const FLOW_API_URL = process.env.FLOW_API_URL || 'https://sandbox.flow.cl/api'; // Cambiar a https://www.flow.cl/api en prod
+
+function getFlowSignature(params) {
+  const keys = Object.keys(params).sort();
+  let stringToSign = '';
+  keys.forEach(key => {
+    stringToSign += `${key}=${params[key]}&`;
+  });
+  stringToSign = stringToSign.slice(0, -1);
+  return crypto.createHmac('sha256', FLOW_SECRET_KEY).update(stringToSign).digest('hex');
+}
+
+// Generar link de pago y guardar cotización
+app.post('/api/checkout', async (req, res) => {
+  try {
+    const { customer_name, customer_email, customer_phone, customer_address, product, cartItems, totalPrice } = req.body;
+    
+    const commerceOrder = `ORD-${Date.now()}`;
+    
+    // 1. Guardar orden en ERP como QUOTE
+    let erpOrderId = null;
+    try {
+      const erpUrl = process.env.ERP_URL || 'http://localhost:4000';
+      const erpRes = await fetch(`${erpUrl}/api/sales`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientName: `${customer_name} (${customer_email})`,
+          customerEmail: customer_email,
+          status: 'QUOTE',
+          discount: 0,
+          items: cartItems.map(i => ({ recipeId: i.productId || 1, quantity: i.quantity, unitPrice: i.price }))
+        })
+      });
+      if (erpRes.ok) {
+        const erpData = await erpRes.json();
+        erpOrderId = erpData.id;
+      }
+    } catch (erpError) {
+      console.warn("Failed to save to ERP during checkout:", erpError.message);
+    }
+
+    // 2. Comunicarse con Flow
+    const params = {
+      apiKey: FLOW_API_KEY,
+      commerceOrder: commerceOrder,
+      subject: product || 'Compra SAGASON',
+      currency: 'CLP',
+      amount: Math.round(totalPrice),
+      email: customer_email,
+      urlConfirmation: `${process.env.PUBLIC_URL || 'http://localhost:5000'}/api/flow-webhook`,
+      urlReturn: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/exito`,
+    };
+
+    const signature = getFlowSignature(params);
+    params.s = signature;
+
+    const formParams = new URLSearchParams(params);
+
+    const flowRes = await fetch(`${FLOW_API_URL}/payment/create`, {
+      method: 'POST',
+      body: formParams
+    });
+
+    const flowData = await flowRes.json();
+
+    if (!flowRes.ok) {
+      console.error("Flow API Error:", flowData);
+      throw new Error(flowData.message || 'Error al generar link de Flow');
+    }
+
+    const paymentUrl = `${flowData.url}?token=${flowData.token}`;
+
+    res.json({ paymentUrl, orderId: erpOrderId });
+  } catch (error) {
+    console.error('Error in checkout:', error.message);
+    res.status(500).json({ error: 'Error generating checkout link' });
+  }
+});
+
+// Webhook para confirmación de pago desde Flow
+app.post('/api/flow-webhook', async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) return res.status(400).send('Token missing');
+
+    const params = { apiKey: FLOW_API_KEY, token };
+    const signature = getFlowSignature(params);
+    
+    const flowRes = await fetch(`${FLOW_API_URL}/payment/getStatus?apiKey=${FLOW_API_KEY}&token=${token}&s=${signature}`);
+    const flowData = await flowRes.json();
+
+    if (flowData.status === 2) { // 2 = Pagado
+      console.log(`Pago confirmado para orden: ${flowData.commerceOrder}`);
+      // TODO: Actualizar estado de ERP a 'SALE' o 'PAGADO' si tenemos el orderId mapeado
+    }
+    
+    res.status(200).send('OK');
+  } catch (error) {
+    console.error('Error en Flow Webhook:', error.message);
+    res.status(500).send('Error');
+  }
+});
+
+// Endpoint protegido para obtener los pedidos del usuario autenticado
+app.get('/api/my-orders', authenticateToken, async (req, res) => {
+  try {
+    const email = req.user.email;
+    if (!email) {
+      return res.status(400).json({ error: 'Usuario no tiene email' });
+    }
+
+    const erpUrl = process.env.ERP_URL || 'http://localhost:4000';
+    const erpRes = await fetch(`${erpUrl}/api/sales/customer/${encodeURIComponent(email)}`);
+    
+    if (!erpRes.ok) {
+      throw new Error('Error al obtener pedidos del ERP');
+    }
+
+    const orders = await erpRes.json();
+    res.json(orders);
+  } catch (error) {
+    console.error('Error in /api/my-orders:', error.message);
+    res.status(500).json({ error: 'Error interno' });
   }
 });
 

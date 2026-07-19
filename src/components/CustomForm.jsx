@@ -73,14 +73,17 @@ export function CustomForm() {
     // Cargar precios de referencia
     useEffect(() => {
         const loadPrecios = async () => {
-            let dynamoPrecios = {};
+            let backendPrecios = {};
             try {
-                const res = await fetch(`${API}/user-tags?action=prices`);
+                // Ahora lee directo de nuestro backend local (Docker), el cual consulta al ERP
+                const res = await fetch('http://localhost:5000/api/prices');
                 if (res.ok) {
                     const data = await res.json();
-                    if (Object.keys(data).length > 0) dynamoPrecios = data;
+                    if (Object.keys(data).length > 0) backendPrecios = data;
                 }
-            } catch (_) {}
+            } catch (e) {
+                console.log("No se pudo cargar precios del ERP", e);
+            }
             
             let finalPrecios = {};
             // Leer estático como base
@@ -91,9 +94,9 @@ export function CustomForm() {
                 }
             } catch (_) {}
 
-            // Sobrescribir con Dynamo
-            for (const key of Object.keys(dynamoPrecios)) {
-                finalPrecios[key] = dynamoPrecios[key];
+            // Sobrescribir con lo del ERP
+            for (const key of Object.keys(backendPrecios)) {
+                finalPrecios[key] = backendPrecios[key];
             }
             setPrecios(finalPrecios);
         };
@@ -116,10 +119,9 @@ export function CustomForm() {
         
         if (emailInputForDb && emailInputForDb.value) {
             try {
-                // Hacemos el llamado a tu futura API de AWS sin esperar respuesta (para no frenar el formulario)
-                fetch('https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod/customers', {
+                // Registro silencioso directo al ERP a través de nuestro backend Node.js
+                fetch('http://localhost:5000/api/website-order', {
                     method: 'POST',
-                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         pedido_id: orderId,
@@ -131,7 +133,7 @@ export function CustomForm() {
                         category: selections.category,
                         size: selections.size
                     })
-                }).catch(err => console.log("AWS Log Error:", err));
+                }).catch(err => console.log("ERP Proxy Log Error:", err));
             } catch (err) {
                 console.error("DB Save Error:", err);
             }

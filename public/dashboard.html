@@ -1552,22 +1552,20 @@
     async function loadAdminPrecios() {
         let dynamoPrecios = {};
         try {
-            const res = await authFetch(`${API}/prices`);
+            const res = await fetch('http://localhost:5000/api/prices');
             if (res.ok) {
-                const result = await res.json();
-                if (result.success && Array.isArray(result.data)) {
-                    result.data.forEach(item => {
-                        dynamoPrecios[item.productId] = {
-                            desde: item.basePrice || 0,
-                            nota: item.notes || '',
-                            sku: item.sku || '',
-                            label: item.productName || item.name || '',
-                            category: item.category || item.cat || '',
-                            active: item.isActive !== false,
-                            shippingSize: item.shippingSize || '',
-                            cajaCustom: item.cajaCustom || 0
-                        };
-                    });
+                const data = await res.json();
+                for (const key of Object.keys(data)) {
+                    dynamoPrecios[key] = {
+                        desde: data[key].basePrice || 0,
+                        nota: 'Fijado desde ERP',
+                        sku: '',
+                        label: key,
+                        category: '',
+                        active: true,
+                        shippingSize: '',
+                        cajaCustom: 0
+                    };
                 }
             }
         } catch (_) {}
@@ -1689,122 +1687,7 @@
     }
 
     async function saveSinglePrecio(id) {
-        const btn = document.getElementById(`btn-save-${id}`);
-        const originalHtml = btn.innerHTML;
-        btn.disabled = true; 
-        btn.innerHTML = `<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-opacity="0.3" stroke-width="4"/><path d="M12 2C6.47715 2 2 6.47715 2 12" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`;
-
-        const product = ADMIN_PRODUCTS.find(p => p.id === id);
-        
-        const catEl = document.getElementById(`cat-${id}`);
-        const categoryValue = catEl ? catEl.value.trim() : (product ? product.category : 'Otros Ítems');
-        
-        const labelEl = document.getElementById(`label-${id}`);
-        const labelValue = labelEl ? labelEl.value.trim() : (product ? product.label : 'Sin Nombre');
-
-        const prices = {};
-        prices[id] = {
-            desde: parseInt(document.getElementById(`precio-${id}`).value) || 0,
-            nota: document.getElementById(`nota-${id}`).value.trim(),
-            sku: document.getElementById(`sku-${id}`).value.trim(),
-            label: labelValue,
-            category: categoryValue || 'Otros Ítems',
-            active: adminPrecios[id]?.active !== false,
-            shippingSize: document.getElementById(`shippingSize-${id}`).value,
-            cajaCustom: parseInt(document.getElementById(`cajaCustom-${id}`).value) || 0
-        };
-
-        try {
-            const payload = {
-                productId: id,
-                basePrice: prices[id].desde,
-                notes: prices[id].nota,
-                name: prices[id].label,
-                cat: prices[id].category,
-                shippingSize: prices[id].shippingSize,
-                cajaCustom: prices[id].cajaCustom
-            };
-
-            const res = await authFetch(`${API}/price`, {
-                method: 'PUT',
-                body: JSON.stringify(payload)
-            });
-            if (res.ok) {
-                adminPrecios[id] = prices[id];
-                btn.innerHTML = `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>`;
-                btn.style.background = "#22c55e"; // Success green
-                setTimeout(() => {
-                    btn.innerHTML = originalHtml;
-                    btn.style.background = "var(--primary)";
-                    btn.disabled = false;
-                }, 2000);
-            } else {
-                alert('Error al guardar precio: ' + await res.text());
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
-            }
-        } catch (e) {
-            alert('Error de conexión: ' + e.message);
-            btn.innerHTML = originalHtml;
-            btn.disabled = false;
-        }
-    }
-
-    async function savePrecios() {
-        const btn = document.getElementById('btn-guardar-precios');
-        btn.disabled = true; btn.innerText = 'Guardando...';
-
-        const prices = {};
-        ADMIN_PRODUCTS.forEach(p => {
-            const catEl = document.getElementById(`cat-${p.id}`);
-            const categoryValue = catEl ? catEl.value.trim() : (p.category || 'Otros Ítems');
-            const labelEl = document.getElementById(`label-${p.id}`);
-            const labelValue = labelEl ? labelEl.value.trim() : p.label;
-            prices[p.id] = {
-                desde: parseInt(document.getElementById(`precio-${p.id}`).value) || 0,
-                nota: document.getElementById(`nota-${p.id}`).value.trim(),
-                sku: document.getElementById(`sku-${p.id}`).value.trim(),
-                label: labelValue,
-                category: categoryValue || 'Otros Ítems',
-                active: adminPrecios[p.id]?.active !== false,
-                shippingSize: document.getElementById(`shippingSize-${p.id}`).value,
-                cajaCustom: parseInt(document.getElementById(`cajaCustom-${p.id}`).value) || 0
-            };
-        });
-
-        try {
-            const updatePromises = Object.keys(prices).map(id => {
-                const p = prices[id];
-                const payload = {
-                    productId: id,
-                    basePrice: p.desde,
-                    notes: p.nota,
-                    name: p.label,
-                    cat: p.category,
-                    shippingSize: p.shippingSize,
-                    cajaCustom: p.cajaCustom
-                };
-                return authFetch(`${API}/price`, {
-                    method: 'PUT',
-                    body: JSON.stringify(payload)
-                });
-            });
-
-            const results = await Promise.all(updatePromises);
-            const allOk = results.every(res => res.ok);
-
-            if (allOk) {
-                document.getElementById('precios-success').style.display = 'block';
-                setTimeout(() => document.getElementById('precios-success').style.display = 'none', 3500);
-                adminPrecios = prices;
-            } else {
-                alert('Hubo errores al guardar algunos precios. Revisa tu conexión.');
-            }
-        } catch(e) {
-            alert('Error de conexión: ' + e.message);
-        } finally {
-            btn.disabled = false; btn.innerText = '💾 Guardar y Publicar Precios';
-        }
+        alert("¡Aviso! Los precios ahora se calculan automáticamente desde el ERP (con 100% de lucro). Debes modificar los costos de insumos y recetas en el ERP.");
     }
 
     async function toggleActiveItem(id) {
