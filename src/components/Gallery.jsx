@@ -101,10 +101,10 @@ export function Gallery() {
     return (
         <section id="gallery" className="gallery-section container">
             <div className="section-header">
-                <p className="section-subtitle">NUESTRO CATÁLOGO</p>
+                <p className="section-subtitle">NUESTROS PRODUCTOS</p>
                 <h2 className="section-title">
                     {activeCategory
-                        ? `Catálogo: ${activeCategory}`
+                        ? `Productos: ${activeCategory}`
                         : <><span>DESCUBRE LO QUE </span><span style={{ color: 'var(--color-primary)' }}>PODEMOS CREAR</span></>}
                 </h2>
             </div>

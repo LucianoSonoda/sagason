@@ -162,7 +162,7 @@ function ProductsGrid() {
     return (
         <section className="container" style={{ padding: '6rem 1rem' }}>
             <div className="section-header" style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                <span className="section-label">NUESTRO CATÁLOGO</span>
+                <span className="section-label">NUESTROS PRODUCTOS</span>
                 <h2 className="section-title">DESCUBRE NUESTRAS <span className="text-primary">CATEGORÍAS</span></h2>
             </div>
             
