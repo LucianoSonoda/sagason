@@ -88,8 +88,8 @@ export function Home() {
                 </motion.div>
             </section>
 
-            {/* Catálogo de Productos (Silos) */}
-            <ProductsGrid />
+            {/* Catálogo de Productos (Silos) - Oculto por solicitud del cliente */}
+            {/* <ProductsGrid /> */}
 
             {/* Símbolo de confianza */}
             <TrustSymbolSection />

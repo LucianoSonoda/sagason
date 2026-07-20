@@ -29,7 +29,6 @@ export function Header() {
     const navLinks = [
         { name: 'Aventuras', href: '/aventuras' },
         { name: 'Comunidad 4K', href: '/tags-4k' },
-        { name: 'Catálogo', href: '/#gallery' },
         { name: 'Corporativo (B2B)', href: '/cotizador-b2b' },
         { name: 'Personalizar', href: '/#custom' },
         { name: 'Contacto', href: '/#contact' },
@@ -73,10 +72,11 @@ export function Header() {
                             theme="filled_black"
                         />
                     )}
-                    
+
                     <button 
                         onClick={() => setIsDrawerOpen(true)}
-                        style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', position: 'relative' }}
+                        style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', position: 'relative', marginLeft: '10px' }}
+                        title="Ver Carrito"
                     >
                         <ShoppingCart size={24} />
                         {cartItemCount > 0 && (
@@ -101,17 +101,42 @@ export function Header() {
                     </Link>
                 </div>
 
-                <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)} aria-label="Menú">
-                    {isOpen ? (
-                        <X size={24} color="#fff" />
-                    ) : (
-                        <span className="hamburger-tricolor">
-                            <span className="bar bar-red"></span>
-                            <span className="bar bar-white"></span>
-                            <span className="bar bar-blue"></span>
-                        </span>
-                    )}
-                </button>
+                <div className="mobile-actions" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <button 
+                        className="mobile-cart-btn desktop-hidden"
+                        onClick={() => setIsDrawerOpen(true)}
+                        style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', position: 'relative' }}
+                    >
+                        <ShoppingCart size={24} />
+                        {cartItemCount > 0 && (
+                            <span style={{
+                                position: 'absolute',
+                                top: '-8px',
+                                right: '-8px',
+                                background: 'var(--color-primary, #0EA5E9)',
+                                color: '#fff',
+                                borderRadius: '50%',
+                                padding: '2px 6px',
+                                fontSize: '0.7rem',
+                                fontWeight: 'bold'
+                            }}>
+                                {cartItemCount}
+                            </span>
+                        )}
+                    </button>
+
+                    <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)} aria-label="Menú">
+                        {isOpen ? (
+                            <X size={24} color="#fff" />
+                        ) : (
+                            <span className="hamburger-tricolor">
+                                <span className="bar bar-red"></span>
+                                <span className="bar bar-white"></span>
+                                <span className="bar bar-blue"></span>
+                            </span>
+                        )}
+                    </button>
+                </div>
             </div>
 
             {/* Mobile Menu Backdrop */}

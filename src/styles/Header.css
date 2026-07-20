@@ -162,3 +162,8 @@
         margin: 0 var(--spacing-xs);
     }
 }
+
+.desktop-hidden { display: none; }
+@media (max-width: 900px) {
+    .desktop-hidden { display: block; }
+}

@@ -136,6 +136,29 @@ app.post('/api/website-order', async (req, res) => {
   }
 });
 
+app.post('/api/save-quote', async (req, res) => {
+  try {
+    const { customer_name, customer_email, customer_phone, customer_address, cartItems, status } = req.body;
+    const erpUrl = process.env.ERP_URL || 'http://localhost:4000';
+    const erpRes = await fetch(`${erpUrl}/api/sales`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        clientName: `${customer_name} (${customer_email})`,
+        customerEmail: customer_email,
+        status: status || 'QUOTE',
+        discount: 0,
+        items: cartItems.map(i => ({ recipeId: i.productId || 1, quantity: i.quantity, unitPrice: i.price }))
+      })
+    });
+    const data = await erpRes.json();
+    res.status(200).json(data);
+  } catch (err) {
+    console.error('Error saving quote to ERP:', err.message);
+    res.status(500).json({ error: 'Failed to save quote' });
+  }
+});
+
 // Flow Integration Helpers
 const FLOW_API_KEY = process.env.FLOW_API_KEY || '';
 const FLOW_SECRET_KEY = process.env.FLOW_SECRET_KEY || '';

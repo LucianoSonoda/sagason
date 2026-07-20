@@ -20,6 +20,16 @@ export async function submitOrder(orderPayload) {
     orderPayload.hexColor = hexColor;
 
     try {
+        // Guardar el pedido como "FALLIDO" (o "QUOTE") en el ERP primero
+        await fetch('http://localhost:5000/api/save-quote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ...orderPayload,
+                status: 'QUOTE' // O 'FAILED' si prefieres
+            })
+        }).catch(err => console.warn("Failed to save initial quote to ERP:", err));
+
         // Setup a 30-second timeout for the local n8n server (to allow image uploads)
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000);
