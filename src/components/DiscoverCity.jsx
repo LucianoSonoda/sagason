@@ -2,8 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { MapPin, Star, Utensils, TreePine, Map, PlusCircle } from 'lucide-react';
+import { useSEO } from '../hooks/useSEO';
 
 export function DiscoverCity() {
+  useSEO({
+    title: 'Aventuras y Exploración Urbana | Sagason',
+    description: 'Descubre la red global de seguridad Sagason. Encuentra información sobre la protección y localización inteligente de tus pertenencias y mascotas en Chile.',
+    keywords: 'aventuras, exploración, localizador, placas inteligentes, qr, nfc, Sagason',
+    canonicalPath: '/aventuras'
+  });
+
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userLocation, setUserLocation] = useState({ city: "tu ciudad", country: "" });

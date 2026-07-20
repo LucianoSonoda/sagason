@@ -271,3 +271,666 @@
     .step-title { font-size: 1.8rem; }
     .progress-tracker { display: none; }
 }
+
+/* ── Precio "Desde $X" en tarjeta de producto ── */
+.precio-desde {
+    display: block;
+    margin-top: 6px;
+    background: rgba(14, 165, 233, 0.12);
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    color: #7dd3fc;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    white-space: normal;
+    line-height: 1.3;
+}
+
+.precio-desde em {
+    font-style: normal;
+    font-weight: 400;
+    color: #94a3b8;
+}
+
+.option-card.selected .precio-desde {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.3);
+    color: rgba(0, 0, 0, 0.7);
+}
+
+/* ── Caja de precio referencial en Step 4 ── */
+.precio-referencia-box {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.06), rgba(6, 182, 212, 0.04));
+    border: 1px solid rgba(14, 165, 233, 0.25);
+    border-left: 3px solid var(--color-primary);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 1.25rem;
+}
+
+.precio-ref-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #7dd3fc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.precio-ref-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.precio-ref-producto {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.precio-ref-valor {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.precio-ref-nota {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #94a3b8;
+}
+
+.precio-ref-disclaimer {
+    margin: 8px 0 0 0;
+    font-size: 0.72rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+/* ──────────────────────────────────────────────────────── */
+/* 🎨 3D ROTATING PRODUCT VISUALIZER STYLES                  */
+/* ──────────────────────────────────────────────────────── */
+
+.visualizer-container-3d {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 24px auto;
+    padding: 24px 20px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(9, 15, 30, 0.8) 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    overflow: visible;
+}
+
+.visualizer-badge-3d {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-primary);
+    font-weight: 800;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(14, 165, 233, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(14, 165, 233, 0.2);
+}
+
+.scene3d {
+    width: 220px;
+    height: 220px;
+    perspective: 1000px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: visible;
+}
+
+.object3d {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotate3dContinuous 15s linear infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.object3d:hover {
+    animation-play-state: paused;
+}
+
+@keyframes rotate3dContinuous {
+    0% {
+        transform: rotateX(-12deg) rotateY(0deg);
+    }
+    100% {
+        transform: rotateX(-12deg) rotateY(360deg);
+    }
+}
+
+/* Base Face Styles */
+.face3d {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-size: cover;
+    background-position: center;
+    user-select: none;
+}
+
+/* Double-sided card setup */
+.face3d.front {
+    transform: translateZ(4px);
+    z-index: 2;
+}
+
+.face3d.back {
+    transform: translateZ(-4px) rotateY(180deg);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* 🪵 Posavasos (Coasters) */
+.posavasos-front {
+    background: linear-gradient(135deg, #fef08a 0%, #ca8a04 100%);
+    color: #1e1b4b;
+    border: 1px solid rgba(254, 240, 138, 0.4);
+}
+
+.posavasos-back {
+    background-color: #c29168;
+    background-image: radial-gradient(#8f5c35 1.5px, transparent 0);
+    background-size: 8px 8px;
+    border: 1px solid rgba(143, 92, 53, 0.3);
+    color: #5c3415;
+}
+
+.posavasos-round {
+    border-radius: 50%;
+}
+
+.posavasos-side {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid #a16207;
+    box-sizing: border-box;
+    transform: translateZ(0px);
+    opacity: 0.8;
+}
+
+/* 🖱️ Mousepad (Neon gamer vibes) */
+.mousepad-card {
+    width: 180px;
+    height: 120px;
+    border-radius: 8px;
+}
+
+.mousepad-front {
+    background: linear-gradient(135deg, #1e1b4b 0%, #03001e 50%, #7303c0 100%);
+    color: #fff;
+    border: 1.5px solid var(--color-primary);
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.4), inset 0 0 10px rgba(14, 165, 233, 0.2);
+}
+
+.mousepad-back {
+    background: #18181b;
+    background-image: radial-gradient(#27272a 1px, transparent 0);
+    background-size: 4px 4px;
+    border: 1.5px solid #27272a;
+}
+
+/* 🖼️ Cuadro Metal HD */
+.cuadro-card {
+    width: 150px;
+    height: 170px;
+    border-radius: 6px;
+}
+
+.cuadro-front {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f8fafc;
+    border: 4px solid #020617;
+    position: relative;
+}
+
+.cuadro-sheen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05) 100%);
+    pointer-events: none;
+    border-radius: 2px;
+}
+
+.cuadro-back {
+    background: #020617;
+    border: 4px solid #1e293b;
+    color: #64748b;
+}
+
+.cuadro-hanger {
+    width: 25px;
+    height: 25px;
+    background: #475569;
+    border-radius: 4px;
+    position: absolute;
+    top: 20px;
+    box-shadow: inset 0 3px 5px rgba(0,0,0,0.5);
+}
+
+/* 🔑 Llaveros (Keychain tag & Ring) */
+.llaveros-tag {
+    width: 100px;
+    height: 100px;
+}
+
+.llaveros-ring {
+    width: 26px;
+    height: 26px;
+    border: 3.5px solid #cbd5e1;
+    border-radius: 50%;
+    position: absolute;
+    top: -38px;
+    left: 37px;
+    transform: rotateX(70deg) translateZ(0);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+    transform-style: preserve-3d;
+}
+
+.llaveros-chain {
+    width: 4px;
+    height: 16px;
+    background: linear-gradient(90deg, #94a3b8, #e2e8f0, #475569);
+    position: absolute;
+    top: -15px;
+    left: 48px;
+}
+
+.llaveros-front {
+    background: linear-gradient(135deg, #475569 0%, #94a3b8 50%, #64748b 100%);
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+}
+
+.llaveros-back {
+    background: linear-gradient(135deg, #334155 0%, #64748b 100%);
+    color: #1e293b;
+}
+
+/* 🦴 ID Mascotas (Pet tag bone, circular, heart) */
+.pet-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+}
+
+.pet-bone {
+    width: 130px;
+    height: 80px;
+    position: relative;
+    transform-style: preserve-3d;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.bone-body {
+    position: absolute;
+    width: 90px;
+    height: 50px;
+    left: 20px;
+    top: 15px;
+    background: #0ea5e9;
+    border-top: 1px solid rgba(255,255,255,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.bone-node {
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    background: #0ea5e9;
+    border-radius: 50%;
+}
+.bone-node.tl { top: 0px; left: 0px; border-bottom: 1px solid rgba(0,0,0,0.15); }
+.bone-node.bl { bottom: 0px; left: 0px; border-top: 1px solid rgba(255,255,255,0.2); }
+.bone-node.tr { top: 0px; right: 0px; border-bottom: 1px solid rgba(0,0,0,0.15); }
+.bone-node.br { bottom: 0px; right: 0px; border-top: 1px solid rgba(255,255,255,0.2); }
+
+.pet-front {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.pet-back {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* 🏥 ID Salud (Emergency tag) */
+.salud-card {
+    width: 140px;
+    height: 140px;
+}
+
+.salud-front {
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+    color: #fff;
+    border: 2px solid #ef4444;
+}
+
+.salud-back {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: #ef4444;
+    border: 2px solid #ef4444;
+}
+
+.salud-emblem {
+    color: #ef4444;
+    font-size: 2rem;
+    animation: heartbeat 2s infinite ease-in-out;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* 🧩 Rompecabezas (Puzzle) */
+.puzzle-front {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #fff;
+    position: relative;
+}
+
+.puzzle-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    opacity: 0.15;
+    background-image: radial-gradient(circle at 10px 10px, transparent 8px, #fff 8px, #fff 10px, transparent 10px),
+                      radial-gradient(circle at 30px 10px, transparent 8px, #fff 8px, #fff 10px, transparent 10px);
+    background-size: 40px 40px;
+}
+
+/* ☕ Tazones (3D Cylinder Mug) */
+.mug-cylinder {
+    width: 100px;
+    height: 110px;
+    transform-style: preserve-3d;
+    position: relative;
+    margin: 0 auto;
+}
+
+.mug-panel {
+    position: absolute;
+    width: 28px;
+    height: 110px;
+    left: 36px;
+    top: 0;
+    transform-style: preserve-3d;
+    background: #f8fafc;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 2px solid rgba(0,0,0,0.15);
+    box-sizing: border-box;
+}
+
+.mug-panel-magico {
+    background: #0f172a !important;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 2px solid rgba(0,0,0,0.4);
+}
+
+.mug-handle {
+    width: 32px;
+    height: 66px;
+    border: 7px solid #f1f5f9;
+    border-radius: 40% 50% 50% 40%;
+    position: absolute;
+    left: -20px;
+    top: 22px;
+    transform: rotateY(90deg) translateZ(0);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    background: transparent;
+}
+
+.mug-handle-magico {
+    border-color: #0f172a !important;
+}
+
+/* 🥤 Tumblers (Sleek tall metal cylinder) */
+.tumbler-cylinder {
+    width: 80px;
+    height: 150px;
+    transform-style: preserve-3d;
+    position: relative;
+    margin: 0 auto;
+}
+
+.tumbler-panel {
+    position: absolute;
+    width: 22px;
+    height: 150px;
+    left: 29px;
+    top: 0;
+    transform-style: preserve-3d;
+    background: #1e293b;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 3px solid rgba(0,0,0,0.3);
+    box-sizing: border-box;
+}
+
+.tumbler-cap {
+    width: 76px;
+    height: 10px;
+    background: linear-gradient(90deg, #475569, #cbd5e1, #334155, #cbd5e1);
+    border-radius: 50%;
+    position: absolute;
+    top: -8px;
+    left: 2px;
+    transform: rotateX(90deg);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* 🖨️ Impresión 3D (Nozzle + Bed + Rotating low-poly object) */
+.print-bed {
+    width: 140px;
+    height: 140px;
+    background: repeating-linear-gradient(0deg, rgba(14, 165, 233, 0.05), rgba(14, 165, 233, 0.05) 1px, transparent 1px, transparent 10px),
+                repeating-linear-gradient(90deg, rgba(14, 165, 233, 0.05), rgba(14, 165, 233, 0.05) 1px, transparent 1px, transparent 10px);
+    border: 1.5px solid rgba(14, 165, 233, 0.3);
+    border-radius: 6px;
+    transform: rotateX(65deg) translateZ(-40px);
+    position: absolute;
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.15);
+}
+
+.print-object {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    transform-style: preserve-3d;
+    animation: printFloat 3s ease-in-out infinite, printSpinY 10s linear infinite;
+}
+
+@keyframes printFloat {
+    0%, 100% { transform: translateY(0px) rotateX(15deg); }
+    50% { transform: translateY(-10px) rotateX(15deg); }
+}
+
+@keyframes printSpinY {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+
+.print-nozzle {
+    width: 8px;
+    height: 24px;
+    background: linear-gradient(to bottom, #94a3b8, #475569);
+    position: absolute;
+    top: -20px;
+    left: 71px;
+    clip-path: polygon(20% 0%, 80% 0%, 100% 70%, 50% 100%, 0% 70%);
+}
+
+.print-beam {
+    width: 2px;
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(14, 165, 233, 0.8), transparent);
+    position: absolute;
+    top: 4px;
+    left: 74px;
+    box-shadow: 0 0 8px #0ea5e9;
+    animation: beamFlicker 0.2s infinite alternate;
+}
+
+@keyframes beamFlicker {
+    0% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+/* 🎁 Otro / Caja de Regalo */
+.box-3d {
+    width: 100px;
+    height: 100px;
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+.box-face {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+}
+
+.box-front  { transform: rotateY(  0deg) translateZ(50px); }
+.box-back   { transform: rotateY(180deg) translateZ(50px); }
+.box-left   { transform: rotateY(-90deg) translateZ(50px); }
+.box-right  { transform: rotateY( 90deg) translateZ(50px); }
+.box-top    { transform: rotateX( 90deg) translateZ(50px); background: #f472b6; }
+.box-bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+.box-ribbon-v {
+    position: absolute;
+    width: 20px;
+    height: 100%;
+    left: 40px;
+    background: #fde047;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+.box-ribbon-h {
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    top: 40px;
+    background: #fde047;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+/* Text styles in 3D panels */
+.text-3d-title {
+    font-family: var(--font-mono);
+    font-size: 6px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    opacity: 0.65;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.text-3d-name {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+    margin: 4px 0;
+    max-width: 90%;
+    word-break: break-all;
+    text-transform: uppercase;
+}
+
+.text-3d-detail {
+    font-family: var(--font-main);
+    font-size: 8px;
+    font-weight: 600;
+    opacity: 0.8;
+    text-align: center;
+    max-width: 85%;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.text-3d-laser {
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.text-3d-sublimado {
+    color: inherit;
+}
+
+/* 📏 Responsive Mockup 2D Scaler */
+.mockup-scaler {
+    transform: scale(1);
+    transition: transform 0.3s ease;
+}
+
+@media (max-width: 850px) {
+    .mockup-scaler {
+        transform: scale(0.85);
+    }
+}
+
+@media (max-width: 768px) {
+    .mockup-scaler {
+        transform: scale(0.70);
+    }
+}
+
+@media (max-width: 500px) {
+    .mockup-scaler {
+        transform: scale(0.55);
+    }
+}
+
+@media (max-width: 400px) {
+    .mockup-scaler {
+        transform: scale(0.48);
+    }
+}

@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, Trash2, MailCheck, AlertTriangle, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 const API_BASE = 'https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod';
 
 export function Privacy() {
-    const [email, setEmail] = useState('');
-    const [requestStatus, setRequestStatus] = useState('idle'); // idle | loading | sent | error
+    useSEO({
+        title: 'Políticas de Privacidad y Seguridad | Sagason SpA',
+        description: 'En Sagason tu privacidad es nuestra prioridad absoluta. Conoce cómo protegemos tus datos de contacto y la información de tus placas inteligentes de seguridad.',
+        keywords: 'privacidad, seguridad, protección de datos, Sagason, elinar datos, borrar datos',
+        canonicalPath: '/privacidad'
+    });
+
+
     const [confirmStatus, setConfirmStatus] = useState(null); // null | loading | success | expired | error
 
     // Al cargar la página, detectar si viene con ?confirm=TOKEN
@@ -14,6 +21,7 @@ export function Privacy() {
         const params = new URLSearchParams(window.location.search);
         const token = params.get('confirm');
         if (token) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setConfirmStatus('loading');
             fetch(`${API_BASE}/privacy/confirm?token=${token}`)
                 .then(res => {
@@ -25,30 +33,7 @@ export function Privacy() {
         }
     }, []);
 
-    const handleRequestDeletion = async (e) => {
-        e.preventDefault();
-        setRequestStatus('loading');
 
-        // Disparamos la solicitud — sabemos que Lambda la procesa aunque CORS falle en la respuesta
-        fetch(`${API_BASE}/privacy`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-        }).then(res => {
-            if (res.ok) {
-                setRequestStatus('sent');
-            }
-        }).catch(() => {
-            // La Lambda puede haber procesado la solicitud aunque el navegador
-            // no pueda leer la respuesta por headers CORS del API Gateway.
-            // Mostramos éxito si el timeout se cumple.
-        });
-
-        // Si en 2.5 segundos no hubo respuesta limpia, asumimos que el correo fue enviado
-        setTimeout(() => {
-            setRequestStatus(s => s === 'loading' ? 'sent' : s);
-        }, 2500);
-    };
 
     // --- PANTALLA: Confirmación desde enlace del correo ---
     if (confirmStatus === 'loading') {
@@ -97,7 +82,7 @@ export function Privacy() {
                 <CenteredBox color="#ff4d4f">
                     <XCircle size={72} />
                     <h2 style={{ color: '#ff4d4f' }}>Error al Procesar</h2>
-                    <p>Hubo un problema al ejecutar el borrado. Por favor contáctanos directamente a <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)' }}>ventas@sagason.cl</a>.</p>
+                    <p>Hubo un problema al ejecutar el borrado. Por favor contáctanos directamente a <a href="mailto:sagason@sagason.cl" style={{ color: 'var(--color-primary)' }}>sagason@sagason.cl</a>.</p>
                 </CenteredBox>
             </PrivacyShell>
         );
@@ -120,14 +105,30 @@ export function Privacy() {
 
             {/* Texto de políticas */}
             <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2.5rem', lineHeight: 1.8 }}>
+                <h3>1. Información que recopilamos</h3>
                 <p>
                     Nuestra política de privacidad se rige por los más altos estándares de protección de datos personales. 
+                    Podemos recopilar tu nombre completo, número de teléfono y dirección de correo electrónico cuando interactúas con nuestro sitio web o <strong>nuestro número oficial de WhatsApp</strong>.
+                </p>
+                
+                <h3 style={{ marginTop: '2rem' }}>2. Uso de Inteligencia Artificial (WhatsApp)</h3>
+                <p>
+                    Nuestro canal de WhatsApp utiliza herramientas de Inteligencia Artificial para responder consultas frecuentes de manera automatizada y procesar tus pedidos de grabado láser. <strong>No utilizamos el contenido de tus mensajes privados ni tus fotografías para entrenar modelos de IA públicos.</strong> Las imágenes y diseños enviados para fabricación son conservados únicamente el tiempo necesario para completar tu orden.
+                </p>
+
+                <h3 style={{ marginTop: '2rem' }}>3. Compartir información con terceros</h3>
+                <p>
+                    Tus datos nunca son vendidos ni comercializados. Solo compartimos datos estrictamente necesarios con proveedores de servicios esenciales (ej. empresas de logística para el despacho de tus productos, y Meta Platforms Inc. como proveedor de la infraestructura técnica de WhatsApp).
+                </p>
+
+                <h3 style={{ marginTop: '2rem' }}>4. Tus Derechos (ARCO)</h3>
+                <p>
                     Si deseas ejercer tus derechos de acceso, rectificación, cancelación u oposición (ARCO), 
                     puedes hacerlo directamente desde tu <strong>Panel de Control</strong> tras iniciar sesión.
                 </p>
-                <p style={{ marginTop: '1rem' }}>
+                <p style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: '8px' }}>
                     Si tienes dudas sobre el tratamiento de tu información, escríbenos a 
-                    <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)', marginLeft: '5px' }}>ventas@sagason.cl</a>.
+                    <a href="mailto:sagason@sagason.cl" style={{ color: 'var(--color-primary)', marginLeft: '5px', fontWeight: 'bold' }}>sagason@sagason.cl</a>.
                 </p>
             </div>
 
@@ -156,3 +157,4 @@ function CenteredBox({ children, color }) {
         </div>
     );
 }
+

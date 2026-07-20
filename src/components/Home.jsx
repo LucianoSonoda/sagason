@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Image, PenTool, Truck, Shield, ChevronLeft, ChevronRight, Zap, Target, Cpu, X } from 'lucide-react';
+import { ArrowRight, Box, Shield, Zap, Search, Key, Smartphone, Lock, Eye, CheckCircle, Gift, Truck, Target, Cpu, MapPin, Sparkles, X, ChevronLeft, ChevronRight, Dog, Heart, Image as ImageIcon, Briefcase, Coffee, Puzzle, CupSoda, Printer } from 'lucide-react';
 import '../styles/Home.css';
 import imgKanji_Kaeru from '../assets/kanji_kaeru.png';
 import imgKanji_Kizuna from '../assets/kanji_kizuna.png';
@@ -9,41 +9,17 @@ import imgKanji_Kansha from '../assets/kanji_kansha.png';
 import imgKanji_Kenshin from '../assets/kanji_kenshin.png';
 import sagasonSymbol from '/sagason-symbol.png';
 import { DiscoverCity } from './DiscoverCity';
-import { CustomForm } from './CustomForm';
-import { Gallery } from './Gallery';
 
-function useWindowWidth() {
-    const [width, setWidth] = useState(window.innerWidth);
-    useEffect(() => {
-        const onResize = () => setWidth(window.innerWidth);
-        window.addEventListener('resize', onResize);
-        return () => window.removeEventListener('resize', onResize);
-    }, []);
-    return width;
-}
+import { useSEO } from '../hooks/useSEO';
+
 
 export function Home() {
-    const [stats, setStats] = useState({ active: 5, donated: 2 }); // Valores iniciales (fallback)
-
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const res = await fetch('https://s4k.sagason.cl/report', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_public_stats' })
-                });
-                const data = await res.json();
-                if (data.total_active !== undefined) {
-                    // Mantenemos el "+" visual agregando 1 o usando el valor real
-                    setStats({ active: data.total_active, donated: data.total_donated });
-                }
-            } catch (err) {
-                console.error("Error fetching stats:", err);
-            }
-        };
-        fetchStats();
-    }, []);
+    useSEO({
+        title: 'Sagason SpA | Sublimación, Personalización y Cuadros de Metal',
+        description: 'Especialistas en sublimación y personalización en Chile. Destaca con nuestros cuadros de metal, tazones, rompecabezas y más productos únicos. ¡Hazlo inolvidable!',
+        keywords: 'sublimación, personalización, cuadros metal, cuadros de metal, sublimación en metal, regalos personalizados, tazones, placas, Sagason, Chile',
+        canonicalPath: '/'
+    });
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -76,46 +52,44 @@ export function Home() {
                     animate="visible"
                 >
                     <motion.div className="hero-label" variants={itemVariants}>
-                        <Zap size={14} /> <span>TECNOLOGÍA LÁSER 4K</span>
+                        <Zap size={14} /> <span>SUBLIMACIÓN ALTA CALIDAD · GRABADO A LÁSER · HECHO CON ALMA</span>
                     </motion.div>
                     <motion.h1 className="hero-title" variants={itemVariants}>
-                        PRECISIÓN QUE <br />
-                        <span className="text-gradient">INMORTALIZA</span>
+                        LOS MOMENTOS QUE <br />
+                        <span className="text-gradient">IMPORTAN PARA SIEMPRE</span>
                     </motion.h1>
                     <motion.p className="hero-subtitle" variants={itemVariants}>
-                        Cuadros de metal con acabado fotográfico y grabado láser de alta definición. Personalización premium para marcas, hogares y seguridad SOS.
+                        Transformamos tus recuerdos más especiales en piezas de metal que duran toda la vida. Para tu hogar, tu mascota, las personas que más quieres.
                     </motion.p>
                     <motion.div className="cta-group" variants={itemVariants}>
-                        <Link to="/#custom" className="btn btn-primary magnetic">
-                            Personalizar Ahora <ArrowRight size={20} />
+                        <Link to="/id-mascotas" className="btn btn-primary magnetic">
+                            ID Mascotas <ArrowRight size={20} />
                         </Link>
-                        <Link to="/#gallery" className="btn btn-glass">
-                            Ver Catálogo
+                        <Link to="/cuadros-metal-hd" className="btn btn-glass">
+                            Cuadros HD
                         </Link>
                     </motion.div>
                     <motion.div className="hero-stats" variants={itemVariants}>
                         <div className="stat-item">
-                            <span className="stat-value">{stats.active}+</span>
-                            <span className="stat-label">Placas Entregadas</span>
-                        </div>
-                        <div className="stat-divider"></div>
-                        <div className="stat-item">
-                            <span className="stat-value">{stats.donated}+</span>
-                            <span className="stat-label">Placas Donadas</span>
-                        </div>
-                        <div className="stat-divider"></div>
-                        <div className="stat-item">
                             <span className="stat-value">4K</span>
-                            <span className="stat-label">Resolución DPI</span>
+                            <span className="stat-label">Resolución Láser</span>
                         </div>
                         <div className="stat-divider"></div>
                         <div className="stat-item">
                             <span className="stat-value">72h</span>
                             <span className="stat-label">Envío Rápido</span>
                         </div>
+                        <div className="stat-divider"></div>
+                        <div className="stat-item">
+                            <span className="stat-value">100%</span>
+                            <span className="stat-label">Personalizable</span>
+                        </div>
                     </motion.div>
                 </motion.div>
             </section>
+
+            {/* Catálogo de Productos (Silos) - Oculto por solicitud del cliente */}
+            {/* <ProductsGrid /> */}
 
             {/* Símbolo de confianza */}
             <TrustSymbolSection />
@@ -126,21 +100,11 @@ export function Home() {
             {/* Services Overview - Carrusel */}
             <ServicesCarousel />
 
-            {/* Gallery Section */}
-            <div id="gallery">
-                <Gallery />
-            </div>
-
-            {/* Customizer Section */}
-            <div id="custom">
-                <CustomForm />
-            </div>
         </div>
     );
 }
 
 function TrustSymbolSection() {
-    const isMobile = useWindowWidth() < 640;
     return (
         <motion.section
             initial={{ opacity: 0, scale: 0.95 }}
@@ -159,18 +123,19 @@ function TrustSymbolSection() {
                     <img
                         src={sagasonSymbol}
                         alt="Símbolo Sagason"
+                        loading="lazy"
                         className="trust-symbol-img"
                     />
                 </div>
 
                 <h2 className="trust-title">
-                    DONDE ESTÁ ESTE SÍMBOLO, <span className="text-primary">HAY CONFIANZA</span>
+                    DONDE ESTÁ ESTE SÍMBOLO, <span className="text-primary">ALGUIEN CUIDA</span>
                 </h2>
                 <p className="trust-desc">
-                    El ecosistema Sagason garantiza seguridad y durabilidad. Nuestros QR son verificados y seguros, diseñados para ayudar sin comprometer tu privacidad.
+                    Cada placa Sagason lleva una promesa: si algo se pierde, el camino de regreso siempre existe. Nuestros QR conectan a quien ayuda contigo, sin exponer tus datos ni pedir apps.
                 </p>
                 <div className="trust-features">
-                    {['Sin Datos Expuestos', 'Sin Apps Extra', 'Privacidad Total'].map(t => (
+                    {['Tu privacidad, intacta', 'Sin apps, sin barreras', 'Siempre disponible'].map(t => (
                         <div key={t} className="trust-feature-item">
                             <Shield size={14} /> <span>{t}</span>
                         </div>
@@ -181,18 +146,61 @@ function TrustSymbolSection() {
     );
 }
 
+const PRODUCT_SILOS = [
+    { id: 'id-mascotas', title: 'ID Mascotas', desc: 'Placas QR de alta resistencia para tu mejor amigo.', icon: <Dog size={32} />, path: '/id-mascotas' },
+    { id: 'id-salud', title: 'ID Salud', desc: 'Protección de historial médico en emergencias.', icon: <Heart size={32} />, path: '/id-salud' },
+    { id: 'cuadros-metal', title: 'Cuadros HD', desc: 'Arte sublimado en metal. Durabilidad eterna.', icon: <ImageIcon size={32} />, path: '/cuadros-metal-hd' },
+    { id: 'llaveros', title: 'Llaveros Metálicos', desc: 'Grabado láser para tus llaves o patentes.', icon: <Key size={32} />, path: '/llaveros' },
+    { id: 'tazones', title: 'Mugs & Tazones', desc: 'Cerámica AAA para empezar tu día con estilo.', icon: <Coffee size={32} />, path: '/tazones' },
+    { id: 'tumblers', title: 'Tumblers Grabados', desc: 'Aislamiento térmico extremo y grabado permanente.', icon: <CupSoda size={32} />, path: '/tumblers' },
+    { id: 'rompecabezas', title: 'Rompecabezas', desc: 'Arma tus recuerdos. Sublimación brillante.', icon: <Puzzle size={32} />, path: '/rompecabezas' },
+    { id: 'impresion-3d', title: 'Impresión 3D', desc: 'Fabricación aditiva y repuestos a medida.', icon: <Printer size={32} />, path: '/impresion-3d' },
+    { id: 'corporativo', title: 'B2B & Empresas', desc: 'Merchandising premium en volumen.', icon: <Briefcase size={32} />, path: '/regalos-corporativos' }
+];
+
+function ProductsGrid() {
+    return (
+        <section className="container" style={{ padding: '6rem 1rem' }}>
+            <div className="section-header" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                <span className="section-label">NUESTROS PRODUCTOS</span>
+                <h2 className="section-title">DESCUBRE NUESTRAS <span className="text-primary">CATEGORÍAS</span></h2>
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+                {PRODUCT_SILOS.map((product) => (
+                    <motion.div 
+                        key={product.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        whileHover={{ y: -5 }}
+                    >
+                        <Link to={product.path} className="glass-panel glow-card" style={{ display: 'block', padding: '2rem', borderRadius: '16px', textDecoration: 'none', color: 'inherit', height: '100%' }}>
+                            <div style={{ color: 'var(--color-primary)', marginBottom: '1rem' }}>
+                                {product.icon}
+                            </div>
+                            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>{product.title}</h3>
+                            <p style={{ color: 'var(--color-text-dim)', fontSize: '0.95rem', lineHeight: '1.5' }}>{product.desc}</p>
+                        </Link>
+                    </motion.div>
+                ))}
+            </div>
+        </section>
+    );
+}
+
 const SERVICIOS = [
-    { icon: <Target size={32} />, title: 'Nitidez Extrema', desc: 'Acabados en 4K que capturan cada detalle con una fidelidad asombrosa sobre metal real.' },
-    { icon: <Cpu size={32} />, title: 'Grabado Digital', desc: 'Procesos automatizados de alta precisión para resultados idénticos en cada pieza.' },
-    { icon: <Shield size={32} />, title: 'Resistencia Total', desc: 'Nuestras placas soportan climas extremos, rayos UV y el paso de las décadas.' },
-    { icon: <Truck size={32} />, title: 'Logística Global', desc: 'Envíos a todo el mundo con entregas garantizadas (aplican tasas de transporte internacional).' },
+    { icon: <Target size={32} />, title: 'Cada detalle, vivo', desc: 'La resolución 4K captura lo que el ojo apenas nota: la textura de un abrazo, la luz de ese día especial.' },
+    { icon: <Cpu size={32} />, title: 'Hecho solo para ti', desc: 'No hay dos piezas iguales. Cada grabado es único porque el recuerdo que guarda también lo es.' },
+    { icon: <Shield size={32} />, title: 'Dura lo que el amor', desc: 'Metal que resiste décadas, lluvia, sol y tiempo. Porque lo que más importa merece no desvanecerse.' },
+    { icon: <Truck size={32} />, title: 'Llega donde estés', desc: 'Enviamos a todo Chile y al mundo. Tu pieza llega lista para regalar, colgar o atesorar.' },
 ];
 
 function ServicesCarousel() {
     const [[current, direction], setCurrent] = useState([0, 0]);
     const [paused, setPaused] = useState(false);
     const intervalRef = useRef(null);
-    const isMobile = useWindowWidth() < 640;
+
 
     const paginate = (dir) => {
         const next = (current + dir + SERVICIOS.length) % SERVICIOS.length;
@@ -218,8 +226,8 @@ function ServicesCarousel() {
     return (
         <section className="services-section container">
             <div className="section-header">
-                <span className="section-label">EXCELENCIA OPERATIVA</span>
-                <h2 className="section-title">DETALLES QUE <span className="text-primary">MARCAN DIFERENCIA</span></h2>
+                <span className="section-label">POR QUÉ SAGASON</span>
+                <h2 className="section-title">HECHO PARA <span className="text-primary">DURAR CONTIGO</span></h2>
             </div>
 
             <div className="carousel-container"
@@ -263,23 +271,18 @@ function ServicesCarousel() {
 }
 
 const PILARES = [
-    { name: 'Kaeru', sub: 'Regresar', desc: 'Nuestra promesa fundamental. Al escanear el tag, activas un puente digital inmediato que reduce la incertidumbre del extravío.', kanji: imgKanji_Kaeru },
-    { name: 'Kizuna', sub: 'Vínculo', desc: 'Gestionas la información de quienes más amas en un entorno seguro y siempre disponible.', kanji: imgKanji_Kizuna },
-    { name: 'Kansha', sub: 'Gratitud', desc: 'Diseñamos la interfaz para que quien ayuda lo haga con facilidad. La gratitud permite un ciclo eterno de ayuda al prójimo.', kanji: imgKanji_Kansha },
-    { name: 'Kenshin', sub: 'Dedicación', desc: 'Desde Chile hacia el mundo, cada placa es grabada con precisión láser para resistir el tiempo y la aventura.', kanji: imgKanji_Kenshin },
+    { name: 'Kaeru', sub: 'Regresar', desc: 'La promesa que lo une todo. Si tu mascota se pierde, si tu mochila queda en el metro, si alguien necesita ayuda — un escaneo es todo lo que se necesita para volver a casa.', kanji: imgKanji_Kaeru },
+    { name: 'Kizuna', sub: 'Vínculo', desc: 'Los lazos que nos importan merecen protección. Guardamos la información de quienes más quieres de forma segura, para que el amor siempre encuentre el camino.', kanji: imgKanji_Kizuna },
+    { name: 'Kansha', sub: 'Gratitud', desc: 'Quien ayuda merece que sea fácil hacerlo. Diseñamos cada detalle para que un extraño pueda devolverte lo tuyo con un solo gesto, y sentir que valió la pena.', kanji: imgKanji_Kansha },
+    { name: 'Kenshin', sub: 'Dedicación', desc: 'Cada placa sale de nuestras manos con el cuidado de quien sabe que guardará un recuerdo. Grabado láser de precisión, desde Chile, para durar toda una vida.', kanji: imgKanji_Kenshin },
 ];
 
 function S4KCarousel() {
-    const [[current, direction], setCurrent] = useState([0, 0]);
+    const [[current, _direction], setCurrent] = useState([0, 0]);
     const [paused, setPaused] = useState(false);
     const [isWaitlistOpen, setWaitlistOpen] = useState(false);
     const intervalRef = useRef(null);
-    const isMobile = useWindowWidth() < 640;
 
-    const paginate = (dir) => {
-        const next = (current + dir + PILARES.length) % PILARES.length;
-        setCurrent([next, dir]);
-    };
 
     useEffect(() => {
         if (paused) return;
@@ -290,9 +293,9 @@ function S4KCarousel() {
     }, [paused, current]);
 
     const variants = {
-        enter: (dir) => ({ opacity: 0, filter: 'blur(10px)' }),
+        enter: () => ({ opacity: 0, filter: 'blur(10px)' }),
         center: { opacity: 1, filter: 'blur(0px)' },
-        exit: (dir) => ({ opacity: 0, filter: 'blur(10px)' }),
+        exit: () => ({ opacity: 0, filter: 'blur(10px)' }),
     };
 
     const pilar = PILARES[current];
@@ -300,8 +303,8 @@ function S4KCarousel() {
     return (
         <section className="philosophy-section container">
             <div className="section-header">
-                <span className="section-label">ADN SAGASON</span>
-                <h2 className="section-title">FILOSOFÍA <span className="text-primary">SAGASON 4K</span></h2>
+                <span className="section-label">LO QUE NOS MUEVE</span>
+                <h2 className="section-title">EL ALMA DETRÁS DE <span className="text-primary">CADA PIEZA</span></h2>
             </div>
 
             <div className="pilar-carousel"
@@ -323,6 +326,7 @@ function S4KCarousel() {
                                 <img
                                     src={pilar.kanji}
                                     alt=""
+                                    loading="lazy"
                                     className="pilar-kanji-bg"
                                 />
                             )}
@@ -352,7 +356,6 @@ function S4KCarousel() {
                 <Link to="/aventuras" className="btn btn-primary glow">🗺️ Aventuras</Link>
                 <Link to="/como-funciona" className="btn btn-glass">¿Cómo funciona?</Link>
                 <Link to="/tecnologia" className="btn btn-glass">Tecnología</Link>
-                <a href="/dashboard.html" className="btn btn-glass">Panel de Control</a>
                 <button onClick={() => setWaitlistOpen(true)} className="btn btn-glass">Lista de Espera</button>
             </div>
 
@@ -384,7 +387,8 @@ function WaitlistModal({ isOpen, onClose }) {
             } else {
                 throw new Error();
             }
-        } catch (err) {
+        } catch (e) {
+            console.error(e);
             setStatus('error');
             setMessage('Hubo un error. Inténtalo de nuevo.');
         }

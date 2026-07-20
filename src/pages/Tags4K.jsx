@@ -2,8 +2,16 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Zap, Globe, Cpu } from 'lucide-react';
 import { GlobalStatsMap } from '../components/GlobalStatsMap';
+import { useSEO } from '../hooks/useSEO';
 
 export function Tags4K() {
+    useSEO({
+        title: 'Comunidad Sagason 4K | Red Global de Seguridad',
+        description: 'Únete a la red global de seguridad Sagason 4K. Protege tus pertenencias y mascotas a nivel mundial gracias a nuestro sistema de escaneo inteligente sin descargas.',
+        keywords: 'comunidad, red global, qr mascotas, qr inteligente, sos, Sagason 4K',
+        canonicalPath: '/tags-4k'
+    });
+
     return (
         <div className="tags4k-page container" style={{ paddingTop: '100px', paddingBottom: '60px' }}>
             <motion.div 

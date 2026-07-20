@@ -1,0 +1,198 @@
+﻿import React, { useState } from 'react';
+import { useCart } from '../context/CartContext';
+import { motion } from 'framer-motion';
+import { Coffee, ArrowRight, Upload, Droplet } from 'lucide-react';
+import { Mockup2DViewer } from '../components/Mockup2DViewer';
+import { CheckoutExtras } from '../components/CheckoutExtras';
+import { ProductGallery } from '../components/ProductGallery';
+import { useSEO } from '../hooks/useSEO';
+
+
+import '../styles/Home.css';
+
+export default function Tazones() {
+    useSEO({
+        title: 'Tazones Personalizados y Mágicos | Sagason SpA',
+        description: 'Tazones sublimados con tus fotos, logos o frases. Resistentes a microondas y lavavajillas. Descubre nuestro tazón mágico que revela la imagen con el calor.',
+        keywords: 'tazones personalizados, tazon magico, mug personalizado, regalo tazon, Sagason, Chile',
+        canonicalPath: '/tazones'
+    });
+
+    const [fileUrl, setFileUrl] = useState(null);
+    const [fileName, setFileName] = useState('');
+    
+    const [category, setCategory] = useState('Personalización & Ambiente');
+    const [size, setSize] = useState('11oz Blanco');
+    
+    const [totalPrice, setTotalPrice] = useState(9990);
+    const { addToCart, setIsDrawerOpen } = useCart();
+    const [checkoutData, setCheckoutData] = useState({});
+
+    const CATEGORIES = [
+        'Personalización & Ambiente',
+        'Videojuegos (Gaming)',
+        'Películas / Series',
+        'Deportes',
+        'Empresas',
+        'Foto Original',
+        'Otro'
+    ];
+    
+    const SIZES = ['11oz Blanco', '11oz Mágico', 'Otro'];
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFileName(file.name);
+            setFileUrl(URL.createObjectURL(file));
+            const reader = new FileReader();
+            reader.onloadend = () => setFileDataUrl(reader.result);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleAddToCart = () => {
+        const cartItem = {
+            productId: Date.now().toString(),
+            name: 'Tazón Personalizado/Mágico', 
+            price: totalPrice || 0,
+            quantity: 1,
+            options: typeof checkoutData !== 'undefined' ? checkoutData : {}
+        };
+        addToCart(cartItem);
+    };
+
+    const handleBuyNow = () => {
+        handleAddToCart();
+        setIsDrawerOpen(true);
+    };
+
+    const containerVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+    };
+
+    return (
+        <div className="home-wrapper" style={{ paddingTop: '80px', minHeight: '100vh' }}>
+            <section className="container" style={{ padding: '4rem 1rem' }}>
+                <motion.div 
+                    initial="hidden" 
+                    animate="visible" 
+                    variants={containerVariants}
+                    className="glass-panel"
+                    style={{ padding: '3rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '2rem' }}
+                >
+                    <div style={{ textAlign: 'center' }}>
+                        <span style={{ color: 'var(--color-primary)', fontWeight: 'bold', letterSpacing: '2px', fontSize: '0.9rem' }}>MUGS & TAZONES</span>
+                        <h1 style={{ fontSize: '2.5rem', margin: '1rem 0' }}>Empieza el Día con <span className="text-gradient">Tu Estilo</span></h1>
+                        <p style={{ maxWidth: '600px', margin: '0 auto', color: 'var(--color-text-dim)', fontSize: '1.1rem', lineHeight: '1.6' }}>
+                            Tazón Premium Photo USA para sublimación. Una obra de arte funcional que combina elegancia con versatilidad. Su polímero Premium está diseñado para resistir exigentes ciclos de lavavajillas sin perder la intensidad de sus colores.
+                        </p>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginTop: '2rem' }}>
+                        {/* Configurator */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)' }}>
+                                <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <Coffee size={24} color="var(--color-primary)" />
+                                    Personaliza tu Tazón
+                                </h3>
+                                
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>Categoría / Temática</label>
+                                    <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: 'white' }}>
+                                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                    </select>
+                                </div>
+                                
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>Tipo de Tazón</label>
+                                    <select value={size} onChange={(e) => setSize(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(255,255,255,0.08)', color: 'white' }}>
+                                        {SIZES.map(s => <option key={s} value={s}>{s}</option>)}
+                                    </select>
+                                </div>
+                                
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>Sube tu Diseño o Foto</label>
+                                    <div className="file-upload" style={{ position: 'relative', background: 'rgba(0,0,0,0.3)', padding: '20px', borderRadius: '8px', border: '1px dashed var(--color-primary)', textAlign: 'center' }}>
+                                        <input
+                                            type="file"
+                                            accept="image/png, image/jpeg"
+                                            onChange={handleFileChange}
+                                            style={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, opacity: 0, cursor: 'pointer' }}
+                                        />
+                                        <Upload size={24} style={{ margin: '0 auto 0.5rem auto', color: fileName ? 'var(--color-primary)' : 'inherit' }} />
+                                        {fileName ? (
+                                            <p style={{ color: 'var(--color-primary)', fontWeight: 'bold', margin: '0', fontSize: '0.9rem' }}>{fileName}</p>
+                                        ) : (
+                                            <p style={{ margin: '0', fontSize: '0.9rem' }}>Haz clic o arrastra tu archivo aquí</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <CheckoutExtras hideUpload={true} 
+                                    basePrice={9990} 
+                                    onTotalChange={(newTotal) => setTotalPrice(newTotal)} 
+                                    onDataChange={(data) => setCheckoutData(data)}
+                                />
+
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', marginBottom: '1.5rem', marginTop: '1.5rem' }}>
+                                    <span style={{ fontSize: '1.2rem' }}>Total:</span>
+                                    <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>${totalPrice.toLocaleString('es-CL')}</span>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                    <button 
+                                        type="button"
+                                        onClick={handleAddToCart}
+                                        className="btn btn-secondary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', border: '1px solid var(--color-primary)', background: 'transparent', color: 'var(--color-primary)', cursor: 'pointer', borderRadius: '8px' }}
+                                    >
+                                        Agregar al Carrito
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={handleBuyNow}
+                                        className="btn btn-primary" 
+                                        style={{ flex: 1, padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', cursor: 'pointer', borderRadius: '8px', color: 'white', background: 'var(--color-primary)', border: 'none' }}
+                                    >
+                                        Comprar Ahora
+                                    </button>
+                                </div>
+                                {!fileUrl && <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#ff4d4f', marginTop: '1rem' }}>Sube una imagen para habilitar el botón.</p>}
+                            </div>
+                        </div>
+
+                        {/* Viewer */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <h3 style={{ marginBottom: '0.5rem' }}>Vista Previa Extendida</h3>
+                            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-dim)', marginBottom: '1rem' }}>Así se verá tu diseño extendido sobre la superficie del tazón.</p>
+                            
+                            <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '1rem', border: '1px solid rgba(255,255,255,0.2)' }}>
+                                <Mockup2DViewer product="tazones" fileUrl={fileUrl} />
+                            </div>
+
+                            <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                                <div style={{ background: 'rgba(37, 99, 235, 0.1)', padding: '12px', borderRadius: '50%' }}>
+                                    <Droplet size={24} color="var(--color-primary)" />
+                                </div>
+                                <div>
+                                    <h4 style={{ marginBottom: '0.2rem' }}>Apto para Lavavajillas</h4>
+                                    <p style={{ fontSize: '0.9rem', color: 'var(--color-text-dim)', lineHeight: '1.5' }}>La tinta penetra el polímero de la cerámica, garantizando que no se despintará con el lavado ni el uso en microondas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <ProductGallery category="TAZONES" />
+                </motion.div>
+            </section>
+        </div>
+    );
+}
+
+
+
+
+

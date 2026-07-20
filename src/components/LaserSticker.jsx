@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Search, Loader2, Scissors, History, ShieldCheck, Zap, Mail, RefreshCw } from 'lucide-react';
 import { generateHeraldryConcepts, generateStickerImage } from '../services/heraldryService';
 
@@ -119,15 +119,7 @@ export function LaserSticker() {
     }
   };
 
-  const currentAgentInfo = () => {
-    switch (state) {
-      case AgentState.HISTORIAN: return { icon: History, text: 'AGENTE HISTORIADOR: Analizando 3 conceptos...', color: 'text-blue-400' };
-      case AgentState.DESIGNER: return { icon: Scissors, text: 'AGENTE DISEÑADOR: Vectorizando formas...', color: 'text-orange-400' };
-      case AgentState.AUDITOR: return { icon: ShieldCheck, text: 'AGENTE AUDITOR: Validando compatibilidad...', color: 'text-green-400' };
-      case AgentState.GENERATING_IMAGE: return { icon: Zap, text: 'GENERADOR: Renderizando renders 2D...', color: 'text-yellow-400' };
-      default: return null;
-    }
-  };
+
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#000', color: '#fff', fontFamily: 'monospace' }}>

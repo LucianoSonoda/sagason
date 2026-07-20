@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { Upload, Send, Coffee, Mouse, Image as ImageIcon, Key, Dog, Heart, Puzzle, CupSoda, Package, CheckCircle, Printer, Award } from 'lucide-react';
 import '../styles/CustomForm.css';
+import { Universal3DViewer } from './Universal3DViewer';
+import { Mockup2DViewer } from './Mockup2DViewer';
 
 const PRODUCTS = [
     { id: 'posavasos', icon: Coffee, title: 'POSAVASOS', desc: 'Set de posavasos de MDF con corcho' },
@@ -44,6 +46,10 @@ const SIZES = {
     'otro': ['Consultar tamaño']
 };
 
+const API = 'https://s4k.sagason.cl';
+
+const formatPrecio = (n) => n > 0 ? `$${n.toLocaleString('es-CL')}` : 'Consultar';
+
 export function CustomForm() {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
@@ -52,12 +58,63 @@ export function CustomForm() {
         category: '',
         size: ''
     });
+    const [precios, setPrecios] = useState({});
+    const [nameText, setNameText] = useState('');
+    const [messageText, setMessageText] = useState('');
+    const [wantsCustomBox, setWantsCustomBox] = useState(false);
 
     const [fileName, setFileName] = useState('');
+    const [fileUrl, setFileUrl] = useState(null);
     const [fileError, setFileError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+    const [currentOrderId, setCurrentOrderId] = useState('');
     const qrInputRef = useRef(null);
+
+    // Cargar precios de referencia
+    useEffect(() => {
+        const loadPrecios = async () => {
+            let backendPrecios = {};
+            try {
+                // Ahora lee directo de nuestro backend local (Docker), el cual consulta al ERP
+                const res = await fetch('http://localhost:5000/api/prices');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data)) {
+                        data.forEach(item => {
+                            if (item.websiteCode) {
+                                backendPrecios[item.websiteCode] = item;
+                            }
+                        });
+                    } else if (Object.keys(data).length > 0) {
+                        backendPrecios = data;
+                    }
+                }
+            } catch (e) {
+                console.log("No se pudo cargar precios del ERP", e);
+            }
+            
+            let finalPrecios = {};
+            // Leer estático como base
+            try {
+                const res = await fetch('/precios.json');
+                if (res.ok) {
+                    finalPrecios = await res.json();
+                }
+            } catch (_) {}
+
+            // Sobrescribir con lo del ERP (esto ahora incluye el SKU y el customBoxCost)
+            for (const key of Object.keys(backendPrecios)) {
+                finalPrecios[key] = {
+                    ...(finalPrecios[key] || {}),
+                    ...backendPrecios[key],
+                    desde: backendPrecios[key].basePrice || (finalPrecios[key] ? finalPrecios[key].desde : 0)
+                };
+            }
+            setPrecios(finalPrecios);
+        };
+        loadPrecios();
+    }, []);
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
@@ -65,6 +122,7 @@ export function CustomForm() {
         setSubmitStatus(null);
         const form = e.target;
         const orderId = `PED-${Date.now().toString(36).toUpperCase()}`;
+        setCurrentOrderId(orderId);
         
         // --- Registro Silencioso en Base de Datos de Ordenes (AWS) ---
         const emailInputForDb = form.querySelector('input[name="email"]');
@@ -74,10 +132,9 @@ export function CustomForm() {
         
         if (emailInputForDb && emailInputForDb.value) {
             try {
-                // Hacemos el llamado a tu futura API de AWS sin esperar respuesta (para no frenar el formulario)
-                fetch('https://gmvj2qt2af.execute-api.sa-east-1.amazonaws.com/prod/customers', {
+                // Registro silencioso directo al ERP a través de nuestro backend Node.js
+                fetch('http://localhost:5000/api/website-order', {
                     method: 'POST',
-                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         pedido_id: orderId,
@@ -87,9 +144,10 @@ export function CustomForm() {
                         message: messageInputForDb ? messageInputForDb.value : '',
                         product: selections.product,
                         category: selections.category,
-                        size: selections.size
+                        size: selections.size,
+                        wantsCustomBox: wantsCustomBox
                     })
-                }).catch(err => console.log("AWS Log Error:", err));
+                }).catch(err => console.log("ERP Proxy Log Error:", err));
             } catch (err) {
                 console.error("DB Save Error:", err);
             }
@@ -177,12 +235,15 @@ export function CustomForm() {
             if (file.size > 10 * 1024 * 1024) {
                 setFileError('El archivo es demasiado grande (> 10MB). Por favor, envía imágenes más pesadas a nuestro correo.');
                 setFileName('');
+                setFileUrl(null);
                 e.target.value = '';
             } else {
                 setFileName(file.name);
+                setFileUrl(URL.createObjectURL(file));
             }
         } else {
             setFileName('');
+            setFileUrl(null);
         }
     };
 
@@ -196,6 +257,22 @@ export function CustomForm() {
     /* (useEffect timeout removed to prevent false error messages) */
 
     if (submitStatus === 'success') {
+        const prodId = PRODUCTS.find(p => p.title === selections.product)?.id || 'otro';
+        const sizeId = `${prodId}-${selections.size.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
+        const selectedSku = precios[sizeId]?.sku || '';
+        const customBoxCost = precios[sizeId]?.customBoxCost || 0;
+
+        const wpPhone = '56988821357'; 
+        const wpMessage = `¡Hola Sagason! Acabo de hacer un pedido y quiero coordinar detalles.\n\n` +
+                          `🆔 *Pedido:* ${currentOrderId}\n` +
+                          `📦 *Producto:* ${selections.product}\n` +
+                          `🏷️ *Categoría:* ${selections.category}\n` +
+                          `📏 *Formato:* ${selections.size}\n` +
+                          (selectedSku ? `🔢 *SKU:* ${selectedSku}\n` : '') +
+                          (wantsCustomBox ? `🎁 *Embalaje Customizado:* Sí\n` : '') +
+                          `\nQuedo atento/a para enviar las imágenes o detalles adicionales.`;
+        const whatsappUrl = `https://wa.me/${wpPhone}?text=${encodeURIComponent(wpMessage)}`;
+
         return (
             <section id="custom" className="custom-section container">
                 <div className="section-header">
@@ -207,7 +284,14 @@ export function CustomForm() {
                         <div style={{ color: 'var(--color-primary)', marginBottom: '1rem' }}><CheckCircle size={64} /></div>
                         <h3>¡Gracias por preferir Sagason!</h3>
                         <p style={{ marginTop: '1rem', marginBottom: '2rem' }}>Hemos recibido tus detalles y archivos. Nos pondremos en contacto contigo prontamente al correo que nos indicaste.</p>
-                        <button className="btn btn-primary" onClick={() => window.location.reload()}>Hacer otro pedido</button>
+                        
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+                            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn" style={{ background: '#25D366', color: 'white', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '8px' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c-.003 1.396.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
+                                Enviar detalles por WhatsApp
+                            </a>
+                            <button className="btn btn-outline" onClick={() => window.location.reload()} style={{ color: 'var(--color-text)', borderColor: 'var(--border)' }}>Hacer otro pedido</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -236,7 +320,7 @@ export function CustomForm() {
 
                 <div className="form-content-panel glass-panel">
                     <iframe name="hidden_iframe" style={{display: "none"}}></iframe>
-                    <form action="https://formsubmit.co/ventas@sagason.cl" method="POST" target="hidden_iframe" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit} className="custom-form">
+                    <form action="https://formsubmit.co/sagason@sagason.cl" method="POST" target="hidden_iframe" encType={(fileName || ['ID SALUD', 'ID MASCOTAS'].includes(selections.product)) ? "multipart/form-data" : "application/x-www-form-urlencoded"} onSubmit={handleFormSubmit} className="custom-form">
                         <input type="file" name="qr_code" ref={qrInputRef} style={{display: 'none'}} />
                         <input type="hidden" name="_subject" value="Nuevo Pedido desde Sagason.cl" />
                         <input type="hidden" name="_captcha" value="false" />
@@ -257,6 +341,20 @@ export function CustomForm() {
                                     <div className="options-grid products-grid">
                                         {PRODUCTS.map(p => {
                                             const Icon = p.icon;
+                                            
+                                            // Buscar el precio "Desde" más bajo entre todos los tamaños de este producto
+                                            let minPrecio = Infinity;
+                                            let notaRef = '';
+                                            for (const [key, value] of Object.entries(precios)) {
+                                                if (key.startsWith(`${p.id}-`) && value.desde > 0 && value.active !== false) {
+                                                    if (value.desde < minPrecio) {
+                                                        minPrecio = value.desde;
+                                                        notaRef = value.nota;
+                                                    }
+                                                }
+                                            }
+                                            const precioMostrar = minPrecio !== Infinity ? { desde: minPrecio, nota: notaRef } : null;
+
                                             return (
                                                 <div
                                                     key={p.id}
@@ -272,6 +370,12 @@ export function CustomForm() {
                                                     <Icon size={24} className="option-icon" />
                                                     <h4>{p.title}</h4>
                                                     <p>{p.desc}</p>
+                                                    {precioMostrar && (
+                                                        <span className="precio-desde">
+                                                            Desde {formatPrecio(precioMostrar.desde)}
+                                                            {precioMostrar.nota ? <em> · {precioMostrar.nota}</em> : null}
+                                                        </span>
+                                                    )}
                                                 </div>
                                             )
                                         })}
@@ -321,15 +425,31 @@ export function CustomForm() {
                                     <p className="step-subtitle-info">{selections.product} &middot; {selections.category}</p>
 
                                     <div className="options-grid sizes-grid">
-                                        {SIZES[PRODUCTS.find(p => p.title === selections.product)?.id || 'otro'].map(s => (
-                                            <div
-                                                key={s}
-                                                className={`option-card simple-card ${selections.size === s ? 'selected' : ''}`}
-                                                onClick={() => handleSelectAndAdvance('size', s)}
-                                            >
-                                                <h4>{s.toUpperCase()}</h4>
-                                            </div>
-                                        ))}
+                                        {SIZES[PRODUCTS.find(p => p.title === selections.product)?.id || 'otro']
+                                            .map(s => {
+                                                const prodId = PRODUCTS.find(p => p.title === selections.product)?.id || 'otro';
+                                                const sizeId = `${prodId}-${s.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
+                                                const precioSize = precios[sizeId];
+                                                
+                                                if (precioSize && precioSize.active === false) return null;
+
+                                                return (
+                                                    <div
+                                                        key={s}
+                                                        className={`option-card simple-card ${selections.size === s ? 'selected' : ''}`}
+                                                        onClick={() => handleSelectAndAdvance('size', s)}
+                                                    >
+                                                        <h4>{s.toUpperCase()}</h4>
+                                                        {precioSize && precioSize.desde > 0 && (
+                                                            <span className="precio-desde" style={{display: 'block', marginTop: '8px', fontSize: '0.85rem', color: 'var(--color-primary)'}}>
+                                                                Desde {formatPrecio(precioSize.desde)}
+                                                                {precioSize.nota ? <span style={{fontSize: '0.75rem', opacity: 0.8, display:'block'}}>{precioSize.nota}</span> : null}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })
+                                            .filter(Boolean)}
                                     </div>
                                     <div className="step-actions">
                                         <button type="button" className="btn-prev" onClick={handlePrev}>
@@ -339,33 +459,35 @@ export function CustomForm() {
                                 </motion.div>
                             )}
 
-                            {/* STEP 4 */}
-                            {step === 4 && (
-                                <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
-                                    <h3 className="step-title">TUS DATOS Y DETALLES</h3>
-                                    <p className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
+                                    {/* STEP 4 */}
+                                    {step === 4 && (
+                                        <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                                            <h3 className="step-title">TUS DATOS Y DETALLES</h3>
+                                            <p style={{ color: 'var(--color-primary)', fontWeight: 'bold' }} className="step-subtitle-info">{selections.product} &middot; {selections.category} &middot; {selections.size}</p>
 
-                                    <div className="fields-grid">
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="name">NOMBRE COMPLETO *</label>
-                                            <input type="text" id="name" name="name" className="form-input" required />
-                                        </div>
+                                            <ProductVisualizer product={selections.product} size={selections.size} name={nameText} details={messageText} fileUrl={fileUrl} />
 
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="email">CORREO ELECTRÓNICO *</label>
-                                            <input type="email" id="email" name="email" className="form-input" required />
-                                        </div>
+                                            <div className="fields-grid">
+                                                <div className="form-group">
+                                                    <label className="form-label" htmlFor="name">NOMBRE COMPLETO *</label>
+                                                    <input type="text" id="name" name="name" className="form-input" required value={nameText} onChange={(e) => setNameText(e.target.value)} />
+                                                </div>
 
-                                        <div className="form-group">
-                                            <label className="form-label" htmlFor="phone">TELÉFONO *</label>
-                                            <input type="tel" id="phone" name="phone" className="form-input" required />
-                                        </div>
-                                    </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" htmlFor="email">CORREO ELECTRÓNICO *</label>
+                                                    <input type="email" id="email" name="email" className="form-input" required />
+                                                </div>
 
-                                    <div className="form-group">
-                                        <label className="form-label" htmlFor="desc">DETALLES DEL DISEÑO / INSTRUCCIONES</label>
-                                        <textarea id="desc" name="message" className="form-textarea" rows="4"></textarea>
-                                    </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" htmlFor="phone">TELÉFONO *</label>
+                                                    <input type="tel" id="phone" name="phone" className="form-input" required />
+                                                </div>
+                                            </div>
+
+                                            <div className="form-group">
+                                                <label className="form-label" htmlFor="desc">DETALLES DEL DISEÑO / INSTRUCCIONES</label>
+                                                <textarea id="desc" name="message" className="form-textarea" rows="4" value={messageText} onChange={(e) => setMessageText(e.target.value)}></textarea>
+                                            </div>
 
                                     <div className="form-group">
                                         <label className="form-label">SUBE TU IMAGEN (OPCIONAL)</label>
@@ -386,6 +508,45 @@ export function CustomForm() {
                                             {fileError && <span style={{ color: '#ff4d4f', fontSize: '0.8rem', display: 'block', marginTop: '8px', fontWeight: 'bold' }}>{fileError}</span>}
                                         </div>
                                     </div>
+
+                                    {/* Opciones Adicionales */}
+                                    <div className="form-group" style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--border)', borderRadius: '8px' }}>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', margin: 0 }}>
+                                            <input type="checkbox" checked={wantsCustomBox} onChange={e => setWantsCustomBox(e.target.checked)} style={{ width: '20px', height: '20px' }} />
+                                            <span style={{ fontWeight: '500', color: 'var(--color-text)' }}>Quiero embalaje / caja de regalo customizada</span>
+                                        </label>
+                                    </div>
+
+                                    {/* Precio referencial */}
+                                    {(() => {
+                                        const prodId = PRODUCTS.find(p => p.title === selections.product)?.id;
+                                        if (!prodId) return null;
+                                        const sizeId = `${prodId}-${(selections.size || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
+                                        const precio = precios[sizeId];
+                                        if (!precio || precio.desde <= 0) return null;
+                                        
+                                        const baseTotal = precio.desde;
+                                        const boxCost = wantsCustomBox ? (precio.customBoxCost || 0) : 0;
+                                        const totalAproximado = baseTotal + boxCost;
+                                        
+                                        return (
+                                            <div className="precio-referencia-box">
+                                                <div className="precio-ref-header">
+                                                    <span>💰</span>
+                                                    <strong>Precio Referencial</strong>
+                                                </div>
+                                                <div className="precio-ref-body">
+                                                    <span className="precio-ref-producto">{selections.product} - {selections.size}</span>
+                                                    <span className="precio-ref-valor">
+                                                        Desde {formatPrecio(totalAproximado)}
+                                                        {precio.nota ? <span className="precio-ref-nota"> ({precio.nota})</span> : null}
+                                                        {wantsCustomBox && boxCost > 0 ? <span style={{ fontSize: '0.75rem', display: 'block', color: 'var(--color-text)', fontWeight: 'normal' }}>Incluye caja (+{formatPrecio(boxCost)})</span> : null}
+                                                    </span>
+                                                </div>
+                                                <p className="precio-ref-disclaimer">⚠ Este valor es orientativo. El precio final depende de la cantidad, materiales y detalles de tu pedido. Nuestro equipo te confirmará el valor exacto.</p>
+                                            </div>
+                                        );
+                                    })()}
 
                                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', backgroundColor: 'rgba(37, 99, 235, 0.08)', border: '1px solid rgba(37, 99, 235, 0.25)', borderRadius: '8px', padding: '12px 14px', marginBottom: '1.25rem' }}>
                                         <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>💬</span>
@@ -409,7 +570,7 @@ export function CustomForm() {
                                     {submitStatus === 'error' && (
                                         <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: 'rgba(255, 77, 79, 0.1)', border: '1px solid #ff4d4f', borderRadius: '4px', textAlign: 'center' }}>
                                             <p style={{ color: '#ff4d4f', margin: 0, fontWeight: 'bold' }}>Hubo un error al procesar tu archivo.</p>
-                                            <p style={{ color: 'white', margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>Nuestro servidor tuvo problemas con la foto adjunta. Por favor, <strong>envía tu formulario sin la foto</strong> y luego envíanos la imagen directamente a <a href="mailto:ventas@sagason.cl" style={{ color: 'var(--color-primary)' }}>ventas@sagason.cl</a>.</p>
+                                            <p style={{ color: 'white', margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>Nuestro servidor tuvo problemas con la foto adjunta. Por favor, <strong>envía tu formulario sin la foto</strong> y luego envíanos la imagen directamente a <a href="mailto:sagason@sagason.cl" style={{ color: 'var(--color-primary)' }}>sagason@sagason.cl</a>.</p>
                                         </div>
                                     )}
                                 </motion.div>
@@ -421,3 +582,57 @@ export function CustomForm() {
         </section>
     );
 }
+
+// 🎨 ProductVisualizer - Wrapper para el nuevo visor 3D universal
+function ProductVisualizer({ product, size, name, details, fileUrl }) {
+    const prodId = product?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'otro';
+    
+    // Determinar tipo de decoración y descripción
+    let decorType = 'SUBLIMACIÓN TÉRMICA 4K';
+    let decorDesc = 'Simulación fotorrealista del acabado sublimado sobre superficie premium.';
+    
+    if (['llaveros', 'id-mascotas', 'id-salud', 'tumblers', 'insignias'].some(p => prodId.includes(p))) {
+        decorType = 'GRABADO MICRO-LÁSER 4K';
+        decorDesc = 'Simulación fotorrealista de grabado láser de fibra de precisión a 1064nm.';
+    } else if (prodId.includes('impresion3d')) {
+        decorType = 'FABRICACIÓN ADITIVA 3D';
+        decorDesc = 'Simulación de extrusión por capas en filamento biodegradable premium.';
+    }
+
+    const use2DMockup = ['tazones', 'rompecabezas', 'tumblers'].some(p => prodId.includes(p));
+    const isOtro = prodId === 'otro';
+
+    return (
+        <div className="visualizer-container-3d" style={{ padding: '0', background: 'transparent' }}>
+            <span className="visualizer-badge-3d" style={{ marginBottom: '10px' }}>
+                <span>⚡</span> {decorType}
+            </span>
+            
+            {isOtro ? (
+                <div style={{ width: '100%', height: '300px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #333', position: 'relative' }}>
+                    <img src="/products-composition.png" alt="Productos Personalizados" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, display: 'flex', gap: '8px' }}>
+                        <span style={{ background: 'var(--color-primary)', color: '#000', padding: '4px 8px', fontSize: '10px', fontWeight: 'bold', borderRadius: '4px' }}>
+                            MÚLTIPLES PRODUCTOS
+                        </span>
+                    </div>
+                </div>
+            ) : use2DMockup ? (
+                <Mockup2DViewer product={product} fileUrl={fileUrl} />
+            ) : (
+                <Universal3DViewer 
+                    product={product} 
+                    category={prodId} 
+                    size={size} 
+                    name={name || details}
+                    textureUrl={fileUrl}
+                />
+            )}
+            
+            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginTop: '20px', fontStyle: 'italic', textAlign: 'center', lineHeight: '1.4', maxWidth: '260px', display: 'inline-block' }}>
+                {decorDesc}
+            </span>
+        </div>
+    );
+}
+

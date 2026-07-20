@@ -14,6 +14,7 @@ import {
     Bell
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 const STEPS = [
     { 
@@ -55,6 +56,13 @@ const STEPS = [
 ];
 
 export function HowItWorks() {
+    useSEO({
+        title: '¿Cómo Funciona? | Activa tu Tag Inteligente | Sagason',
+        description: 'Guía rápida paso a paso para activar tu tag inteligente Sagason. Configura tu perfil de emergencia y protege tus mascotas, llaves y objetos valiosos en minutos.',
+        keywords: 'cómo funciona, activar tag, placa inteligente, qr mascotas, qr de seguridad, activar qr, Sagason',
+        canonicalPath: '/como-funciona'
+    });
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {

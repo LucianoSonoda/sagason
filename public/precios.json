@@ -1,0 +1,14 @@
+{
+  "posavasos":   { "desde": 8990,  "nota": "Set de 4 piezas" },
+  "mousepad":    { "desde": 12990, "nota": "" },
+  "cuadro":      { "desde": 29990, "nota": "Tamaño 10x15 cm" },
+  "llaveros":    { "desde": 3490,  "nota": "Precio unitario" },
+  "id-mascotas": { "desde": 3490,  "nota": "Precio unitario" },
+  "id-salud":    { "desde": 4990,  "nota": "" },
+  "rompecabezas":{ "desde": 14990, "nota": "Formato A5" },
+  "tazones":     { "desde": 8990,  "nota": "11oz Blanco" },
+  "tumblers":    { "desde": 14990, "nota": "20 oz" },
+  "impresion3d": { "desde": 12990, "nota": "1 color PLA" },
+  "insignias":   { "desde": 2490,  "nota": "Precio unitario 10mm" },
+  "otro":        { "desde": 0,     "nota": "Consultar" }
+}

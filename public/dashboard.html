@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow">
     <title>Sagason - Dashboard</title>
     <!-- qrcode-generator: genera QR; canvas2png para LP4 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
@@ -36,6 +37,16 @@
             padding: 0; 
             min-height: 100vh;
         }
+        
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
 
         header { 
             background: rgba(10, 10, 11, 0.8); 
@@ -66,7 +77,7 @@
             .dash-nav { display: none; } 
         }
 
-        .container { max-width: 540px; margin: 0 auto; padding: 40px 20px 120px 20px; }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px 120px 20px; position: relative; z-index: 1; }
         
         .tabs { 
             display: flex; 
@@ -305,6 +316,8 @@
 </head>
 <body>
 
+<canvas id="particle-canvas"></canvas>
+
 <!-- Lista de todos los países para autocompletado -->
 <datalist id="countries-list">
     <option value="Chile">
@@ -513,7 +526,7 @@
         <a href="https://sagason.cl/como-funciona">Cómo Funciona</a>
         <a href="https://sagason.cl/tecnologia">Tecnología</a>
         <a href="https://sagason.cl/warranty">Garantía</a>
-        <a href="https://sagason.cl/#gallery">Catálogo</a>
+        <a href="https://sagason.cl/cotizador-b2b">Corporativo (B2B)</a>
     </nav>
 
     <div style="display: flex; align-items: center; gap: 15px; flex-shrink:0;">
@@ -529,6 +542,7 @@
         <button class="tab-btn" id="btn-plans" onclick="showTab('plans')">Planes</button>
         <button class="tab-btn" id="btn-privacy" onclick="showTab('privacy')">Privacidad</button>
         <button class="tab-btn" id="btn-admin" onclick="showTab('admin')" style="display:none;">FÁBRICA</button>
+        <button class="tab-btn" id="btn-precios" onclick="showTab('precios')" style="display:none;">💰 PRECIOS</button>
     </div>
 
     <!-- LISTADO -->
@@ -687,11 +701,37 @@
             </div>
         </div>
     </div>
+
+    <!-- PRECIOS (solo admin) -->
+    <div class="content-section" id="section-precios">
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:20px; padding:30px;">
+            <h3 style="margin:0 0 6px 0; font-size:2rem; font-family:var(--font-display); text-transform:uppercase; letter-spacing:1px;">Listado de Precios</h3>
+            <p style="color:var(--muted); font-size:13px; margin:0 0 24px 0;">Precios orientativos que se muestran en el formulario de personalización. El cliente los ve como referencia al final del formulario.</p>
+
+            <div id="precios-grid" style="display:grid; gap:12px;">
+                <!-- Generado por JS -->
+            </div>
+        </div>
+    </div>
+
+</div>
 </div>
 
 <script>
     const API = "https://s4k.sagason.cl";
     let ownerId = null; let userEmail = "";
+
+    async function authFetch(url, options = {}) {
+        const token = localStorage.getItem('sagason_token');
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers
+        };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        return fetch(url, { ...options, headers });
+    }
 
     function showTab(n) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
@@ -700,21 +740,115 @@
         document.getElementById(`btn-${n}`).classList.add('active');
     }
 
+    function generateRandomString(length) {
+        const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+        let result = '';
+        const values = new Uint32Array(length);
+        window.crypto.getRandomValues(values);
+        for (let i = 0; i < length; i++) {
+            result += charset[values[i] % charset.length];
+        }
+        return result;
+    }
+
+    async function generateCodeChallenge(verifier) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(verifier);
+        const hash = await window.crypto.subtle.digest('SHA-256', data);
+        return btoa(String.fromCharCode.apply(null, new Uint8Array(hash)))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+    }
+
+    async function exchangeCodeForTokens(code, verifier) {
+        const domain = "sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com";
+        const clientId = "21upf33c48gca702vfdrf9aqji";
+        const redirectUri = "https://sagason.cl/dashboard";
+        
+        const details = {
+            'grant_type': 'authorization_code',
+            'client_id': clientId,
+            'code': code,
+            'redirect_uri': redirectUri,
+            'code_verifier': verifier
+        };
+
+        const formBody = Object.keys(details)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(details[key]))
+            .join('&');
+
+        const res = await fetch(`https://${domain}/oauth2/token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formBody
+        });
+
+        if (!res.ok) {
+            throw new Error("Error intercambiando el código de autorización: " + await res.text());
+        }
+
+        return res.json();
+    }
+
+    async function redirectToLogin() {
+        const verifier = generateRandomString(64);
+        const challenge = await generateCodeChallenge(verifier);
+        sessionStorage.setItem('pkce_verifier', verifier);
+        
+        const loginUrl = `https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=code&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard&code_challenge_method=S256&code_challenge=${challenge}`;
+        window.location.href = loginUrl;
+    }
+
     async function init() {
-        const hash = new URLSearchParams(window.location.hash.substring(1));
-        const token = hash.get('id_token') || localStorage.getItem('sagason_token');
-        if (!token) { window.location.href = "https://sa-east-1oldgkh5dt.auth.sa-east-1.amazoncognito.com/login?client_id=21upf33c48gca702vfdrf9aqji&response_type=token&scope=email+openid+phone+profile&redirect_uri=https://sagason.cl/dashboard"; return; }
-        localStorage.setItem('sagason_token', token);
-        const user = JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-        ownerId = user.sub; userEmail = user.email;
-        if (userEmail === "brluson@gmail.com") document.getElementById('btn-admin').style.display = "block";
-        loadTags();
-        loadProfile();
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        if (code) {
+            const verifier = sessionStorage.getItem('pkce_verifier');
+            if (verifier) {
+                try {
+                    const tokens = await exchangeCodeForTokens(code, verifier);
+                    localStorage.setItem('sagason_token', tokens.id_token);
+                    sessionStorage.removeItem('pkce_verifier');
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } catch (err) {
+                    console.error("Error en intercambio de código:", err);
+                    alert("Error al iniciar sesión. Serás redirigido al login.");
+                    await redirectToLogin();
+                    return;
+                }
+            }
+        }
+
+        const token = localStorage.getItem('sagason_token');
+        if (!token) { 
+            await redirectToLogin();
+            return; 
+        }
+        
+        try {
+            const user = JSON.parse(window.atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+            ownerId = user.sub; userEmail = user.email;
+            if (userEmail === "brluson@gmail.com") {
+                document.getElementById('btn-admin').style.display = "block";
+                document.getElementById('btn-precios').style.display = "block";
+                loadAdminPrecios();
+            }
+            loadTags();
+            loadProfile();
+        } catch (e) {
+            console.error("Token inválido o corrupto, redirigiendo:", e);
+            localStorage.removeItem('sagason_token');
+            await redirectToLogin();
+        }
     }
 
     async function loadProfile() {
         try {
-            const res = await fetch(`${API}/user-tags?action=profile&ownerId=${ownerId}`);
+            const res = await authFetch(`${API}/user-profile?ownerId=${ownerId}`);
             if(res.ok) {
                 const profile = await res.json();
                 document.getElementById('profile-name').value = profile.name || "";
@@ -736,9 +870,8 @@
         };
 
         try {
-            await fetch(`${API}/user-tags?action=profile&ownerId=${ownerId}`, {
+            await authFetch(`${API}/user-profile?ownerId=${ownerId}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
             document.getElementById('profile-success').style.display = 'block';
@@ -787,10 +920,13 @@
     }
 
     async function loadTags() {
-        const res = await fetch(`${API}/user-tags?ownerId=${ownerId}`);
-        const tags = await res.json();
         const cont = document.getElementById('tags-list-container');
-        if (!tags || tags.length === 0) { cont.innerHTML = "<p style='text-align:center; padding:20px;'>No tienes placas registradas.</p>"; return; }
+        try {
+            const res = await authFetch(`${API}/user-tags?ownerId=${ownerId}`);
+            if (!res.ok) throw new Error('Error en API');
+            const tags = await res.json();
+            if (!tags || tags.length === 0) { cont.innerHTML = "<p style='text-align:center; padding:20px;'>No tienes placas registradas.</p>"; return; }
+
         
         const now = new Date();
         // 1. Pre-computar el estado real de cada placa antes de dibujar
@@ -953,6 +1089,10 @@
                 </div>
             </div>`;
         }).join('');
+        } catch (e) {
+            console.error("Error loading tags:", e);
+            cont.innerHTML = "<p style='text-align:center; padding:20px; color:#ef4444;'>Error al cargar las placas. Verifica tu conexión o intenta más tarde.</p>";
+        }
     }
 
     async function payRAKA(tagId, plan, price, gateway) {
@@ -961,9 +1101,8 @@
         btn.disabled = true;
 
         try {
-            const res = await fetch(`${API}/create-preference`, {
+            const res = await authFetch(`${API}/create-preference`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tagId, planName: plan, price: price, email: userEmail, gateway: gateway })
             });
 
@@ -995,9 +1134,8 @@
             notify_scan: document.getElementById(`ns-${tagId}`).checked,
             notify_form: document.getElementById(`nf-${tagId}`).checked
         };
-        const res = await fetch(`${API}/user-tags`, { 
+        const res = await authFetch(`${API}/user-tags`, { 
             method: 'POST', 
-            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(payload) 
         });
         if (res.ok) { alert("✅ Guardado"); loadTags(); }
@@ -1212,9 +1350,8 @@
             const activationPIN = generatePin();
 
             try {
-                const res = await fetch(`${API}/admin-create-tag`, { 
+                const res = await authFetch(`${API}/admin-create-tag`, { 
                     method: 'POST', 
-                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ 
                         email: userEmail, 
                         nickname: nickname, 
@@ -1285,9 +1422,8 @@
                         `;
                     });
 
-                    fetch(`${API}/report`, {
+                    authFetch(`${API}/report`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 
                             action: 'backup_batch', 
                             htmlContent: emailHtml,
@@ -1332,9 +1468,8 @@
         const nickname = document.getElementById('new-tag-nickname').value.trim();
         const category = document.getElementById('new-tag-category').value;
         const country = document.getElementById('new-tag-country').value;
-        const res = await fetch(`${API}/user-tags`, { 
+        const res = await authFetch(`${API}/user-tags`, { 
             method: 'POST', 
-            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ ownerId, tagId, activationCode: pin, nickname, category, country, email_1: userEmail }) 
         });
         if (res.ok) { alert("¡Producto Vinculado!"); location.reload(); }
@@ -1342,7 +1477,272 @@
     }
 
     function logout() { localStorage.removeItem('sagason_token'); location.href="https://sagason.cl"; }
+
+    // ── GESTIÓN DE PRECIOS (solo admin) ───────────────────────────────────
+    const SIZES = {
+        'posavasos': ['Set de 4 (Cuadrados)', 'Set de 4 (Circulares)', 'Set de 6 (Cuadrados)', 'Set de 6 (Circulares)', 'Otro'],
+        'mousepad': ['17x21 cm', '19,8x24 cm', 'Otro'],
+        'cuadro': ['10x15 cm', '20x28 cm', 'Personalizado'],
+        'llaveros': ['Redondo', 'Cuadrado', 'Rectangular', 'Corazón', 'Otro'],
+        'id-mascotas': ['Hueso', 'Círculo', 'Corazón', 'Otro'],
+        'id-salud': ['Pulsera / Brazalete', 'Medallón / Tag', 'Tarjeta de Cartera', 'Formato Personalizado'],
+        'rompecabezas': ['A4 (120 piezas)', 'A5 (30 o 36 piezas)', 'Otro'],
+        'tazones': ['11oz Blanco', '11oz Mágico', 'Otro'],
+        'tumblers': ['20 oz', '30 oz', 'Otro'],
+        'impresion3d': ['PLA', 'ABS', 'Ambos', 'Otro'],
+        'insignias': ['10mm', '15mm', 'Otro'],
+        'otro': ['Consultar tamaño']
+    };
+
+    const PRODUCTS_LABELS = {
+        'posavasos': 'Posavasos',
+        'mousepad': 'Mousepad',
+        'cuadro': 'Cuadro HD',
+        'llaveros': 'Llaveros',
+        'id-mascotas': 'ID Mascotas',
+        'id-salud': 'ID Salud',
+        'rompecabezas': 'Rompecabezas',
+        'tazones': 'Tazones',
+        'tumblers': 'Tumblers',
+        'impresion3d': 'Impresión 3D',
+        'insignias': 'Insignias',
+        'otro': 'Otro'
+    };
+
+    let ADMIN_PRODUCTS = [];
+    for (const [prodId, sizes] of Object.entries(SIZES)) {
+        sizes.forEach(size => {
+            const id = `${prodId}-${size.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
+            const category = PRODUCTS_LABELS[prodId];
+            const label = `${PRODUCTS_LABELS[prodId]} - ${size}`;
+            ADMIN_PRODUCTS.push({ id, label, category });
+        });
+    }
+
+    let adminPrecios = {};
+
+    async function loadAdminPrecios() {
+        let dynamoPrecios = {};
+        try {
+            const res = await fetch('/api/prices');
+            if (res.ok) {
+                const data = await res.json();
+                for (const recipe of data) {
+                    const key = recipe.websiteCode || recipe.sku || `id-${recipe.id}`;
+                    dynamoPrecios[key] = {
+                        desde: Math.round(recipe.salePrice || (recipe.totalCost * 2)),
+                        nota: 'Calculado automáticamente',
+                        sku: recipe.sku || '',
+                        label: recipe.name,
+                        category: recipe.category || 'Otros Ítems',
+                        active: true,
+                        shippingSize: recipe.shippingSize || '',
+                        cajaCustom: recipe.customBoxCost || 0
+                    };
+                }
+            }
+        } catch (_) {}
+
+        ADMIN_PRODUCTS = [];
+        adminPrecios = {};
+
+        // Cargar 100% desde la API
+        for (const key of Object.keys(dynamoPrecios)) {
+            ADMIN_PRODUCTS.push({ id: key, label: dynamoPrecios[key].label, category: dynamoPrecios[key].category });
+            adminPrecios[key] = dynamoPrecios[key];
+        }
+
+        renderPreciosGrid();
+    }
+
+    function renderPreciosGrid() {
+        const grid = document.getElementById('precios-grid');
+        
+        const grouped = {};
+        ADMIN_PRODUCTS.forEach(p => {
+            const cat = p.category || 'Otros Ítems';
+            if (!grouped[cat]) grouped[cat] = [];
+            grouped[cat].push(p);
+        });
+
+        let html = '';
+        if (Object.keys(grouped).length === 0) {
+            html = '<div style="text-align:center; padding:30px; color:var(--muted);">No hay productos publicados desde el ERP.</div>';
+        }
+        for (const [cat, products] of Object.entries(grouped)) {
+            html += `<div style="margin-top: 16px; font-size: 16px; font-weight: 800; color: var(--primary); text-transform: uppercase; border-bottom: 2px solid rgba(14, 165, 233, 0.2); padding-bottom: 8px;">${cat}</div>`;
+            products.forEach(p => {
+                const d = adminPrecios[p.id] || { desde: 0, nota: '' };
+                html += `
+                <div id="row-${p.id}" style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:flex; flex-direction:column; gap:14px;">
+                    <div style="display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center;">
+                        <div>
+                            <div style="font-weight:700; font-size:16px; color:#fff; margin-bottom:4px;">${d.label || p.label}</div>
+                            <div style="display:flex; gap:8px; flex-wrap: wrap;">
+                                ${d.sku ? `<span style="background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:6px; font-size:11px; color:#cbd5e1;">SKU: ${d.sku}</span>` : ''}
+                                ${d.shippingSize ? `<span style="background:rgba(168,85,247,0.15); padding:4px 8px; border-radius:6px; font-size:11px; color:#d8b4fe;">Talla: ${d.shippingSize}</span>` : ''}
+                                ${d.cajaCustom ? `<span style="background:rgba(249,115,22,0.15); padding:4px 8px; border-radius:6px; font-size:11px; color:#fdba74;">Caja: $${d.cajaCustom}</span>` : ''}
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Precio Final</div>
+                            <div style="background:rgba(14,165,233,0.1); border:1px solid rgba(14,165,233,0.3); color:var(--primary); font-size:18px; font-weight:800; padding:8px 12px; border-radius:10px;">
+                                $${(d.desde || 0).toLocaleString('es-CL')}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+        }
+        grid.innerHTML = html;
+    }
+    // ─────────────────────────────────────────────────────────────────────
+
     init();
+</script>
+<script>
+    // Particle background animation (Antigravity-like)
+    (function() {
+        const canvas = document.getElementById('particle-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let particles = [];
+        const particleCount = 200; // Low count since it is a dashboard and we want it highly optimized and non-distracting
+        let animationFrameId;
+
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 120
+        };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.baseSize = Math.random() * 1.5 + 1;
+                this.size = this.baseSize;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = Math.random() * 0.15 + 0.05;
+                this.driftSpeed = 0.002 + Math.random() * 0.004;
+                this.vx = 0;
+                this.vy = 0;
+                this.friction = 0.94;
+                this.ease = 0.06;
+                this.hue = 197; // Sagason Cyan/Blue: var(--primary) is #00AEEF which is HSL 197, 100%, 47%
+                this.saturation = 90;
+                this.lightness = 55;
+                this.alpha = Math.random() * 0.3 + 0.15;
+            }
+
+            update() {
+                this.angle += this.driftSpeed;
+                const driftX = Math.cos(this.angle) * 0.25;
+                const driftY = Math.sin(this.angle * 1.2) * 0.25;
+                
+                this.baseX += driftX;
+                this.baseY += driftY;
+
+                if (this.baseX < -20) this.baseX = canvas.width + 20;
+                if (this.baseX > canvas.width + 20) this.baseX = -20;
+                if (this.baseY < -20) this.baseY = canvas.height + 20;
+                if (this.baseY > canvas.height + 20) this.baseY = -20;
+
+                if (mouse.x !== null && mouse.y !== null) {
+                    const dx = this.x - mouse.x;
+                    const dy = this.y - mouse.y;
+                    const distance = Math.hypot(dx, dy);
+
+                    if (distance < mouse.radius) {
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        const angle = Math.atan2(dy, dx);
+                        
+                        const pushX = Math.cos(angle) * force * 4.5;
+                        const pushY = Math.sin(angle) * force * 4.5;
+                        
+                        this.vx += pushX;
+                        this.vy += pushY;
+                        
+                        this.size = this.baseSize * (1 + force * 1.8);
+                        
+                        // Shift from Cyan to warm colors (like original Antigravity)
+                        const targetHue = 355 + Math.sin(this.angle) * 45;
+                        this.hue = this.hue + (targetHue - this.hue) * 0.12;
+                        this.lightness = 50 + force * 15;
+                        this.alpha = 0.7;
+                    } else {
+                        this.size += (this.baseSize - this.size) * 0.08;
+                        this.hue += (197 - this.hue) * 0.04;
+                        this.lightness += (55 - this.lightness) * 0.04;
+                        this.alpha += ( (Math.random() * 0.3 + 0.15) - this.alpha ) * 0.04;
+                    }
+                } else {
+                    this.size += (this.baseSize - this.size) * 0.08;
+                    this.hue += (197 - this.hue) * 0.04;
+                    this.lightness += (55 - this.lightness) * 0.04;
+                }
+
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+
+                this.x += this.vx + (this.baseX - this.x) * this.ease;
+                this.y += this.vy + (this.baseY - this.y) * this.ease;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animate();
+    })();
 </script>
 <script src="/music-player.js"></script>
 </body>

@@ -10,3 +10,4 @@ Estas reglas deben ser seguidas por cualquier asistente de IA que trabaje en est
 6. **Pensamiento Crítico y Utilidad**: Antes de implementar cualquier cambio, debo autoevaluarme de manera crítica: ¿Es esto realmente útil para el desarrollador y para el usuario final? Si considero que un cambio no aporta valor real o es contraproducente, debo cuestionarlo con el usuario antes de proceder.
 7. **Optimización SEO**: Al crear nuevas páginas o funciones, evaluar y optimizar los textos y metadatos para maximizar la visibilidad en Google y otros motores de búsqueda.
 8. **Preservar Estilo**: Mantener la consistencia con el diseño "Sagason 4K" (glassmorphism, tipografía Bebas Neue/Space Grotesk) y los patrones de código existentes.
+9. **Codigo completo**: Despues de revisar un codigo que debo reemplazar manualmente, dame el codigo completo para reemplazarlo y asegurarme de que todo funcione correctamente. NO me des solo el codigo que debo reemplazar.

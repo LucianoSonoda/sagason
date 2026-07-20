@@ -23,13 +23,13 @@ export function Footer() {
             <div className="container footer-content">
                 <div className="footer-brand">
                     <img src={logoCompleto} alt="Sagason SpA" className="footer-logo-img" />
-                    <p>Placas personalizadas de metal con calidad que dura toda la vida.</p>
+                    <p>Grabamos los recuerdos que más importan en metal que dura toda la vida.</p>
                 </div>
 
                 <div className="footer-links-col">
                     <h3 className="footer-title">Enlaces Rápidos</h3>
                     <Link to="/aventuras" className="footer-link">Aventuras en Familia</Link>
-                    <Link to="/#gallery" className="footer-link">Catálogo</Link>
+
                     <Link to="/#custom" className="footer-link">Personalizar</Link>
                     <a href="/dashboard.html" className="footer-link">Panel de Control</a>
                     <Link to="/warranty" className="footer-link">Garantía y Políticas</Link>
@@ -38,7 +38,7 @@ export function Footer() {
 
                 <div className="footer-links-col contact-col">
                     <h3 className="footer-title">Contacto</h3>
-                    <a href="mailto:ventas@sagason.cl" className="social-link"><Mail size={18} /> ventas@sagason.cl</a>
+                    <a href="mailto:sagason@sagason.cl" className="social-link"><Mail size={18} /> sagason@sagason.cl</a>
                     <a href="https://www.instagram.com/sagasoncl/" target="_blank" rel="noopener noreferrer" className="social-link"><Instagram size={18} /> @sagason.cl</a>
                     <span className="social-link" style={{ cursor: 'default' }}><MapPin size={18} /> Envíos a todo Chile</span>
                 </div>
@@ -61,8 +61,9 @@ export function Footer() {
                 </div>
             </div>
             <div className="footer-bottom">
-                &copy; {new Date().getFullYear()} Sagason. Hecho con 4K desde Chile para el Mundo.
+                &copy; {new Date().getFullYear()} Sagason SpA. Hecho con amor y precisión láser, desde Chile para el mundo.
             </div>
         </footer>
     );
 }
+
