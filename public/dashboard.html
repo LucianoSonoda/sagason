@@ -711,34 +711,6 @@
             <div id="precios-grid" style="display:grid; gap:12px;">
                 <!-- Generado por JS -->
             </div>
-
-            <div style="display:flex; gap:10px; margin-top:20px; align-items:center; background:rgba(255,255,255,0.02); padding:15px; border-radius:14px; border:1px dashed var(--border); flex-wrap: wrap;">
-                <input type="text" id="new-prod-id" placeholder="ID corto (ej: polera)" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:8px; min-width: 150px; flex: 1;">
-                <input type="text" id="new-prod-label" placeholder="Nombre (ej: Polera)" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:8px; min-width: 150px; flex: 2;">
-                <input list="categorias-list" id="new-prod-category" placeholder="Categoría (ej: Tazones)" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:8px 12px; border-radius:8px; min-width: 150px; flex: 1;">
-                <datalist id="categorias-list">
-                    <option value="Posavasos">
-                    <option value="Mousepad">
-                    <option value="Cuadro HD">
-                    <option value="Llaveros">
-                    <option value="ID Mascotas">
-                    <option value="ID Salud">
-                    <option value="Rompecabezas">
-                    <option value="Tazones">
-                    <option value="Tumblers">
-                    <option value="Impresión 3D">
-                    <option value="Insignias">
-                    <option value="Otros Ítems">
-                </datalist>
-                <button onclick="addNewPriceItem()" style="background:var(--primary); color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:bold;">+ Añadir Item</button>
-            </div>
-
-            <button id="btn-guardar-precios" class="btn-action btn-save" onclick="savePrecios()" style="margin-top:28px;">
-                💾 Guardar y Publicar Precios
-            </button>
-            <div id="precios-success" style="display:none; background:rgba(52,211,153,0.1); border:1px solid #34d399; padding:15px; border-radius:10px; text-align:center; color:#34d399; font-size:13px; margin-top:16px;">
-                ✅ Precios actualizados correctamente.
-            </div>
         </div>
     </div>
 
@@ -1552,45 +1524,32 @@
     async function loadAdminPrecios() {
         let dynamoPrecios = {};
         try {
-            const res = await fetch('http://localhost:5000/api/prices');
+            const res = await fetch('/api/prices');
             if (res.ok) {
                 const data = await res.json();
-                for (const key of Object.keys(data)) {
+                for (const recipe of data) {
+                    const key = recipe.websiteCode || recipe.sku || `id-${recipe.id}`;
                     dynamoPrecios[key] = {
-                        desde: data[key].basePrice || 0,
-                        nota: 'Fijado desde ERP',
-                        sku: '',
-                        label: key,
-                        category: '',
+                        desde: Math.round(recipe.salePrice || (recipe.totalCost * 2)),
+                        nota: 'Calculado automáticamente',
+                        sku: recipe.sku || '',
+                        label: recipe.name,
+                        category: recipe.category || 'Otros Ítems',
                         active: true,
-                        shippingSize: '',
-                        cajaCustom: 0
+                        shippingSize: recipe.shippingSize || '',
+                        cajaCustom: recipe.customBoxCost || 0
                     };
                 }
             }
         } catch (_) {}
 
-        // Leer del JSON estático como base
-        try {
-            const res = await fetch('/precios.json');
-            if (res.ok) {
-                const staticPrecios = await res.json();
-                adminPrecios = { ...staticPrecios };
-            }
-        } catch (_) {}
+        ADMIN_PRODUCTS = [];
+        adminPrecios = {};
 
-        // Sobrescribir con lo de DynamoDB si existe el ID correspondiente
+        // Cargar 100% desde la API
         for (const key of Object.keys(dynamoPrecios)) {
-            const existing = ADMIN_PRODUCTS.find(p => p.id === key);
-            if (existing) {
-                adminPrecios[key] = dynamoPrecios[key];
-                if (dynamoPrecios[key].category) {
-                    existing.category = dynamoPrecios[key].category;
-                }
-            } else if (dynamoPrecios[key].label) {
-                ADMIN_PRODUCTS.push({ id: key, label: dynamoPrecios[key].label, category: dynamoPrecios[key].category });
-                adminPrecios[key] = dynamoPrecios[key];
-            }
+            ADMIN_PRODUCTS.push({ id: key, label: dynamoPrecios[key].label, category: dynamoPrecios[key].category });
+            adminPrecios[key] = dynamoPrecios[key];
         }
 
         renderPreciosGrid();
@@ -1607,127 +1566,35 @@
         });
 
         let html = '';
+        if (Object.keys(grouped).length === 0) {
+            html = '<div style="text-align:center; padding:30px; color:var(--muted);">No hay productos publicados desde el ERP.</div>';
+        }
         for (const [cat, products] of Object.entries(grouped)) {
             html += `<div style="margin-top: 16px; font-size: 16px; font-weight: 800; color: var(--primary); text-transform: uppercase; border-bottom: 2px solid rgba(14, 165, 233, 0.2); padding-bottom: 8px;">${cat}</div>`;
             products.forEach(p => {
                 const d = adminPrecios[p.id] || { desde: 0, nota: '' };
                 html += `
-                <div id="row-${p.id}" style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:flex; flex-direction:column; gap:14px; transition: opacity 0.3s; ${d.active === false ? 'opacity: 0.4;' : ''}">
-                    <div style="display:grid; grid-template-columns:1fr auto auto; gap:14px; align-items:center;">
+                <div id="row-${p.id}" style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:14px; padding:16px 20px; display:flex; flex-direction:column; gap:14px;">
+                    <div style="display:grid; grid-template-columns:1fr auto; gap:14px; align-items:center;">
                         <div>
-                            <input type="text" id="label-${p.id}" value="${d.label || p.label}" style="background:transparent; border:none; border-bottom:1px dashed var(--border); font-weight:700; font-size:14px; color:#fff; margin-bottom:4px; width:100%; outline:none;" placeholder="Nombre del ítem">
+                            <div style="font-weight:700; font-size:16px; color:#fff; margin-bottom:4px;">${d.label || p.label}</div>
                             <div style="display:flex; gap:8px; flex-wrap: wrap;">
-                                <input list="categorias-list" id="cat-${p.id}" value="${cat}" placeholder="Categoría"
-                                    style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:100px; box-sizing:border-box; margin-top:4px;">
-                                <input type="text" id="sku-${p.id}" value="${d.sku || ''}" placeholder="SKU"
-                                    style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; width:80px; box-sizing:border-box; margin-top:4px;">
-                                <input type="text" id="nota-${p.id}" value="${d.nota || ''}" placeholder="Nota breve (ej: Precio unitario)"
-                                    style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#94a3b8; font-size:11px; padding:6px 10px; border-radius:8px; flex:1; min-width: 150px; box-sizing:border-box; margin-top:4px;">
+                                ${d.sku ? `<span style="background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:6px; font-size:11px; color:#cbd5e1;">SKU: ${d.sku}</span>` : ''}
+                                ${d.shippingSize ? `<span style="background:rgba(168,85,247,0.15); padding:4px 8px; border-radius:6px; font-size:11px; color:#d8b4fe;">Talla: ${d.shippingSize}</span>` : ''}
+                                ${d.cajaCustom ? `<span style="background:rgba(249,115,22,0.15); padding:4px 8px; border-radius:6px; font-size:11px; color:#fdba74;">Caja: $${d.cajaCustom}</span>` : ''}
                             </div>
                         </div>
                         <div style="text-align:right;">
-                            <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Desde $</div>
-                            <input type="number" id="precio-${p.id}" value="${d.desde || 0}" min="0" step="100"
-                                style="background:rgba(14,165,233,0.08); border:1px solid rgba(14,165,233,0.3); color:var(--primary); font-size:16px; font-weight:700; padding:8px 12px; border-radius:10px; width:120px; text-align:right; box-sizing:border-box;">
-                        </div>
-                        <div style="display:flex; gap:8px; align-items:center;">
-                            <div style="display:flex; flex-direction:column; gap:4px;">
-                                <button onclick="toggleActiveItem('${p.id}')" title="${d.active === false ? 'Activar ítem' : 'Desactivar ítem'}" style="background:rgba(255,255,255,0.05); color:${d.active === false ? '#ef4444' : '#22c55e'}; border:none; border-radius:6px; width:28px; height:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;">
-                                    ${d.active === false ? '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>' : '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>'}
-                                </button>
-                                <button onclick="deleteItem('${p.id}')" title="Borrar ítem permanentemente" style="background:rgba(239,68,68,0.1); color:#ef4444; border:none; border-radius:6px; width:28px; height:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;">
-                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                                </button>
+                            <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Precio Final</div>
+                            <div style="background:rgba(14,165,233,0.1); border:1px solid rgba(14,165,233,0.3); color:var(--primary); font-size:18px; font-weight:800; padding:8px 12px; border-radius:10px;">
+                                $${(d.desde || 0).toLocaleString('es-CL')}
                             </div>
-                            <button onclick="saveSinglePrecio('${p.id}')" id="btn-save-${p.id}" title="Guardar cambios" style="background:var(--primary); color:#fff; border:none; border-radius:10px; width:44px; height:44px; cursor:pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:10px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1);">
-                        <div>
-                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Talla de Envío</div>
-                            <select id="shippingSize-${p.id}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
-                                <option value="" style="color:#000;" ${!d.shippingSize ? 'selected' : ''}>No aplica</option>
-                                <option value="XS" style="color:#000;" ${d.shippingSize === 'XS' ? 'selected' : ''}>XS</option>
-                                <option value="S" style="color:#000;" ${d.shippingSize === 'S' ? 'selected' : ''}>S</option>
-                                <option value="M" style="color:#000;" ${d.shippingSize === 'M' ? 'selected' : ''}>M</option>
-                                <option value="L" style="color:#000;" ${d.shippingSize === 'L' ? 'selected' : ''}>L</option>
-                                <option value="XL" style="color:#000;" ${d.shippingSize === 'XL' ? 'selected' : ''}>XL</option>
-                            </select>
-                        </div>
-                        <div>
-                            <div style="font-size:10px; color:var(--muted); margin-bottom:2px;">Caja Custom</div>
-                            <input type="number" id="cajaCustom-${p.id}" value="${d.cajaCustom || 0}" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; font-size:12px; padding:6px; border-radius:6px; width:100%; box-sizing:border-box;">
                         </div>
                     </div>
                 </div>`;
             });
         }
         grid.innerHTML = html;
-    }
-
-    function addNewPriceItem() {
-        let id = document.getElementById('new-prod-id').value.trim().toLowerCase().replace(/\s+/g, '-');
-        const label = document.getElementById('new-prod-label').value.trim();
-        const category = document.getElementById('new-prod-category').value;
-        
-        if (!id || !label) return alert("Por favor ingresa un ID y un Nombre para el producto.");
-        if (!category) return alert("Por favor selecciona una categoría.");
-        if (ADMIN_PRODUCTS.find(p => p.id === id)) return alert("El ID ya existe, elige otro o edita el existente.");
-        
-        ADMIN_PRODUCTS.push({ id, label, category });
-        adminPrecios[id] = { desde: 0, nota: '', sku: '', category };
-        
-        document.getElementById('new-prod-id').value = '';
-        document.getElementById('new-prod-label').value = '';
-        document.getElementById('new-prod-category').value = '';
-        
-        renderPreciosGrid();
-    }
-
-    async function saveSinglePrecio(id) {
-        alert("¡Aviso! Los precios ahora se calculan automáticamente desde el ERP (con 100% de lucro). Debes modificar los costos de insumos y recetas en el ERP.");
-    }
-
-    async function toggleActiveItem(id) {
-        if (!adminPrecios[id]) adminPrecios[id] = {};
-        adminPrecios[id].active = adminPrecios[id].active === false ? true : false;
-        renderPreciosGrid();
-        saveSinglePrecio(id);
-    }
-
-    async function deleteItem(id) {
-        if (!confirm("¿Estás seguro de que quieres borrar este ítem permanentemente? (Desaparecerá de la base de datos)")) return;
-        
-        const btn = document.getElementById(`btn-save-${id}`);
-        if(btn) btn.innerHTML = `<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-opacity="0.3" stroke-width="4"/><path d="M12 2C6.47715 2 2 6.47715 2 12" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`;
-        
-        try {
-            // Soft delete by sending basePrice 0 or active flag if API supported it
-            const payload = {
-                productId: id,
-                basePrice: 0,
-                notes: "ELIMINADO",
-                name: "ELIMINADO",
-                cat: "Otros Ítems"
-            };
-            const res = await authFetch(`${API}/price`, {
-                method: 'PUT',
-                body: JSON.stringify(payload)
-            });
-            if (res.ok) {
-                delete adminPrecios[id];
-                ADMIN_PRODUCTS = ADMIN_PRODUCTS.filter(p => p.id !== id);
-                renderPreciosGrid();
-            } else {
-                alert('Error al borrar: ' + await res.text());
-                renderPreciosGrid();
-            }
-        } catch(e) {
-            alert('Error de conexión: ' + e.message);
-            renderPreciosGrid();
-        }
     }
     // ─────────────────────────────────────────────────────────────────────
 

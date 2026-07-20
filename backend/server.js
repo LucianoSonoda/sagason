@@ -102,12 +102,13 @@ app.get('/api/cart', authenticateToken, async (req, res) => {
 app.get('/api/prices', async (req, res) => {
   try {
     const erpUrl = process.env.ERP_URL || 'http://localhost:4000';
-    const erpRes = await fetch(`${erpUrl}/api/recipes/export-prices`);
-    if (!erpRes.ok) {
-      throw new Error('No se pudo contactar al ERP');
-    }
+    const erpRes = await fetch(`${erpUrl}/api/recipes`);
+    if (!erpRes.ok) throw new Error(`ERP returned ${erpRes.status}`);
     const data = await erpRes.json();
-    res.json(data);
+    
+    // Solo enviamos al frontend los productos marcados para publicar
+    const publishedPrices = data.filter(r => r.isPublishedOnline === true);
+    res.json(publishedPrices);
   } catch (err) {
     console.error('Error fetching prices from ERP:', err.message);
     res.status(500).json({ error: 'Failed to fetch prices' });
