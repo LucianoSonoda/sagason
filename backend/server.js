@@ -266,6 +266,108 @@ app.get('/api/my-orders', authenticateToken, async (req, res) => {
   }
 });
 
+// Endpoint público para el Cotizador B2B
+app.post('/api/b2b-quote', async (req, res) => {
+  try {
+    const { productId, quantity, customerInfo } = req.body;
+    
+    // Obtener información del producto del ERP
+    const erpUrl = process.env.ERP_URL || 'http://localhost:4000';
+    const recipesRes = await fetch(`${erpUrl}/api/recipes`);
+    const recipes = await recipesRes.json();
+    
+    // Buscar la receta por nombre (productId viene como texto desde el selector del frontend)
+    let product = recipes.find(r => r.name === productId || r.websiteCode === productId);
+    
+    if (!product) {
+      // Si el producto no existe en el ERP, lo creamos dinámicamente con precios estimados
+      // basados en los hardcoded del frontend para evitar que falle
+      let defaultPrice = 0;
+      if (productId === 'Tazones') defaultPrice = 4000;
+      else if (productId === 'Llaveros') defaultPrice = 2500;
+      else if (productId === 'Termos') defaultPrice = 15000;
+      else if (productId === 'CuadrosMetal') defaultPrice = 25000;
+      else if (productId === 'Impresion3D') defaultPrice = 12000;
+      
+      try {
+        const createRes = await fetch(`${erpUrl}/api/recipes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: productId,
+            websiteCode: productId,
+            minPrice: defaultPrice,
+            salePrice: defaultPrice,
+            maxPrice: defaultPrice,
+            items: []
+          })
+        });
+        if (createRes.ok) {
+          product = await createRes.json();
+        } else {
+          // Fallback manual si falla la creación (ej. ruta no existe)
+          product = { id: 1, name: productId, salePrice: defaultPrice };
+        }
+      } catch(e) {
+        product = { id: 1, name: productId, salePrice: defaultPrice };
+      }
+    }
+
+    const basePrice = product.salePrice > 0 ? product.salePrice : (product.minPrice || 0);
+    let discountPercent = 0;
+
+    // Reglas de descuento por volumen corporativo
+    if (quantity >= 10 && quantity < 50) {
+      discountPercent = 10;
+    } else if (quantity >= 50 && quantity < 100) {
+      discountPercent = 20;
+    } else if (quantity >= 100) {
+      discountPercent = 30;
+    }
+
+    const discountAmount = (basePrice * quantity) * (discountPercent / 100);
+    const subtotal = basePrice * quantity;
+    const finalTotal = subtotal - discountAmount;
+
+    // Opcional: Registrar la cotización en el ERP si viene con customerInfo
+    if (customerInfo && customerInfo.email) {
+      const salePayload = {
+        clientName: `${customerInfo.name} (${customerInfo.email}) - Empresa: ${customerInfo.company}`,
+        customerEmail: customerInfo.email,
+        status: 'QUOTE', // Guarda como cotización pendiente
+        discount: discountAmount,
+        items: [{ recipeId: product.id, quantity, unitPrice: basePrice }]
+      };
+
+      try {
+        await fetch(`${erpUrl}/api/sales`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(salePayload)
+        });
+      } catch (erpError) {
+        console.error("No se pudo guardar la cotización en el ERP:", erpError);
+        // Continuamos igual para devolverle el cálculo al cliente
+      }
+    }
+
+    res.json({
+      productName: product.name,
+      basePrice,
+      quantity,
+      subtotal,
+      discountPercent,
+      discountAmount,
+      finalTotal,
+      message: customerInfo ? 'Cotización enviada exitosamente.' : 'Cálculo realizado.'
+    });
+
+  } catch (error) {
+    console.error('Error in /api/b2b-quote:', error.message);
+    res.status(500).json({ error: 'Error interno procesando cotización' });
+  }
+});
+
 // Update Cart (Sync from local to remote)
 app.post('/api/cart/sync', authenticateToken, async (req, res) => {
   const items = req.body.items; // array of { productId, name, price, quantity, customizations }

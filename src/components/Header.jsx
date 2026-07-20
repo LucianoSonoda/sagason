@@ -30,6 +30,7 @@ export function Header() {
         { name: 'Aventuras', href: '/aventuras' },
         { name: 'Comunidad 4K', href: '/tags-4k' },
         { name: 'Catálogo', href: '/#gallery' },
+        { name: 'Corporativo (B2B)', href: '/cotizador-b2b' },
         { name: 'Personalizar', href: '/#custom' },
         { name: 'Contacto', href: '/#contact' },
     ];

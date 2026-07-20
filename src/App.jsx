@@ -30,9 +30,11 @@ const Rompecabezas = lazy(() => import('./pages/Rompecabezas').then(module => ({
 const Tazones = lazy(() => import('./pages/Tazones').then(module => ({ default: module.default })));
 const Tumblers = lazy(() => import('./pages/Tumblers').then(module => ({ default: module.default })));
 const Impresion3D = lazy(() => import('./pages/Impresion3D').then(module => ({ default: module.default })));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then(module => ({ default: module.default })));
 const Exito = lazy(() => import('./pages/Exito').then(module => ({ default: module.default })));
 const PagoFallido = lazy(() => import('./pages/PagoFallido').then(module => ({ default: module.default })));
 const MisPedidos = lazy(() => import('./components/MisPedidos').then(module => ({ default: module.default })));
+const CotizadorB2B = lazy(() => import('./pages/CotizadorB2B').then(module => ({ default: module.default })));
 
 function MainContent() {
   return (
@@ -102,7 +104,6 @@ function App() {
                   <Route path="/tecnologia" element={<Technology />} />
                   <Route path="/insignia/*" element={<InsigniaForm />} />
                   <Route path="/lasersticker" element={<LaserLock />} />
-                  <Route path="/tags-4k" element={<Tags4K />} />
                   
                   {/* New Silo Architecture Routes */}
                   <Route path="/id-mascotas" element={<IdMascotas />} />
@@ -114,12 +115,17 @@ function App() {
                   
                   <Route path="/llaveros" element={<Llaveros />} />
                   <Route path="/rompecabezas" element={<Rompecabezas />} />
+                  <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/tags-4k" element={<Tags4K />} />
+                  <Route path="/mis-pedidos" element={<MisPedidos />} />
+                  <Route path="/cotizador-b2b" element={<CotizadorB2B />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                  
                   <Route path="/tazones" element={<Tazones />} />
                   <Route path="/tumblers" element={<Tumblers />} />
                   <Route path="/impresion-3d" element={<Impresion3D />} />
                   <Route path="/exito" element={<Exito />} />
                   <Route path="/pago-fallido" element={<PagoFallido />} />
-                  <Route path="/mis-pedidos" element={<MisPedidos />} />
                 </Routes>
               </Suspense>
             </main>

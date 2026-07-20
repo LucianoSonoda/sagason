@@ -61,6 +61,7 @@ export function CustomForm() {
     const [precios, setPrecios] = useState({});
     const [nameText, setNameText] = useState('');
     const [messageText, setMessageText] = useState('');
+    const [wantsCustomBox, setWantsCustomBox] = useState(false);
 
     const [fileName, setFileName] = useState('');
     const [fileUrl, setFileUrl] = useState(null);
@@ -79,7 +80,15 @@ export function CustomForm() {
                 const res = await fetch('http://localhost:5000/api/prices');
                 if (res.ok) {
                     const data = await res.json();
-                    if (Object.keys(data).length > 0) backendPrecios = data;
+                    if (Array.isArray(data)) {
+                        data.forEach(item => {
+                            if (item.websiteCode) {
+                                backendPrecios[item.websiteCode] = item;
+                            }
+                        });
+                    } else if (Object.keys(data).length > 0) {
+                        backendPrecios = data;
+                    }
                 }
             } catch (e) {
                 console.log("No se pudo cargar precios del ERP", e);
@@ -94,9 +103,13 @@ export function CustomForm() {
                 }
             } catch (_) {}
 
-            // Sobrescribir con lo del ERP
+            // Sobrescribir con lo del ERP (esto ahora incluye el SKU y el customBoxCost)
             for (const key of Object.keys(backendPrecios)) {
-                finalPrecios[key] = backendPrecios[key];
+                finalPrecios[key] = {
+                    ...(finalPrecios[key] || {}),
+                    ...backendPrecios[key],
+                    desde: backendPrecios[key].basePrice || (finalPrecios[key] ? finalPrecios[key].desde : 0)
+                };
             }
             setPrecios(finalPrecios);
         };
@@ -131,7 +144,8 @@ export function CustomForm() {
                         message: messageInputForDb ? messageInputForDb.value : '',
                         product: selections.product,
                         category: selections.category,
-                        size: selections.size
+                        size: selections.size,
+                        wantsCustomBox: wantsCustomBox
                     })
                 }).catch(err => console.log("ERP Proxy Log Error:", err));
             } catch (err) {
@@ -246,6 +260,7 @@ export function CustomForm() {
         const prodId = PRODUCTS.find(p => p.title === selections.product)?.id || 'otro';
         const sizeId = `${prodId}-${selections.size.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
         const selectedSku = precios[sizeId]?.sku || '';
+        const customBoxCost = precios[sizeId]?.customBoxCost || 0;
 
         const wpPhone = '56988821357'; 
         const wpMessage = `¡Hola Sagason! Acabo de hacer un pedido y quiero coordinar detalles.\n\n` +
@@ -254,6 +269,7 @@ export function CustomForm() {
                           `🏷️ *Categoría:* ${selections.category}\n` +
                           `📏 *Formato:* ${selections.size}\n` +
                           (selectedSku ? `🔢 *SKU:* ${selectedSku}\n` : '') +
+                          (wantsCustomBox ? `🎁 *Embalaje Customizado:* Sí\n` : '') +
                           `\nQuedo atento/a para enviar las imágenes o detalles adicionales.`;
         const whatsappUrl = `https://wa.me/${wpPhone}?text=${encodeURIComponent(wpMessage)}`;
 
@@ -493,6 +509,14 @@ export function CustomForm() {
                                         </div>
                                     </div>
 
+                                    {/* Opciones Adicionales */}
+                                    <div className="form-group" style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--border)', borderRadius: '8px' }}>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', margin: 0 }}>
+                                            <input type="checkbox" checked={wantsCustomBox} onChange={e => setWantsCustomBox(e.target.checked)} style={{ width: '20px', height: '20px' }} />
+                                            <span style={{ fontWeight: '500', color: 'var(--color-text)' }}>Quiero embalaje / caja de regalo customizada</span>
+                                        </label>
+                                    </div>
+
                                     {/* Precio referencial */}
                                     {(() => {
                                         const prodId = PRODUCTS.find(p => p.title === selections.product)?.id;
@@ -500,6 +524,10 @@ export function CustomForm() {
                                         const sizeId = `${prodId}-${(selections.size || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`.replace(/-+/g, '-').replace(/-$/, '');
                                         const precio = precios[sizeId];
                                         if (!precio || precio.desde <= 0) return null;
+                                        
+                                        const baseTotal = precio.desde;
+                                        const boxCost = wantsCustomBox ? (precio.customBoxCost || 0) : 0;
+                                        const totalAproximado = baseTotal + boxCost;
                                         
                                         return (
                                             <div className="precio-referencia-box">
@@ -510,8 +538,9 @@ export function CustomForm() {
                                                 <div className="precio-ref-body">
                                                     <span className="precio-ref-producto">{selections.product} - {selections.size}</span>
                                                     <span className="precio-ref-valor">
-                                                        Desde {formatPrecio(precio.desde)}
+                                                        Desde {formatPrecio(totalAproximado)}
                                                         {precio.nota ? <span className="precio-ref-nota"> ({precio.nota})</span> : null}
+                                                        {wantsCustomBox && boxCost > 0 ? <span style={{ fontSize: '0.75rem', display: 'block', color: 'var(--color-text)', fontWeight: 'normal' }}>Incluye caja (+{formatPrecio(boxCost)})</span> : null}
                                                     </span>
                                                 </div>
                                                 <p className="precio-ref-disclaimer">⚠ Este valor es orientativo. El precio final depende de la cantidad, materiales y detalles de tu pedido. Nuestro equipo te confirmará el valor exacto.</p>
