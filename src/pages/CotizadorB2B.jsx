@@ -12,7 +12,8 @@ export default function CotizadorB2B() {
           const loadedProducts = data.map(p => ({
             id: p.websiteCode || p.name,
             name: p.name,
-            basePrice: p.basePrice || 0
+            basePrice: p.salePrice || p.basePrice || 0,
+            minPrice: p.minPrice || 0
           }));
           setProducts(loadedProducts);
           if (loadedProducts.length > 0) {
@@ -52,7 +53,13 @@ export default function CotizadorB2B() {
     if (formData.quantity >= 100) discountPercent = 30;
 
     const subtotal = p.basePrice * formData.quantity;
-    const discountAmount = subtotal * (discountPercent / 100);
+    let discountAmount = subtotal * (discountPercent / 100);
+    
+    if (p.minPrice && (subtotal - discountAmount) / formData.quantity < p.minPrice) {
+      discountAmount = subtotal - (p.minPrice * formData.quantity);
+      if (discountAmount < 0) discountAmount = 0;
+      discountPercent = Number(((discountAmount / subtotal) * 100).toFixed(1));
+    }
     
     setQuote({
       productName: p.name,
