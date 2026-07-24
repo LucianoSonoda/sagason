@@ -84,6 +84,11 @@ export const AuthProvider = ({ children }) => {
     return updatedUser;
   };
 
+  // Account Deletion
+  const deleteAccount = async () => {
+    logout();
+  };
+
   return (
     <AuthContext.Provider value={{ user, token, loading, login, logout, deleteAccount, verifyCompanyStatus }}>
       {children}
