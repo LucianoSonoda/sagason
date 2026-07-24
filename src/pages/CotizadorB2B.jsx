@@ -107,6 +107,7 @@ export default function CotizadorB2B() {
       basePrice: p.basePrice,
       quantity: formData.quantity,
       subtotal,
+      discountAmount: Math.round(discountAmount),
       finalTotal,
       unitFinalPrice
     });
@@ -768,7 +769,7 @@ export default function CotizadorB2B() {
                     }}
                   />
 
-                  {/* Tiers Overview Badges */}
+                  {/* Tiers Overview Badges (Without percentage labels) */}
                   <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(4, 1fr)',
@@ -777,44 +778,48 @@ export default function CotizadorB2B() {
                     textAlign: 'center'
                   }}>
                     <div style={{
-                      padding: '6px 4px',
+                      padding: '8px 4px',
                       borderRadius: '6px',
                       background: formData.quantity < 10 ? 'rgba(14, 165, 233, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                       border: formData.quantity < 10 ? '1px solid #0ea5e9' : '1px solid transparent',
-                      fontSize: '12px',
+                      fontSize: '13px',
+                      fontWeight: '600',
                       color: formData.quantity < 10 ? '#38bdf8' : '#64748b'
                     }}>
                       1-9 un.
                     </div>
 
                     <div style={{
-                      padding: '6px 4px',
+                      padding: '8px 4px',
                       borderRadius: '6px',
                       background: (formData.quantity >= 10 && formData.quantity < 50) ? 'rgba(14, 165, 233, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                       border: (formData.quantity >= 10 && formData.quantity < 50) ? '1px solid #0ea5e9' : '1px solid transparent',
-                      fontSize: '12px',
+                      fontSize: '13px',
+                      fontWeight: '600',
                       color: (formData.quantity >= 10 && formData.quantity < 50) ? '#38bdf8' : '#64748b'
                     }}>
                       10-49 un.
                     </div>
 
                     <div style={{
-                      padding: '6px 4px',
+                      padding: '8px 4px',
                       borderRadius: '6px',
                       background: (formData.quantity >= 50 && formData.quantity < 100) ? 'rgba(14, 165, 233, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                       border: (formData.quantity >= 50 && formData.quantity < 100) ? '1px solid #0ea5e9' : '1px solid transparent',
-                      fontSize: '12px',
+                      fontSize: '13px',
+                      fontWeight: '600',
                       color: (formData.quantity >= 50 && formData.quantity < 100) ? '#38bdf8' : '#64748b'
                     }}>
                       50-99 un.
                     </div>
 
                     <div style={{
-                      padding: '6px 4px',
+                      padding: '8px 4px',
                       borderRadius: '6px',
                       background: formData.quantity >= 100 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                       border: formData.quantity >= 100 ? '1px solid #10b981' : '1px solid transparent',
-                      fontSize: '12px',
+                      fontSize: '13px',
+                      fontWeight: '600',
                       color: formData.quantity >= 100 ? '#34d399' : '#64748b'
                     }}>
                       100+ un.
@@ -963,6 +968,40 @@ export default function CotizadorB2B() {
                       {quote.quantity} unidades
                     </span>
                   </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: '#94a3b8', fontSize: '14px' }}>Precio Base Unitario</span>
+                    <span style={{ color: '#ffffff', fontSize: '14px' }}>
+                      ${quote.basePrice.toLocaleString('es-CL')}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: '#94a3b8', fontSize: '14px' }}>Subtotal Neto</span>
+                    <span style={{ color: '#ffffff', fontSize: '14px' }}>
+                      ${quote.subtotal.toLocaleString('es-CL')}
+                    </span>
+                  </div>
+
+                  {quote.discountAmount > 0 && (
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      background: 'rgba(16, 185, 129, 0.12)',
+                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                      padding: '10px 14px',
+                      borderRadius: '10px',
+                      margin: '4px 0'
+                    }}>
+                      <span style={{ color: '#34d399', fontWeight: '600', fontSize: '13px' }}>
+                        Descuento B2B
+                      </span>
+                      <span style={{ color: '#34d399', fontWeight: '700', fontSize: '14px' }}>
+                        -${quote.discountAmount.toLocaleString('es-CL')}
+                      </span>
+                    </div>
+                  )}
 
                   <hr style={{ border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.1)', margin: '8px 0' }} />
 
