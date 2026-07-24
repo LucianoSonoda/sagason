@@ -85,10 +85,11 @@ export default function CotizadorB2B() {
     const p = products.find(prod => prod.id === formData.productId) || products[0];
     if (!p) return;
 
+    // Descuentos aplicados: 0% - 5% - 12.5% - 18%
     let discountPercent = 0;
-    if (formData.quantity >= 10 && formData.quantity < 50) discountPercent = 10;
-    if (formData.quantity >= 50 && formData.quantity < 100) discountPercent = 20;
-    if (formData.quantity >= 100) discountPercent = 30;
+    if (formData.quantity >= 10 && formData.quantity < 50) discountPercent = 5;
+    if (formData.quantity >= 50 && formData.quantity < 100) discountPercent = 12.5;
+    if (formData.quantity >= 100) discountPercent = 18;
 
     const subtotal = p.basePrice * formData.quantity;
     let discountAmount = subtotal * (discountPercent / 100);
@@ -96,10 +97,9 @@ export default function CotizadorB2B() {
     if (p.minPrice && (subtotal - discountAmount) / formData.quantity < p.minPrice) {
       discountAmount = subtotal - (p.minPrice * formData.quantity);
       if (discountAmount < 0) discountAmount = 0;
-      discountPercent = Number(((discountAmount / subtotal) * 100).toFixed(1));
     }
 
-    const finalTotal = subtotal - discountAmount;
+    const finalTotal = Math.round(subtotal - discountAmount);
     const unitFinalPrice = Math.round(finalTotal / (formData.quantity || 1));
 
     setQuote({
@@ -107,8 +107,6 @@ export default function CotizadorB2B() {
       basePrice: p.basePrice,
       quantity: formData.quantity,
       subtotal,
-      discountPercent,
-      discountAmount,
       finalTotal,
       unitFinalPrice
     });
@@ -279,7 +277,7 @@ export default function CotizadorB2B() {
             lineHeight: '1.6',
             marginBottom: '32px'
           }}>
-            Para cotizar con descuento por volumen y solicitar Facturación Electrónica SII, debes iniciar sesión e ingresar los datos tributarios de tu empresa.
+            Para cotizar con precios preferenciales por volumen y solicitar Facturación Electrónica SII, debes iniciar sesión e ingresar los datos tributarios de tu empresa.
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -313,7 +311,6 @@ export default function CotizadorB2B() {
 
             <button
               onClick={() => {
-                // Allows direct Company registration
                 verifyCompanyStatus({
                   companyName: 'Empresa Temporal',
                   rut: '76.000.000-0',
@@ -660,7 +657,7 @@ export default function CotizadorB2B() {
             lineHeight: '1.6',
             margin: 0
           }}>
-            Selecciona tus productos y calcula al instante tu descuento por volumen. Tu empresa <strong>{activeCompany.companyName || 'Empresa'}</strong> está habilitada para recibir Facturación Electrónica SII.
+            Selecciona tus productos y calcula al instante tu cotización final por volumen. Tu empresa <strong>{activeCompany.companyName || 'Empresa'}</strong> está habilitada para recibir Facturación Electrónica SII.
           </p>
         </div>
 
@@ -724,7 +721,7 @@ export default function CotizadorB2B() {
                     >
                       {products.map(p => (
                         <option key={p.id} value={p.id} style={{ background: '#020617', color: '#ffffff' }}>
-                          {p.name} — Desde ${p.basePrice.toLocaleString('es-CL')}
+                          {p.name}
                         </option>
                       ))}
                     </select>
@@ -771,7 +768,7 @@ export default function CotizadorB2B() {
                     }}
                   />
 
-                  {/* Discount Badges Tiers */}
+                  {/* Tiers Overview Badges */}
                   <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(4, 1fr)',
@@ -784,10 +781,10 @@ export default function CotizadorB2B() {
                       borderRadius: '6px',
                       background: formData.quantity < 10 ? 'rgba(14, 165, 233, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                       border: formData.quantity < 10 ? '1px solid #0ea5e9' : '1px solid transparent',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: formData.quantity < 10 ? '#38bdf8' : '#64748b'
                     }}>
-                      1-9 un.<br /><strong>Base</strong>
+                      1-9 un.
                     </div>
 
                     <div style={{
@@ -795,10 +792,10 @@ export default function CotizadorB2B() {
                       borderRadius: '6px',
                       background: (formData.quantity >= 10 && formData.quantity < 50) ? 'rgba(14, 165, 233, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                       border: (formData.quantity >= 10 && formData.quantity < 50) ? '1px solid #0ea5e9' : '1px solid transparent',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: (formData.quantity >= 10 && formData.quantity < 50) ? '#38bdf8' : '#64748b'
                     }}>
-                      10-49 un.<br /><strong>-10% Dcto</strong>
+                      10-49 un.
                     </div>
 
                     <div style={{
@@ -806,10 +803,10 @@ export default function CotizadorB2B() {
                       borderRadius: '6px',
                       background: (formData.quantity >= 50 && formData.quantity < 100) ? 'rgba(14, 165, 233, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                       border: (formData.quantity >= 50 && formData.quantity < 100) ? '1px solid #0ea5e9' : '1px solid transparent',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: (formData.quantity >= 50 && formData.quantity < 100) ? '#38bdf8' : '#64748b'
                     }}>
-                      50-99 un.<br /><strong>-20% Dcto</strong>
+                      50-99 un.
                     </div>
 
                     <div style={{
@@ -817,10 +814,10 @@ export default function CotizadorB2B() {
                       borderRadius: '6px',
                       background: formData.quantity >= 100 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.03)',
                       border: formData.quantity >= 100 ? '1px solid #10b981' : '1px solid transparent',
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: formData.quantity >= 100 ? '#34d399' : '#64748b'
                     }}>
-                      100+ un.<br /><strong>-30% Dcto</strong>
+                      100+ un.
                     </div>
                   </div>
                 </div>
@@ -966,40 +963,6 @@ export default function CotizadorB2B() {
                       {quote.quantity} unidades
                     </span>
                   </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ color: '#94a3b8', fontSize: '14px' }}>Precio Base Unitario</span>
-                    <span style={{ color: '#ffffff', fontSize: '14px' }}>
-                      ${quote.basePrice.toLocaleString('es-CL')}
-                    </span>
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ color: '#94a3b8', fontSize: '14px' }}>Subtotal Neto</span>
-                    <span style={{ color: '#ffffff', fontSize: '14px' }}>
-                      ${quote.subtotal.toLocaleString('es-CL')}
-                    </span>
-                  </div>
-
-                  {quote.discountPercent > 0 && (
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      background: 'rgba(16, 185, 129, 0.12)',
-                      border: '1px solid rgba(16, 185, 129, 0.3)',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      margin: '4px 0'
-                    }}>
-                      <span style={{ color: '#34d399', fontWeight: '600', fontSize: '13px' }}>
-                        Descuento Corporativo ({quote.discountPercent}%)
-                      </span>
-                      <span style={{ color: '#34d399', fontWeight: '700', fontSize: '14px' }}>
-                        -${quote.discountAmount.toLocaleString('es-CL')}
-                      </span>
-                    </div>
-                  )}
 
                   <hr style={{ border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.1)', margin: '8px 0' }} />
 
