@@ -85,11 +85,11 @@ export default function CotizadorB2B() {
     const p = products.find(prod => prod.id === formData.productId) || products[0];
     if (!p) return;
 
-    // Descuentos aplicados: 0% - 5% - 12.5% - 18%
+    // Descuentos aplicados: 0% - 5% - 9% - 15%
     let discountPercent = 0;
     if (formData.quantity >= 10 && formData.quantity < 50) discountPercent = 5;
-    if (formData.quantity >= 50 && formData.quantity < 100) discountPercent = 12.5;
-    if (formData.quantity >= 100) discountPercent = 18;
+    if (formData.quantity >= 50 && formData.quantity < 100) discountPercent = 9;
+    if (formData.quantity >= 100) discountPercent = 15;
 
     const subtotal = p.basePrice * formData.quantity;
     let discountAmount = subtotal * (discountPercent / 100);
@@ -872,7 +872,7 @@ export default function CotizadorB2B() {
                     marginTop: '8px'
                   }}
                 >
-                  {loading ? 'Generando Cotización Oficial...' : 'Generar Cotización y Aceptar Factura'} <ArrowRight size={20} />
+                  {loading ? 'Enviando Cotización...' : 'Enviar Cotización Oficial'} <ArrowRight size={20} />
                 </button>
 
               </form>
@@ -901,11 +901,11 @@ export default function CotizadorB2B() {
                 </div>
 
                 <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginBottom: '8px' }}>
-                  ¡Cotización & Factura Aceptada!
+                  ¡Cotización Enviada con Éxito!
                 </h3>
 
                 <p style={{ color: '#cbd5e1', fontSize: '15px', lineHeight: '1.6', marginBottom: '24px' }}>
-                  Hemos procesado la cotización corporativa para <strong>{activeCompany.companyName}</strong> (RUT: {activeCompany.rut}) por <strong>{formData.quantity} unidades</strong> de {quote?.productName}. La propuesta oficial y orden de facturación DTE ha sido enviada a <strong>{user?.email || activeCompany.billingEmail}</strong>.
+                  Hemos enviado la propuesta corporativa para <strong>{activeCompany.companyName}</strong> (RUT: {activeCompany.rut}) por <strong>{formData.quantity} unidades</strong> de {quote?.productName} al correo <strong>{user?.email || activeCompany.billingEmail}</strong>. Te contactaremos a la brevedad para coordinar los detalles.
                 </p>
 
                 <button
