@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Home } from './components/Home';
@@ -117,13 +117,12 @@ function App() {
                   <Route path="/tags-4k" element={<Tags4K />} />
                   <Route path="/mis-pedidos" element={<MisPedidos />} />
                   <Route path="/cotizador-b2b" element={<CotizadorB2B />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                  
                   <Route path="/tazones" element={<Tazones />} />
                   <Route path="/tumblers" element={<Tumblers />} />
                   <Route path="/impresion-3d" element={<Impresion3D />} />
                   <Route path="/exito" element={<Exito />} />
                   <Route path="/pago-fallido" element={<PagoFallido />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </Suspense>
             </main>
