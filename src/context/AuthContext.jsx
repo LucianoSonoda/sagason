@@ -68,24 +68,24 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('sagason_user');
   };
 
-  // GDPR: Delete account
-  const deleteAccount = async () => {
-    if (!token) return;
-    try {
-      await fetch('http://localhost:5000/api/user', {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      logout();
-    } catch (err) {
-      console.error("Failed to delete account", err);
-    }
+  // B2B Company Validation
+  const verifyCompanyStatus = (companyData) => {
+    const updatedUser = {
+      ...(user || { name: companyData.name || 'Usuario Empresa', email: companyData.email || 'empresa@sagason.cl' }),
+      isCompany: true,
+      isCompanyVerified: true,
+      companyData: {
+        ...companyData,
+        verifiedAt: new Date().toISOString()
+      }
+    };
+    setUser(updatedUser);
+    localStorage.setItem('sagason_user', JSON.stringify(updatedUser));
+    return updatedUser;
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, deleteAccount }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout, deleteAccount, verifyCompanyStatus }}>
       {children}
     </AuthContext.Provider>
   );
